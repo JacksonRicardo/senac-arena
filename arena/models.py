@@ -57,6 +57,22 @@ class Group(models.Model):
         return Category.objects.count() * 2 * evals
 
 
+class Evaluator(models.Model):
+    """Avaliador / Jurado cadastrado na arena."""
+    name = models.CharField("Nome do Avaliador", max_length=200)
+    role = models.CharField("Cargo / Área / Unidade", max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Avaliador"
+        verbose_name_plural = "Avaliadores"
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} ({self.role})" if self.role else self.name
+
+
 class Evaluation(models.Model):
     """Nota atribuída por um avaliador a um grupo em uma categoria (0, 1 ou 2 pontos)."""
     SCORE_CHOICES = [
@@ -67,6 +83,11 @@ class Evaluation(models.Model):
 
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='evaluations', verbose_name="Grupo")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='evaluations', verbose_name="Categoria")
+    evaluator = models.ForeignKey(
+        Evaluator, on_delete=models.CASCADE,
+        related_name='evaluations', verbose_name="Avaliador",
+        null=True, blank=True
+    )
     score = models.SmallIntegerField("Nota", choices=SCORE_CHOICES, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -74,8 +95,10 @@ class Evaluation(models.Model):
     class Meta:
         verbose_name = "Avaliação"
         verbose_name_plural = "Avaliações"
+        unique_together = [('group', 'category', 'evaluator')]
         ordering = ['group', 'category__order', 'created_at']
 
     def __str__(self):
-        return f"{self.group.title} — {self.category.name}: {self.score} pts"
+        eval_name = f" [{self.evaluator.name}]" if self.evaluator else ""
+        return f"{self.group.title} — {self.category.name}{eval_name}: {self.score} pts"
 

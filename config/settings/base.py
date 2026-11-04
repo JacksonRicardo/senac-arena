@@ -142,6 +142,7 @@ JAZZMIN_SETTINGS = {
         "auth.Group": "fas fa-users",
         "arena.Category": "fas fa-tags",
         "arena.Group": "fas fa-layer-group",
+        "arena.Evaluator": "fas fa-user-tie",
         "arena.Evaluation": "fas fa-clipboard-check",
     },
     "default_icon_parents": "fas fa-chevron-circle-right",

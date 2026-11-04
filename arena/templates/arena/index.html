@@ -135,15 +135,23 @@
                     <p class="text-xs text-slate-600 mt-1">Selecione o projeto e escolha entre 0, 1 ou 2 para cada critério.</p>
                 </div>
                 <form id="evaluationForm" onsubmit="handleEvaluationSubmit(event)" class="space-y-8">
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                        <label for="evalGroupSelect" class="block text-xs font-bold uppercase tracking-wider text-senac-blue mb-2">1. Selecione o Trabalho / Grupo Concorrente:</label>
-                        <select id="evalGroupSelect" required onchange="loadGroupExistingScore()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-senac-blue">
-                            <option value="">-- Selecione o Projeto --</option>
-                        </select>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                            <label for="evalEvaluatorSelect" class="block text-xs font-bold uppercase tracking-wider text-senac-blue mb-2">1. Selecione o Avaliador (Jurado):</label>
+                            <select id="evalEvaluatorSelect" required onchange="onEvaluatorChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-senac-blue">
+                                <option value="">-- Selecione o Avaliador --</option>
+                            </select>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                            <label for="evalGroupSelect" class="block text-xs font-bold uppercase tracking-wider text-senac-blue mb-2">2. Selecione o Trabalho / Grupo Concorrente:</label>
+                            <select id="evalGroupSelect" required onchange="loadGroupExistingScore()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-senac-blue">
+                                <option value="">-- Selecione o Projeto --</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="space-y-6">
                         <h3 class="text-sm font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center justify-between">
-                            <span>2. Avaliação por Categoria Cadastrada:</span>
+                            <span>3. Avaliação por Categoria Cadastrada:</span>
                             <span class="text-xs text-senac-orange font-normal" id="categoriesCountTag">0 Categorias</span>
                         </h3>
                         <div id="dynamicCriteriaRadioGrid" class="grid grid-cols-1 gap-6"></div>
@@ -204,6 +212,33 @@
                         <span id="managedGroupCountBadge" class="bg-blue-50 text-senac-blue text-xs font-bold px-3 py-1 rounded-full border border-blue-100">0 Grupos</span>
                     </div>
                     <div id="managedGroupsContainer" class="space-y-3 max-h-[400px] overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+
+            <!-- GESTÃO DE AVALIADORES -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
+                    <h3 class="text-lg font-bold font-heading text-senac-blue mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie text-senac-orange"></i> Cadastrar Novo Avaliador
+                    </h3>
+                    <form id="createEvaluatorForm" onsubmit="handleCreateEvaluator(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nome do Avaliador (Jurado)</label>
+                            <input type="text" id="newEvaluatorName" required placeholder="ex: Profª. Ana Paula" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cargo / Área / Unidade (Opcional)</label>
+                            <input type="text" id="newEvaluatorRole" placeholder="ex: Coordenação Pedagógica" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
+                        </div>
+                        <button type="submit" class="w-full bg-senac-orange hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition-all">Inserir Avaliador</button>
+                    </form>
+                </div>
+                <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
+                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+                        <h3 class="text-lg font-bold font-heading text-senac-blue">Avaliadores Cadastrados</h3>
+                        <span id="managedEvaluatorCountBadge" class="bg-orange-50 text-senac-orange text-xs font-bold px-3 py-1 rounded-full border border-orange-200">0 Avaliadores</span>
+                    </div>
+                    <div id="managedEvaluatorsContainer" class="space-y-3 max-h-[320px] overflow-y-auto pr-1"></div>
                 </div>
             </div>
         </section>
@@ -302,7 +337,14 @@
                 ...options,
                 headers: { ...defaults.headers, ...(options.headers || {}) }
             });
-            if (!res.ok) throw new Error(`API error ${res.status}`);
+            if (!res.ok) {
+                let errMsg = `API error ${res.status}`;
+                try {
+                    const errData = await res.json();
+                    if (errData && errData.detail) errMsg = errData.detail;
+                } catch (e) {}
+                throw new Error(errMsg);
+            }
             if (res.status === 204) return null;
             return res.json();
         }
@@ -312,14 +354,17 @@
         // ============================================================
         let categories = [];
         let groups = [];
+        let evaluators = [];
 
         async function loadAllData() {
-            const [cats, grps] = await Promise.all([
+            const [cats, grps, evals] = await Promise.all([
                 apiFetch('/categories/'),
                 apiFetch('/groups/'),
+                apiFetch('/evaluators/'),
             ]);
             categories = cats;
             groups = grps;
+            evaluators = evals;
         }
 
         // ============================================================
@@ -532,16 +577,20 @@
         // RENDERIZAÇÃO: ABA AVALIADOR
         // ============================================================
         function renderEvaluatorForm() {
-            const select = document.getElementById('evalGroupSelect');
-            const currentVal = select.value;
-            select.innerHTML = '<option value="">-- Selecione o Projeto --</option>';
-            groups.forEach(g => {
+            const evalSelect = document.getElementById('evalEvaluatorSelect');
+            const currentEvaluatorVal = evalSelect.value;
+            evalSelect.innerHTML = '<option value="">-- Selecione o Avaliador --</option>';
+            evaluators.forEach(ev => {
                 const opt = document.createElement('option');
-                opt.value = g.id;
-                opt.textContent = g.title;
-                select.appendChild(opt);
+                opt.value = ev.id;
+                opt.textContent = ev.role ? `${ev.name} (${ev.role})` : ev.name;
+                evalSelect.appendChild(opt);
             });
-            if (currentVal) select.value = currentVal;
+            if (currentEvaluatorVal && evaluators.some(e => String(e.id) === String(currentEvaluatorVal))) {
+                evalSelect.value = currentEvaluatorVal;
+            }
+
+            populateEvalGroupsDropdown();
 
             document.getElementById('categoriesCountTag').textContent = `${categories.length} Categorias`;
 
@@ -566,6 +615,38 @@
                 </div>`).join('');
         }
 
+        function populateEvalGroupsDropdown() {
+            const evalId = document.getElementById('evalEvaluatorSelect').value;
+            const select = document.getElementById('evalGroupSelect');
+            const currentVal = select.value;
+            const selectedEv = evaluators.find(e => String(e.id) === String(evalId));
+            const alreadyVotedGroupIds = selectedEv && selectedEv.evaluated_group_ids ? selectedEv.evaluated_group_ids : [];
+
+            select.innerHTML = '<option value="">-- Selecione o Projeto --</option>';
+            groups.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g.id;
+                const alreadyVoted = alreadyVotedGroupIds.includes(g.id) || (evalId && g.evaluated_by_ids && g.evaluated_by_ids.includes(Number(evalId)));
+                if (alreadyVoted) {
+                    opt.textContent = `${g.title} (✅ Já avaliado por este jurado)`;
+                    opt.disabled = true;
+                } else {
+                    opt.textContent = g.title;
+                }
+                select.appendChild(opt);
+            });
+            if (currentVal && !alreadyVotedGroupIds.includes(Number(currentVal))) {
+                select.value = currentVal;
+            } else {
+                select.value = '';
+            }
+        }
+
+        function onEvaluatorChange() {
+            populateEvalGroupsDropdown();
+            loadGroupExistingScore();
+        }
+
         function loadGroupExistingScore() {
             // Cada avaliador registra uma nova avaliação que será somada à pontuação do grupo.
             // Limpa as seleções anteriores para o novo avaliador votar.
@@ -580,6 +661,9 @@
 
         async function handleEvaluationSubmit(e) {
             e.preventDefault();
+            const evaluatorId = document.getElementById('evalEvaluatorSelect').value;
+            if (!evaluatorId) return alert('Selecione o avaliador (jurado)!');
+
             const groupId = document.getElementById('evalGroupSelect').value;
             if (!groupId) return alert('Selecione um grupo!');
 
@@ -601,17 +685,29 @@
             try {
                 const updated = await apiFetch('/evaluate/', {
                     method: 'POST',
-                    body: JSON.stringify({ group_id: parseInt(groupId), scores, notes }),
+                    body: JSON.stringify({
+                        group_id: parseInt(groupId),
+                        evaluator_id: parseInt(evaluatorId),
+                        scores,
+                        notes,
+                    }),
                 });
                 const idx = groups.findIndex(g => g.id === updated.id);
                 if (idx >= 0) groups[idx] = updated;
+                const evObj = evaluators.find(ev => ev.id === parseInt(evaluatorId));
+                if (evObj) {
+                    evObj.evaluated_group_ids = evObj.evaluated_group_ids || [];
+                    if (!evObj.evaluated_group_ids.includes(updated.id)) {
+                        evObj.evaluated_group_ids.push(updated.id);
+                    }
+                }
                 playAudioEffect('fanfare');
                 document.getElementById('evalGroupSelect').value = '';
                 renderAll();
                 loadGroupExistingScore();
-                alert(`✅ Avaliação somada com sucesso! Pontuação acumulada do grupo: ${updated.total_score} pts (${updated.evaluations_count} avaliação(ões)).`);
+                alert(`✅ Avaliação salva com sucesso! Pontuação acumulada do grupo: ${updated.total_score} pts (${updated.evaluations_count} avaliação(ões)).`);
             } catch(err) {
-                alert('Erro ao salvar avaliação: ' + err.message);
+                alert('⚠️ ' + err.message);
             }
         }
 
@@ -667,6 +763,34 @@
                         </div>
                         <span class="text-xs font-black font-tech text-senac-blue flex-shrink-0">${total}/${max}</span>
                         <button onclick="deleteGroup(${g.id})" class="text-red-400 hover:text-red-600 flex-shrink-0 p-1" title="Excluir grupo">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </div>`;
+                }).join('');
+            }
+
+            // Evaluators list
+            const evalBadge = document.getElementById('managedEvaluatorCountBadge');
+            evalBadge.textContent = `${evaluators.length} Avaliador${evaluators.length !== 1 ? 'es' : ''}`;
+            const evalContainer = document.getElementById('managedEvaluatorsContainer');
+            if (evaluators.length === 0) {
+                evalContainer.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">
+                    <i class="fa-solid fa-user-tie text-3xl mb-2 block"></i>Nenhum avaliador cadastrado.
+                </div>`;
+            } else {
+                evalContainer.innerHTML = evaluators.map(ev => {
+                    const votedCount = ev.evaluated_group_ids ? ev.evaluated_group_ids.length : 0;
+                    return `
+                    <div class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-senac-blue/10 text-senac-blue flex items-center justify-center font-bold text-xs flex-shrink-0">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div class="flex-grow min-w-0">
+                            <p class="font-bold text-slate-800 text-xs truncate">${ev.name}</p>
+                            <p class="text-[10px] text-slate-500 truncate">${ev.role || 'Jurado Oficial'}</p>
+                        </div>
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-senac-orange border border-orange-200 flex-shrink-0">${votedCount} grupo(s) avaliado(s)</span>
+                        <button onclick="deleteEvaluator(${ev.id})" class="text-red-400 hover:text-red-600 flex-shrink-0 p-1" title="Excluir avaliador">
                             <i class="fa-solid fa-xmark text-xs"></i>
                         </button>
                     </div>`;
@@ -765,9 +889,44 @@
             try {
                 await apiFetch(`/groups/${groupId}/`, { method: 'DELETE' });
                 groups = groups.filter(g => g.id !== groupId);
+                evaluators = await apiFetch('/evaluators/');
                 renderAll();
             } catch(err) {
                 alert('Erro ao excluir grupo: ' + err.message);
+            }
+        }
+
+        // ============================================================
+        // CRUD: AVALIADORES
+        // ============================================================
+        async function handleCreateEvaluator(e) {
+            e.preventDefault();
+            const name = document.getElementById('newEvaluatorName').value.trim();
+            const role = document.getElementById('newEvaluatorRole').value.trim();
+
+            try {
+                const created = await apiFetch('/evaluators/', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, role }),
+                });
+                evaluators.push(created);
+                document.getElementById('createEvaluatorForm').reset();
+                playAudioEffect('pop');
+                renderAll();
+            } catch(err) {
+                alert('Erro ao cadastrar avaliador: ' + err.message);
+            }
+        }
+
+        async function deleteEvaluator(evaluatorId) {
+            if (!confirm('Excluir este avaliador? As avaliações feitas por ele também serão removidas.')) return;
+            try {
+                await apiFetch(`/evaluators/${evaluatorId}/`, { method: 'DELETE' });
+                evaluators = evaluators.filter(e => e.id !== evaluatorId);
+                groups = await apiFetch('/groups/');
+                renderAll();
+            } catch(err) {
+                alert('Erro ao excluir avaliador: ' + err.message);
             }
         }
 
