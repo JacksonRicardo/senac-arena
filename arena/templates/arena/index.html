@@ -1,0 +1,924 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senac Educação Inovadora 2026 - Melhores Práticas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        senac: {
+                            blue: '#004587',
+                            lightBlue: '#0072CE',
+                            cyan: '#00D2FF',
+                            orange: '#F37021',
+                            darkNavy: '#001E3C',
+                            gold: '#FFB800',
+                            bgSlate: '#F8FAFC',
+                            cardBg: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                        tech: ['Orbitron', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'tech': '0 10px 30px -5px rgba(0, 69, 135, 0.08), 0 0 15px rgba(0, 210, 255, 0.15)',
+                        'gold': '0 0 35px rgba(255, 184, 0, 0.45), 0 10px 25px -5px rgba(243, 112, 33, 0.3)',
+                        'battle': '0 12px 30px -5px rgba(0, 30, 60, 0.12), 0 0 20px rgba(0, 114, 206, 0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; color: #0F172A; overflow-x: hidden; }
+        .font-heading { font-family: 'Montserrat', sans-serif; }
+        .font-tech { font-family: 'Orbitron', sans-serif; }
+        .glass-mystery { background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(241,245,249,0.85)); backdrop-filter: blur(8px); border: 2px dashed rgba(0,69,135,0.25); }
+        @keyframes winnerPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(243,112,33,0.4), 0 0 60px rgba(255,184,0,0.2); }
+            50% { transform: scale(1.02); box-shadow: 0 0 50px rgba(243,112,33,0.7), 0 0 90px rgba(0,210,255,0.4); }
+        }
+        .winner-spotlight-active { animation: winnerPulse 2.5s infinite ease-in-out; }
+        @keyframes timerPop {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .timer-pop { animation: timerPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .score-radio-0:checked + label { background-color: #EF4444; color: #FFFFFF; border-color: #EF4444; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+        .score-radio-1:checked + label { background-color: #F59E0B; color: #FFFFFF; border-color: #F59E0B; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+        .score-radio-2:checked + label { background-color: #10B981; color: #FFFFFF; border-color: #10B981; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="bg-senac-darkNavy text-white sticky top-0 z-30 shadow-lg border-b-2 border-senac-orange">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                    <div class="flex items-center py-1">
+                        <img src="{% static 'arena/logo_educacao_inovadora.png' %}" alt="Educação Inovadora" class="h-12 sm:h-16 w-auto object-contain">
+                    </div>
+                    <div class="hidden sm:block w-px h-12 bg-white/20"></div>
+                    <div class="flex items-center text-white py-1">
+                        <img src="{% static 'arena/logo_senac.png' %}" alt="Senac Fecomércio Sesc" class="h-12 sm:h-14 w-auto object-contain">
+                    </div>
+                </div>
+                <nav class="flex items-center gap-1.5 bg-white/10 p-1.5 rounded-2xl border border-white/10 w-full lg:w-auto justify-center">
+                    <button onclick="switchTab('ranking')" id="tab-btn-ranking" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 bg-senac-orange text-white shadow-md">
+                        <i class="fa-solid fa-trophy text-amber-300"></i><span>Arena do Ranking</span>
+                    </button>
+                    <button onclick="switchTab('evaluator')" id="tab-btn-evaluator" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-gray-300 hover:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check"></i><span>Avaliador</span>
+                    </button>
+                    <button onclick="switchTab('manage')" id="tab-btn-manage" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-gray-300 hover:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i><span>Gestão &amp; Categorias</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- ABA 1: ARENA DO RANKING -->
+        <section id="tab-ranking" class="tab-content space-y-8">
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-tech flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-senac-orange border border-orange-200 mb-2">
+                        <i class="fa-solid fa-bolt animate-bounce"></i> Cerimônia de Premiação ao Vivo
+                    </span>
+                    <h2 class="text-2xl font-black font-heading text-senac-blue">Painel do Ranking de Inovação</h2>
+                </div>
+                <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                    <button onclick="startLiveCeremony()" class="bg-gradient-to-r from-senac-orange to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold px-8 py-3.5 rounded-2xl text-sm shadow-gold transition-all flex items-center gap-2.5 hover:scale-105">
+                        <i class="fa-solid fa-play text-base"></i><span>INICIAR CERIMÔNIA</span>
+                    </button>
+                </div>
+            </div>
+            <div id="winnerSpotlightContainer" class="w-full"></div>
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-senac-blue text-white flex items-center justify-center font-bold text-base shadow-md">
+                            <i class="fa-solid fa-ranking-star text-senac-cyan"></i>
+                        </div>
+                        <h3 class="text-lg font-bold font-heading text-senac-blue">Classificação Oficial dos Trabalhos</h3>
+                    </div>
+                    <div class="relative w-full sm:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchRankingInput" oninput="renderLeaderboard()" placeholder="Buscar projeto ou autor..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-700 focus:outline-none focus:border-senac-blue">
+                    </div>
+                </div>
+                <div id="leaderboardContainer" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- ABA 2: PORTAL DO AVALIADOR -->
+        <section id="tab-evaluator" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6 sm:p-8">
+                <div class="max-w-3xl mb-8">
+                    <span class="bg-blue-50 text-senac-blue border border-blue-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Formulário do Jurado</span>
+                    <h2 class="text-2xl font-black font-heading text-senac-blue mt-2">Atribuição de Notas da Bateria</h2>
+                    <p class="text-xs text-slate-600 mt-1">Selecione o projeto e escolha entre 0, 1 ou 2 para cada critério.</p>
+                </div>
+                <form id="evaluationForm" onsubmit="handleEvaluationSubmit(event)" class="space-y-8">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <label for="evalGroupSelect" class="block text-xs font-bold uppercase tracking-wider text-senac-blue mb-2">1. Selecione o Trabalho / Grupo Concorrente:</label>
+                        <select id="evalGroupSelect" required onchange="loadGroupExistingScore()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-senac-blue">
+                            <option value="">-- Selecione o Projeto --</option>
+                        </select>
+                    </div>
+                    <div class="space-y-6">
+                        <h3 class="text-sm font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center justify-between">
+                            <span>2. Avaliação por Categoria Cadastrada:</span>
+                            <span class="text-xs text-senac-orange font-normal" id="categoriesCountTag">0 Categorias</span>
+                        </h3>
+                        <div id="dynamicCriteriaRadioGrid" class="grid grid-cols-1 gap-6"></div>
+                    </div>
+                    <div>
+                        <label for="evalNotes" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Observações e Parecer Técnico (Opcional):</label>
+                        <textarea id="evalNotes" rows="3" placeholder="Insira destaques ou justificativas..." class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-700 focus:outline-none focus:border-senac-blue"></textarea>
+                    </div>
+                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="submit" class="bg-senac-orange hover:bg-orange-600 text-white font-bold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i><span>Salvar Avaliação &amp; Atualizar Arena</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ABA 3: GESTÃO -->
+        <section id="tab-manage" class="tab-content hidden space-y-8">
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6 sm:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                    <div>
+                        <span class="bg-orange-50 text-senac-orange border border-orange-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Preenchimento Manual de Categorias</span>
+                        <h3 class="text-xl font-bold font-heading text-senac-blue mt-2">Categorias Concorrentes (Critérios)</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Adicione ou edite livremente as categorias do evento. Cada uma vale de 0 a 2 pontos.</p>
+                    </div>
+                    <button onclick="openCategoryModal()" class="bg-senac-blue hover:bg-senac-darkNavy text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-md transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-plus text-senac-cyan"></i><span>Adicionar Categoria</span>
+                    </button>
+                </div>
+                <div id="categoriesListGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
+                    <h3 class="text-lg font-bold font-heading text-senac-blue mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus text-senac-orange"></i> Cadastrar Novo Grupo
+                    </h3>
+                    <form id="createGroupForm" onsubmit="handleCreateGroup(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Título do Projeto</label>
+                            <input type="text" id="newProjectTitle" required placeholder="ex: Robótica Educacional Aplicada" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Integrantes / Autores</label>
+                            <input type="text" id="newProjectAuthors" required placeholder="ex: Prof. Fernando &amp; Equipe" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Unidade / Eixo</label>
+                            <input type="text" id="newProjectUnit" placeholder="ex: Faculdade Senac" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
+                        </div>
+                        <button type="submit" class="w-full bg-senac-blue hover:bg-senac-darkNavy text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition-all">Inserir Grupo Concorrente</button>
+                    </form>
+                </div>
+                <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
+                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+                        <h3 class="text-lg font-bold font-heading text-senac-blue">Grupos Cadastrados na Arena</h3>
+                        <span id="managedGroupCountBadge" class="bg-blue-50 text-senac-blue text-xs font-bold px-3 py-1 rounded-full border border-blue-100">0 Grupos</span>
+                    </div>
+                    <div id="managedGroupsContainer" class="space-y-3 max-h-[400px] overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL CERIMÔNIA -->
+    <div id="ceremonyModalOverlay" class="fixed inset-0 bg-senac-darkNavy/90 backdrop-blur-md z-40 hidden flex flex-col items-center justify-center p-4">
+        <div class="max-w-2xl w-full text-center space-y-6">
+            <div class="inline-flex items-center gap-2 border border-senac-orange/40 bg-senac-orange/10 px-4 py-1 rounded-full text-xs font-tech text-senac-orange uppercase tracking-widest">
+                <span>CERIMÔNIA AO VIVO DE MELHORES PRÁTICAS</span>
+            </div>
+            <div id="ceremonyStepBox" class="bg-white rounded-3xl p-8 border-2 border-senac-orange shadow-gold transition-all duration-500">
+                <span id="ceremonyRankTag" class="text-xs font-black font-tech uppercase tracking-wider text-senac-orange block mb-2">ETAPA DA REVELAÇÃO</span>
+                <h3 id="ceremonyTitle" class="text-2xl sm:text-3xl font-black font-heading text-senac-blue mb-2">Pronto para Iniciar</h3>
+                <p id="ceremonySubtitle" class="text-xs sm:text-sm text-slate-500 mb-6">Clique em 'Revelar Próxima Posição' para acionar o timer de 3 segundos!</p>
+                <div id="ceremonyScoreBadge" class="hidden inline-block bg-slate-100 border border-slate-200 px-6 py-2 rounded-2xl mb-6">
+                    <span class="text-xs text-slate-400 font-bold block uppercase">Pontuação Conquistada</span>
+                    <span id="ceremonyScoreValue" class="text-3xl font-black font-heading text-senac-orange">0 / 0 pts</span>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <button id="nextCeremonyBtn" onclick="revealNextCeremonyStep()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-hourglass-start"></i><span>Revelar Próxima Posição (Timer 3s)</span>
+                    </button>
+                    <button onclick="closeCeremonyModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3.5 rounded-xl text-xs transition-all">Encerrar Cerimônia</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CATEGORIA -->
+    <div id="categoryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal('categoryModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="categoryModalTitle" class="text-lg font-bold font-heading text-senac-blue mb-4">Adicionar Categoria</h3>
+            <form onsubmit="handleSaveCategory(event)" class="space-y-4">
+                <input type="hidden" id="editCatId" value="">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nome da Categoria / Critério</label>
+                    <input type="text" id="catNameInput" required placeholder="ex: Inovação Pedagógica" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Descrição para o Avaliador</label>
+                    <textarea id="catDescInput" rows="3" placeholder="ex: Avalia a originalidade..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-senac-blue"></textarea>
+                </div>
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('categoryModal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 border border-slate-200">Cancelar</button>
+                    <button type="submit" class="bg-senac-orange text-white px-5 py-2 rounded-xl text-xs font-bold shadow-md">Salvar Categoria</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DETALHES -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl border border-slate-200 max-w-lg w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeModal('detailModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <span id="detailRankBadge" class="bg-senac-blue text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">#1 Colocado</span>
+            <h3 id="detailProjectTitle" class="text-xl font-bold font-heading text-senac-blue mb-1">Nome do Projeto</h3>
+            <p id="detailAuthors" class="text-xs font-medium text-slate-500 mb-6">Autores</p>
+            <div class="space-y-2.5 mb-6" id="detailCriteriaGrid"></div>
+            <div id="detailNotesBox" class="hidden bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600 mb-4">
+                <strong>Parecer:</strong> <span id="detailNotesText"></span>
+            </div>
+            <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                <span class="text-xs text-slate-500 font-bold">Total Obtido:</span>
+                <span id="detailTotalScore" class="text-2xl font-black font-heading text-senac-orange">0 pts</span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-senac-darkNavy text-white py-6 mt-12 border-t-2 border-senac-orange">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-300 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2026 Senac Brasil — Sistema Oficial de Avaliação e Arena da Educação Inovadora</p>
+            <p class="font-tech text-senac-cyan text-[11px]">[ education + technology ] /// Melhores Práticas 2026</p>
+        </div>
+    </footer>
+
+    {% csrf_token %}
+
+    <script>
+        // ============================================================
+        // CONFIGURAÇÃO DA API
+        // ============================================================
+        const API_BASE = '/api';
+        const CSRF_TOKEN = '{{ csrf_token }}';
+
+        async function apiFetch(path, options = {}) {
+            const defaults = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN,
+                },
+            };
+            const res = await fetch(`${API_BASE}${path}`, {
+                ...defaults,
+                ...options,
+                headers: { ...defaults.headers, ...(options.headers || {}) }
+            });
+            if (!res.ok) throw new Error(`API error ${res.status}`);
+            if (res.status === 204) return null;
+            return res.json();
+        }
+
+        // ============================================================
+        // ESTADO LOCAL (espelho do banco)
+        // ============================================================
+        let categories = [];
+        let groups = [];
+
+        async function loadAllData() {
+            const [cats, grps] = await Promise.all([
+                apiFetch('/categories/'),
+                apiFetch('/groups/'),
+            ]);
+            categories = cats;
+            groups = grps;
+        }
+
+        // ============================================================
+        // WEBAUDIO
+        // ============================================================
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playAudioEffect(type) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                if (type === 'pop') {
+                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+                } else if (type === 'tick') {
+                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.frequency.setValueAtTime(750, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+                } else if (type === 'fanfare') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                        o.connect(g); g.connect(audioCtx.destination);
+                        o.frequency.value = freq;
+                        g.gain.setValueAtTime(0.15, audioCtx.currentTime + (i * 0.12));
+                        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.12) + 0.6);
+                        o.start(audioCtx.currentTime + (i * 0.12));
+                        o.stop(audioCtx.currentTime + (i * 0.12) + 0.6);
+                    });
+                }
+            } catch(e) {}
+        }
+
+        // ============================================================
+        // HELPERS DE CÁLCULO
+        // ============================================================
+        function getMaxPossibleScore(group) {
+            const evals = group && group.evaluations_count ? Math.max(1, group.evaluations_count) : 1;
+            return categories.length * 2 * evals;
+        }
+
+        function calculateGroupTotalScore(group) {
+            if (!group.scores) return 0;
+            return categories.reduce((acc, cat) => {
+                const val = group.scores[String(cat.id)];
+                return acc + (val !== undefined ? Number(val) : 0);
+            }, 0);
+        }
+
+        function getSortedGroups() {
+            return [...groups].sort((a, b) => calculateGroupTotalScore(b) - calculateGroupTotalScore(a));
+        }
+
+        // ============================================================
+        // NAVEGAÇÃO ENTRE ABAS
+        // ============================================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-senac-orange', 'text-white', 'shadow-md');
+                el.classList.add('text-gray-300');
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const btn = document.getElementById(`tab-btn-${tabId}`);
+            btn.classList.add('bg-senac-orange', 'text-white', 'shadow-md');
+            btn.classList.remove('text-gray-300');
+        }
+
+        // ============================================================
+        // RENDERIZAÇÃO: WINNER SPOTLIGHT
+        // ============================================================
+        function renderWinnerSpotlight() {
+            const container = document.getElementById('winnerSpotlightContainer');
+            const revealedGroups = getSortedGroups().filter(g => g.is_revealed);
+            if (revealedGroups.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            const winner = revealedGroups[0];
+            const total = calculateGroupTotalScore(winner);
+            const max = getMaxPossibleScore(winner);
+            container.innerHTML = `
+                <div class="winner-spotlight-active bg-gradient-to-br from-senac-darkNavy via-senac-blue to-slate-800 rounded-3xl p-8 text-white text-center border-2 border-senac-orange">
+                    <div class="text-senac-gold font-tech text-xs uppercase tracking-widest mb-2">🏆 Destaque da Arena</div>
+                    <h2 class="text-3xl font-black font-heading mb-1">${winner.title}</h2>
+                    <p class="text-sm text-slate-300 mb-4">${winner.authors}</p>
+                    <div class="inline-block bg-senac-orange/20 border border-senac-orange px-6 py-3 rounded-2xl">
+                        <span class="text-4xl font-black font-tech text-senac-gold">${total}</span>
+                        <span class="text-senac-cyan font-tech text-sm"> / ${max} pts</span>
+                    </div>
+                </div>`;
+        }
+
+        // ============================================================
+        // RENDERIZAÇÃO: LEADERBOARD
+        // ============================================================
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            const search = (document.getElementById('searchRankingInput').value || '').toLowerCase();
+            const sorted = getSortedGroups();
+            const filtered = sorted.filter(g =>
+                g.title.toLowerCase().includes(search) ||
+                g.authors.toLowerCase().includes(search)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400">
+                    <i class="fa-solid fa-inbox text-4xl mb-3 block"></i>
+                    <p class="text-sm font-medium">Nenhum grupo encontrado.</p>
+                </div>`;
+                return;
+            }
+
+            const medalColors = ['text-yellow-500', 'text-slate-400', 'text-amber-700'];
+            const medalIcons = ['fa-trophy', 'fa-medal', 'fa-award'];
+            const bgColors = [
+                'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200',
+                'bg-gradient-to-r from-slate-50 to-gray-50 border-slate-200',
+                'bg-gradient-to-r from-orange-50 to-amber-50 border-amber-200'
+            ];
+
+            container.innerHTML = filtered.map((g, idx) => {
+                const rank = sorted.indexOf(g) + 1;
+                const total = calculateGroupTotalScore(g);
+                const max = getMaxPossibleScore(g);
+                const evalsCount = g.evaluations_count || 0;
+                const pct = max > 0 ? Math.min(100, Math.round(total / max * 100)) : 0;
+                const isTop3 = rank <= 3;
+                const barColor = rank === 1 ? 'bg-yellow-500' : rank === 2 ? 'bg-slate-400' : rank === 3 ? 'bg-amber-600' : 'bg-senac-blue';
+                const cardBg = isTop3 ? bgColors[rank - 1] : 'bg-white border-slate-200';
+                const medalEl = isTop3
+                    ? `<i class="fa-solid ${medalIcons[rank-1]} ${medalColors[rank-1]} text-xl"></i>`
+                    : `<span class="text-slate-400 font-black text-sm">#${rank}</span>`;
+
+                return `
+                <div class="flex items-center gap-4 p-4 rounded-2xl border ${cardBg} transition-all hover:shadow-md cursor-pointer" onclick="showDetailModal(${g.id})">
+                    <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">${medalEl}</div>
+                    <div class="flex-grow min-w-0">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <h4 class="font-bold text-slate-800 text-sm truncate">${g.title}</h4>
+                            <span class="text-xs font-black font-tech text-senac-blue flex-shrink-0">${total} pts <span class="text-[10px] font-sans font-semibold text-slate-400">(${evalsCount} aval.)</span></span>
+                        </div>
+                        <p class="text-xs text-slate-500 truncate mb-2">${g.authors}${g.unit ? ' · ' + g.unit : ''}</p>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5">
+                            <div class="${barColor} h-1.5 rounded-full transition-all duration-700" style="width:${pct}%"></div>
+                        </div>
+                    </div>
+                    ${g.is_revealed ? '<span class="text-senac-gold text-xs flex-shrink-0"><i class="fa-solid fa-star"></i></span>' : ''}
+                </div>`;
+            }).join('');
+        }
+
+        // ============================================================
+        // MODAL DE DETALHES
+        // ============================================================
+        function showDetailModal(groupId) {
+            const g = groups.find(x => x.id === groupId);
+            if (!g) return;
+            const sorted = getSortedGroups();
+            const rank = sorted.indexOf(g) + 1;
+            const total = calculateGroupTotalScore(g);
+            const max = getMaxPossibleScore(g);
+            const evalsCount = g.evaluations_count || 0;
+
+            document.getElementById('detailRankBadge').textContent = `#${rank} Colocado · ${evalsCount} Avaliação(ões)`;
+            document.getElementById('detailProjectTitle').textContent = g.title;
+            document.getElementById('detailAuthors').textContent = g.authors + (g.unit ? ' · ' + g.unit : '');
+            document.getElementById('detailTotalScore').textContent = `${total} / ${max} pts`;
+
+            const maxCatScore = Math.max(1, evalsCount) * 2;
+            const grid = document.getElementById('detailCriteriaGrid');
+            grid.innerHTML = categories.map(cat => {
+                const hasScore = g.scores && g.scores[String(cat.id)] !== undefined;
+                const score = hasScore ? Number(g.scores[String(cat.id)]) : null;
+                let color = '#94a3b8';
+                let badgeText = 'Não Avaliado';
+                if (score !== null) {
+                    const ratio = maxCatScore > 0 ? score / maxCatScore : 0;
+                    color = ratio >= 0.75 ? '#10B981' : ratio >= 0.4 ? '#F59E0B' : '#EF4444';
+                    badgeText = `${score} / ${maxCatScore} pts`;
+                }
+                return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100 last:border-0">
+                    <span class="text-xs text-slate-700 font-medium">${cat.name}</span>
+                    <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:${color}20;color:${color}">${badgeText}</span>
+                </div>`;
+            }).join('');
+
+            const notesBox = document.getElementById('detailNotesBox');
+            if (g.notes && g.notes.trim()) {
+                document.getElementById('detailNotesText').textContent = g.notes;
+                document.getElementById('detailNotesText').style.whiteSpace = 'pre-line';
+                notesBox.classList.remove('hidden');
+            } else {
+                notesBox.classList.add('hidden');
+            }
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // ============================================================
+        // RENDERIZAÇÃO: ABA AVALIADOR
+        // ============================================================
+        function renderEvaluatorForm() {
+            const select = document.getElementById('evalGroupSelect');
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Selecione o Projeto --</option>';
+            groups.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g.id;
+                opt.textContent = g.title;
+                select.appendChild(opt);
+            });
+            if (currentVal) select.value = currentVal;
+
+            document.getElementById('categoriesCountTag').textContent = `${categories.length} Categorias`;
+
+            const grid = document.getElementById('dynamicCriteriaRadioGrid');
+            grid.innerHTML = categories.map(cat => `
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div class="flex items-start justify-between gap-2 mb-3">
+                        <div>
+                            <p class="text-sm font-bold text-slateac-800">${cat.name}</p>
+                            ${cat.description ? `<p class="text-xs text-slate-500 mt-0.5">${cat.description}</p>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        ${[0,1,2].map(val => `
+                        <div class="flex-1">
+                            <input type="radio" name="cat_${cat.id}" id="cat_${cat.id}_${val}" value="${val}" class="sr-only score-radio-${val}">
+                            <label for="cat_${cat.id}_${val}" class="block text-center text-xs font-bold py-2 rounded-xl border-2 border-slate-200 cursor-pointer transition-all hover:border-slate-400 bg-white">
+                                ${val}
+                            </label>
+                        </div>`).join('')}
+                    </div>
+                </div>`).join('');
+        }
+
+        function loadGroupExistingScore() {
+            // Cada avaliador registra uma nova avaliação que será somada à pontuação do grupo.
+            // Limpa as seleções anteriores para o novo avaliador votar.
+            categories.forEach(cat => {
+                [0, 1, 2].forEach(v => {
+                    const r = document.getElementById(`cat_${cat.id}_${v}`);
+                    if (r) r.checked = false;
+                });
+            });
+            document.getElementById('evalNotes').value = '';
+        }
+
+        async function handleEvaluationSubmit(e) {
+            e.preventDefault();
+            const groupId = document.getElementById('evalGroupSelect').value;
+            if (!groupId) return alert('Selecione um grupo!');
+
+            const scores = {};
+            let missingCategory = false;
+            categories.forEach(cat => {
+                const checked = document.querySelector(`input[name="cat_${cat.id}"]:checked`);
+                if (checked) {
+                    scores[String(cat.id)] = parseInt(checked.value);
+                } else {
+                    missingCategory = true;
+                }
+            });
+            if (missingCategory) {
+                return alert('Por favor, selecione uma nota (0, 1 ou 2) para todas as categorias!');
+            }
+            const notes = document.getElementById('evalNotes').value;
+
+            try {
+                const updated = await apiFetch('/evaluate/', {
+                    method: 'POST',
+                    body: JSON.stringify({ group_id: parseInt(groupId), scores, notes }),
+                });
+                const idx = groups.findIndex(g => g.id === updated.id);
+                if (idx >= 0) groups[idx] = updated;
+                playAudioEffect('fanfare');
+                document.getElementById('evalGroupSelect').value = '';
+                renderAll();
+                loadGroupExistingScore();
+                alert(`✅ Avaliação somada com sucesso! Pontuação acumulada do grupo: ${updated.total_score} pts (${updated.evaluations_count} avaliação(ões)).`);
+            } catch(err) {
+                alert('Erro ao salvar avaliação: ' + err.message);
+            }
+        }
+
+        // ============================================================
+        // RENDERIZAÇÃO: ABA GESTÃO
+        // ============================================================
+        function renderManageTab() {
+            // Categories grid
+            const catGrid = document.getElementById('categoriesListGrid');
+            if (categories.length === 0) {
+                catGrid.innerHTML = `<div class="col-span-3 text-center py-8 text-slate-400 text-sm">
+                    <i class="fa-solid fa-tags text-3xl mb-2 block"></i>Nenhuma categoria cadastrada.
+                </div>`;
+            } else {
+                catGrid.innerHTML = categories.map(cat => `
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-2">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">${cat.name}</p>
+                                ${cat.description ? `<p class="text-xs text-slate-500 mt-0.5 line-clamp-2">${cat.description}</p>` : ''}
+                            </div>
+                            <span class="bg-senac-blue/10 text-senac-blue text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">#${cat.order}</span>
+                        </div>
+                        <div class="flex gap-2 mt-auto pt-2 border-t border-slate-200">
+                            <button onclick="openCategoryModal(${cat.id})" class="flex-1 text-xs font-bold py-1.5 rounded-lg bg-senac-blue/10 text-senac-blue hover:bg-senac-blue hover:text-white transition-all">
+                                <i class="fa-solid fa-pen text-[10px] mr-1"></i>Editar
+                            </button>
+                            <button onclick="deleteCategory(${cat.id})" class="flex-1 text-xs font-bold py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                                <i class="fa-solid fa-trash text-[10px] mr-1"></i>Excluir
+                            </button>
+                        </div>
+                    </div>`).join('');
+            }
+
+            // Groups list
+            const badge = document.getElementById('managedGroupCountBadge');
+            badge.textContent = `${groups.length} Grupo${groups.length !== 1 ? 's' : ''}`;
+            const mgContainer = document.getElementById('managedGroupsContainer');
+            if (groups.length === 0) {
+                mgContainer.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">
+                    <i class="fa-solid fa-users-slash text-3xl mb-2 block"></i>Nenhum grupo cadastrado.
+                </div>`;
+            } else {
+                const sorted = getSortedGroups();
+                mgContainer.innerHTML = sorted.map(g => {
+                    const total = calculateGroupTotalScore(g);
+                    const max = getMaxPossibleScore(g);
+                    return `
+                    <div class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white transition-all">
+                        <div class="flex-grow min-w-0">
+                            <p class="font-bold text-slate-800 text-xs truncate">${g.title}</p>
+                            <p class="text-[10px] text-slate-500 truncate">${g.authors}</p>
+                        </div>
+                        <span class="text-xs font-black font-tech text-senac-blue flex-shrink-0">${total}/${max}</span>
+                        <button onclick="deleteGroup(${g.id})" class="text-red-400 hover:text-red-600 flex-shrink-0 p-1" title="Excluir grupo">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                    </div>`;
+                }).join('');
+            }
+        }
+
+        // ============================================================
+        // CRUD: CATEGORIAS
+        // ============================================================
+        function openCategoryModal(catId) {
+            document.getElementById('editCatId').value = catId || '';
+            document.getElementById('catNameInput').value = '';
+            document.getElementById('catDescInput').value = '';
+            document.getElementById('categoryModalTitle').textContent = catId ? 'Editar Categoria' : 'Adicionar Categoria';
+
+            if (catId) {
+                const cat = categories.find(c => c.id === catId);
+                if (cat) {
+                    document.getElementById('catNameInput').value = cat.name;
+                    document.getElementById('catDescInput').value = cat.description || '';
+                }
+            }
+            document.getElementById('categoryModal').classList.remove('hidden');
+        }
+
+        async function handleSaveCategory(e) {
+            e.preventDefault();
+            const catId = document.getElementById('editCatId').value;
+            const name = document.getElementById('catNameInput').value.trim();
+            const description = document.getElementById('catDescInput').value.trim();
+            const order = catId
+                ? (categories.find(c => c.id === parseInt(catId))?.order || 0)
+                : (Math.max(0, ...categories.map(c => c.order)) + 1);
+
+            try {
+                if (catId) {
+                    const updated = await apiFetch(`/categories/${catId}/`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ name, description, order }),
+                    });
+                    const idx = categories.findIndex(c => c.id === updated.id);
+                    if (idx >= 0) categories[idx] = updated;
+                } else {
+                    const created = await apiFetch('/categories/', {
+                        method: 'POST',
+                        body: JSON.stringify({ name, description, order }),
+                    });
+                    categories.push(created);
+                }
+                closeModal('categoryModal');
+                renderAll();
+            } catch(err) {
+                alert('Erro ao salvar categoria: ' + err.message);
+            }
+        }
+
+        async function deleteCategory(catId) {
+            if (!confirm('Excluir esta categoria? Todas as avaliações relacionadas também serão removidas.')) return;
+            try {
+                await apiFetch(`/categories/${catId}/`, { method: 'DELETE' });
+                categories = categories.filter(c => c.id !== catId);
+                // Reload groups to reflect deleted evaluations
+                groups = await apiFetch('/groups/');
+                renderAll();
+            } catch(err) {
+                alert('Erro ao excluir categoria: ' + err.message);
+            }
+        }
+
+        // ============================================================
+        // CRUD: GRUPOS
+        // ============================================================
+        async function handleCreateGroup(e) {
+            e.preventDefault();
+            const title = document.getElementById('newProjectTitle').value.trim();
+            const authors = document.getElementById('newProjectAuthors').value.trim();
+            const unit = document.getElementById('newProjectUnit').value.trim();
+
+            try {
+                const created = await apiFetch('/groups/', {
+                    method: 'POST',
+                    body: JSON.stringify({ title, authors, unit }),
+                });
+                groups.push(created);
+                document.getElementById('createGroupForm').reset();
+                playAudioEffect('pop');
+                renderAll();
+            } catch(err) {
+                alert('Erro ao criar grupo: ' + err.message);
+            }
+        }
+
+        async function deleteGroup(groupId) {
+            if (!confirm('Excluir este grupo e todas as suas avaliações?')) return;
+            try {
+                await apiFetch(`/groups/${groupId}/`, { method: 'DELETE' });
+                groups = groups.filter(g => g.id !== groupId);
+                renderAll();
+            } catch(err) {
+                alert('Erro ao excluir grupo: ' + err.message);
+            }
+        }
+
+        // ============================================================
+        // CERIMÔNIA AO VIVO
+        // ============================================================
+        let ceremonyQueue = [];
+        let ceremonyCurrentIdx = -1;
+        let ceremonyTimerRunning = false;
+
+        async function startLiveCeremony() {
+            // Reset is_revealed for all groups
+            try {
+                await apiFetch('/ceremony/reset/', { method: 'POST' });
+                groups = groups.map(g => ({ ...g, is_revealed: false }));
+            } catch(e) {}
+
+            const sorted = getSortedGroups();
+            ceremonyQueue = [...sorted].reverse(); // reveal from last to first (worst to best)
+            ceremonyCurrentIdx = -1;
+            ceremonyTimerRunning = false;
+
+            document.getElementById('ceremonyTitle').textContent = 'Cerimônia Pronta!';
+            document.getElementById('ceremonySubtitle').textContent = `${ceremonyQueue.length} grupo(s) serão revelados do último ao 1º lugar.`;
+            document.getElementById('ceremonyRankTag').textContent = 'INÍCIO DA CERIMÔNIA';
+            document.getElementById('ceremonyScoreBadge').classList.add('hidden');
+            document.getElementById('nextCeremonyBtn').disabled = false;
+            document.getElementById('ceremonyModalOverlay').classList.remove('hidden');
+        }
+
+        function revealNextCeremonyStep() {
+            if (ceremonyTimerRunning) return;
+            ceremonyCurrentIdx++;
+
+            if (ceremonyCurrentIdx >= ceremonyQueue.length) {
+                // Ceremony finished
+                document.getElementById('ceremonyTitle').textContent = '🎉 Cerimônia Concluída!';
+                document.getElementById('ceremonySubtitle').textContent = 'Parabéns a todos os participantes!';
+                document.getElementById('ceremonyRankTag').textContent = 'FIM DA CERIMÔNIA';
+                document.getElementById('nextCeremonyBtn').disabled = true;
+                playAudioEffect('fanfare');
+                confetti({ particleCount: 200, spread: 160, origin: { y: 0.6 } });
+                return;
+            }
+
+            const totalGroups = ceremonyQueue.length;
+            const rank = totalGroups - ceremonyCurrentIdx;
+            const group = ceremonyQueue[ceremonyCurrentIdx];
+
+            document.getElementById('ceremonyRankTag').textContent = `REVELANDO — ${rank}º LUGAR`;
+            document.getElementById('ceremonyTitle').textContent = '⏳ Preparando revelação...';
+            document.getElementById('ceremonySubtitle').textContent = '';
+            document.getElementById('nextCeremonyBtn').disabled = true;
+            ceremonyTimerRunning = true;
+
+            // 3 second countdown
+            let count = 3;
+            const box = document.getElementById('ceremonyStepBox');
+            const interval = setInterval(() => {
+                playAudioEffect('tick');
+                document.getElementById('ceremonyTitle').textContent = `${count}...`;
+                document.getElementById('ceremonyTitle').classList.remove('timer-pop');
+                void document.getElementById('ceremonyTitle').offsetWidth; // reflow
+                document.getElementById('ceremonyTitle').classList.add('timer-pop');
+                count--;
+                if (count < 0) {
+                    clearInterval(interval);
+                    revealGroupInCeremony(group, rank);
+                }
+            }, 800);
+        }
+
+        async function revealGroupInCeremony(group, rank) {
+            try {
+                const updated = await apiFetch(`/groups/${group.id}/reveal/`, { method: 'POST' });
+                const idx = groups.findIndex(g => g.id === updated.id);
+                if (idx >= 0) groups[idx] = updated;
+            } catch(e) {}
+
+            const total = calculateGroupTotalScore(group);
+            const max = getMaxPossibleScore(group);
+
+            document.getElementById('ceremonyRankTag').textContent = `🏅 ${rank}º LUGAR`;
+            document.getElementById('ceremonyTitle').textContent = group.title;
+            document.getElementById('ceremonyTitle').classList.remove('timer-pop');
+            void document.getElementById('ceremonyTitle').offsetWidth;
+            document.getElementById('ceremonyTitle').classList.add('timer-pop');
+            document.getElementById('ceremonySubtitle').textContent = group.authors + (group.unit ? ' · ' + group.unit : '');
+            document.getElementById('ceremonyScoreValue').textContent = `${total} / ${max} pts`;
+            document.getElementById('ceremonyScoreBadge').classList.remove('hidden');
+
+            if (rank === 1) {
+                playAudioEffect('fanfare');
+                confetti({ particleCount: 180, spread: 140, origin: { y: 0.6 } });
+                setTimeout(() => confetti({ particleCount: 100, angle: 60, spread: 55, origin: { x: 0 } }), 400);
+                setTimeout(() => confetti({ particleCount: 100, angle: 120, spread: 55, origin: { x: 1 } }), 600);
+            } else {
+                playAudioEffect('pop');
+                confetti({ particleCount: 60, spread: 90, origin: { y: 0.6 } });
+            }
+
+            ceremonyTimerRunning = false;
+            document.getElementById('nextCeremonyBtn').disabled = (ceremonyCurrentIdx + 1 >= ceremonyQueue.length && rank === 1);
+
+            renderWinnerSpotlight();
+            renderLeaderboard();
+        }
+
+        function closeCeremonyModal() {
+            document.getElementById('ceremonyModalOverlay').classList.add('hidden');
+            ceremonyTimerRunning = false;
+            renderAll();
+        }
+
+        // ============================================================
+        // RENDER ALL
+        // ============================================================
+        function renderAll() {
+            renderWinnerSpotlight();
+            renderLeaderboard();
+            renderEvaluatorForm();
+            renderManageTab();
+        }
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+        async function init() {
+            try {
+                await loadAllData();
+                renderAll();
+            } catch(err) {
+                console.error('Erro ao carregar dados da API:', err);
+                document.getElementById('leaderboardContainer').innerHTML = `
+                    <div class="text-center py-12 text-red-400">
+                        <i class="fa-solid fa-triangle-exclamation text-4xl mb-3 block"></i>
+                        <p class="text-sm font-medium">Erro ao conectar com a API. Verifique se o servidor está rodando.</p>
+                        <code class="text-xs mt-2 block">${err.message}</code>
+                    </div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Close modals on overlay click
+        document.querySelectorAll('#categoryModal, #detailModal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) closeModal(this.id);
+            });
+        });
+    </script>
+</body>
+</html>
+
