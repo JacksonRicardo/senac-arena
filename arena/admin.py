@@ -170,3 +170,14 @@ class EvaluationAdmin(admin.ModelAdmin):
     group_total_badge.short_description = 'Total do Grupo'
 
 
+
+
+from .models import RaffleParticipant  # noqa: E402
+
+
+@admin.register(RaffleParticipant)
+class RaffleParticipantAdmin(admin.ModelAdmin):
+    list_display = ['name', 'unit', 'role', 'drawn_at']
+    list_filter = ['unit', 'drawn_at']
+    search_fields = ['name', 'unit', 'role']
+    ordering = ['name']
