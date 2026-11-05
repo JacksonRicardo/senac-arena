@@ -110,19 +110,20 @@
             <div id="winnerSpotlightContainer" class="w-full"></div>
             <div id="top5ChartContainer" class="w-full"></div>
             <div id="leaderboardSection" class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-5 border-b border-slate-100">
                     <div>
                         <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue flex items-center gap-2">
                             <i class="fa-solid fa-list-ol text-senac-orange"></i>
                             <span>CLASSIFICAÇÃO</span>
                         </h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Acompanhe a pontuação e a colocação geral de todos os grupos.</p>
                     </div>
-                    <div class="relative w-full sm:w-64">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="searchRankingInput" oninput="renderLeaderboard()" placeholder="Buscar projeto ou autor..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-700 focus:outline-none focus:border-senac-blue">
+                    <div class="relative w-full sm:w-72">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchRankingInput" oninput="renderLeaderboard()" placeholder="Buscar projeto ou autor..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs font-medium text-slate-700 focus:outline-none focus:border-senac-blue focus:bg-white transition-all">
                     </div>
                 </div>
-                <div id="leaderboardContainer" class="space-y-4"></div>
+                <div id="leaderboardContainer" class="space-y-3"></div>
             </div>
         </section>
 
@@ -657,7 +658,8 @@
 
             const filtered = sorted.filter(g =>
                 g.title.toLowerCase().includes(search) ||
-                g.authors.toLowerCase().includes(search)
+                g.authors.toLowerCase().includes(search) ||
+                (g.unit && g.unit.toLowerCase().includes(search))
             );
 
             if (filtered.length === 0) {
@@ -668,43 +670,81 @@
                 return;
             }
 
-            const medalColors = ['text-yellow-500', 'text-slate-400', 'text-amber-700'];
-            const medalIcons = ['fa-trophy', 'fa-medal', 'fa-award'];
-            const bgColors = [
-                'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200',
-                'bg-gradient-to-r from-slate-50 to-gray-50 border-slate-200',
-                'bg-gradient-to-r from-orange-50 to-amber-50 border-amber-200'
-            ];
+            const maxTopScore = Math.max(...sorted.map(g => calculateGroupTotalScore(g)), 1);
 
-            container.innerHTML = filtered.map((g) => {
+            const headerHtml = `
+                <div class="hidden md:grid md:grid-cols-12 gap-4 px-5 py-2 text-[11px] font-extrabold font-heading uppercase tracking-wider text-slate-400">
+                    <div class="col-span-2">Posição</div>
+                    <div class="col-span-4">Projeto &amp; Integrantes</div>
+                    <div class="col-span-2">Unidade / Eixo</div>
+                    <div class="col-span-2">Desempenho</div>
+                    <div class="col-span-2 text-right">Pontuação</div>
+                </div>`;
+
+            const rowsHtml = filtered.map((g) => {
                 const rank = sorted.indexOf(g) + 1;
                 const total = calculateGroupTotalScore(g);
-                const max = getMaxPossibleScore(g);
                 const evalsCount = g.evaluations_count || 0;
-                const pct = max > 0 ? Math.min(100, Math.round(total / max * 100)) : 0;
-                const isTop3 = rank <= 3;
-                const barColor = rank === 1 ? 'bg-senac-orange' : 'bg-senac-blue';
-                const cardBg = isTop3 ? bgColors[rank - 1] : 'bg-white border-slate-200';
-                const medalEl = isTop3
-                    ? `<i class="fa-solid ${medalIcons[rank-1]} ${medalColors[rank-1]} text-xl"></i>`
-                    : `<span class="text-slate-400 font-black text-sm">#${rank}</span>`;
+                const pct = maxTopScore > 0 ? Math.min(100, Math.round((total / maxTopScore) * 100)) : 0;
+                const barWidth = total > 0 ? Math.max(pct, 6) : 2;
+
+                let posBadge = '';
+                let cardBorder = 'border border-slate-200 bg-white hover:border-senac-blue/30';
+                let barColor = 'bg-senac-blue';
+                let scoreColor = 'text-senac-blue';
+                let unitBadge = `<span class="inline-block bg-slate-100 text-senac-blue text-[11px] font-bold px-2.5 py-1 rounded-lg truncate max-w-full">${g.unit || 'Finalista'}</span>`;
+
+                if (rank === 1) {
+                    posBadge = `<span class="inline-flex items-center gap-1.5 bg-senac-orange text-white text-xs font-extrabold px-3 py-1.5 rounded-full shadow-sm">
+                        <i class="fa-solid fa-crown text-amber-300"></i> 1.º LUGAR
+                    </span>`;
+                    cardBorder = 'border-2 border-senac-orange bg-white shadow-sm';
+                    barColor = 'bg-senac-orange';
+                    scoreColor = 'text-senac-orange';
+                    unitBadge = `<span class="inline-block bg-senac-orange text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm truncate max-w-full">${g.unit || 'Campeão'}</span>`;
+                } else if (rank === 2) {
+                    posBadge = `<span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-extrabold px-3 py-1.5 rounded-full">
+                        <i class="fa-solid fa-medal text-slate-500"></i> 2.º LUGAR
+                    </span>`;
+                } else if (rank === 3) {
+                    posBadge = `<span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200/70 text-xs font-extrabold px-3 py-1.5 rounded-full">
+                        <i class="fa-solid fa-award text-amber-700"></i> 3.º LUGAR
+                    </span>`;
+                    cardBorder = 'border border-orange-200/80 bg-white';
+                } else {
+                    posBadge = `<span class="inline-flex items-center justify-center bg-slate-50 text-senac-blue border border-slate-200 text-xs font-extrabold px-3 py-1.5 rounded-full">
+                        ${rank}.º LUGAR
+                    </span>`;
+                }
 
                 return `
-                <div class="flex items-center gap-4 p-4 rounded-2xl border ${cardBg} transition-all hover:shadow-md cursor-pointer" onclick="showDetailModal(${g.id})">
-                    <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">${medalEl}</div>
-                    <div class="flex-grow min-w-0">
-                        <div class="flex items-center justify-between gap-2 mb-1">
-                            <h4 class="font-bold text-senac-blue text-xs sm:text-sm truncate">${g.title}</h4>
-                            <span class="text-xs font-black font-heading text-senac-blue flex-shrink-0">${total} pts <span class="text-[10px] font-sans font-semibold text-slate-400">(${evalsCount} aval.)</span></span>
+                <div onclick="showDetailModal(${g.id})" class="grid grid-cols-1 md:grid-cols-12 items-center gap-3 md:gap-4 p-4 sm:px-5 sm:py-4 rounded-2xl ${cardBorder} transition-all hover:shadow-md cursor-pointer group">
+                    <div class="md:col-span-2 flex items-center justify-between md:justify-start">
+                        ${posBadge}
+                        <span class="md:hidden text-xl font-black font-heading ${scoreColor}">${total} pts</span>
+                    </div>
+                    <div class="md:col-span-4 min-w-0">
+                        <h4 class="font-extrabold font-heading text-senac-blue text-sm sm:text-base truncate group-hover:text-senac-orange transition-colors">${g.title}</h4>
+                        <p class="text-xs text-slate-500 font-medium truncate mt-0.5">${g.authors}</p>
+                    </div>
+                    <div class="md:col-span-2 flex items-center">
+                        ${unitBadge}
+                    </div>
+                    <div class="md:col-span-2">
+                        <div class="flex items-center justify-between text-[10px] font-semibold text-slate-400 mb-1">
+                            <span>${evalsCount} avaliação(ões)</span>
                         </div>
-                        <p class="text-xs text-slate-500 truncate mb-2">${g.authors}${g.unit ? ' · ' + g.unit : ''}</p>
-                        <div class="w-full bg-slate-100 rounded-full h-1.5">
-                            <div class="${barColor} h-1.5 rounded-full transition-all duration-700" style="width:${pct}%"></div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div class="${barColor} h-2 rounded-full transition-all duration-700" style="width:${barWidth}%"></div>
                         </div>
                     </div>
-                    ${g.is_revealed ? '<span class="text-senac-gold text-xs flex-shrink-0"><i class="fa-solid fa-star"></i></span>' : ''}
+                    <div class="hidden md:flex md:col-span-2 items-center justify-end gap-2">
+                        <span class="text-xl sm:text-2xl font-black font-heading ${scoreColor}">${total} pts</span>
+                    </div>
                 </div>`;
             }).join('');
+
+            container.innerHTML = headerHtml + rowsHtml;
         }
 
         // ============================================================
