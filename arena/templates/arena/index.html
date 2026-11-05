@@ -1229,7 +1229,8 @@
             document.getElementById('ceremonySubtitle').textContent = `Resultado Oficial | ${formatModalityFullTitle(activeModality)}.`;
             document.getElementById('ceremonyScoreBadge').classList.add('hidden');
             const btnLabel = document.getElementById('nextCeremonyBtnLabel');
-            if (btnLabel) btnLabel.textContent = `REVELAR ${modTitle}`;
+            const firstRankToReveal = ceremonyQueue.length > 0 ? ceremonyQueue[0].rank : 1;
+            if (btnLabel) btnLabel.textContent = `REVELAR ${firstRankToReveal}º LUGAR`;
             document.getElementById('nextCeremonyBtn').disabled = false;
             document.getElementById('ceremonyModalOverlay').classList.remove('hidden');
         }
@@ -1307,7 +1308,7 @@
             const btnLabel = document.getElementById('nextCeremonyBtnLabel');
             if (btnLabel) {
                 const nextRank = rank - 1;
-                btnLabel.textContent = nextRank >= 1 ? `REVELAR ${nextRank}º LUGAR (${modTitle})` : 'CONCLUIR CERIMÔNIA';
+                btnLabel.textContent = nextRank >= 1 ? `REVELAR ${nextRank}º LUGAR` : 'CONCLUIR CERIMÔNIA';
             }
 
             if (rank === 1) {
