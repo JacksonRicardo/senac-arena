@@ -1258,7 +1258,7 @@
             document.getElementById('nextCeremonyBtn').disabled = true;
             ceremonyTimerRunning = true;
 
-            let count = 3;
+            let count = 5;
             const interval = setInterval(() => {
                 playAudioEffect('tick');
                 document.getElementById('ceremonyTitle').textContent = `${count}...`;
@@ -1270,7 +1270,7 @@
                     clearInterval(interval);
                     revealGroupInCeremony(group, rank);
                 }
-            }, 800);
+            }, 1000);
         }
 
         async function revealGroupInCeremony(group, rank) {
