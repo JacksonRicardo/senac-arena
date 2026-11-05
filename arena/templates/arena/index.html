@@ -102,6 +102,9 @@
                     <h2 class="text-2xl font-black font-heading text-senac-blue">RANKING DOS INOVADORES</h2>
                 </div>
                 <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                    <button id="hideResultsBtn" onclick="resetCeremonyResults()" class="hidden bg-slate-100 hover:bg-slate-200 text-senac-blue font-bold px-5 py-3.5 rounded-2xl text-xs transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-eye-slash"></i><span>OCULTAR RESULTADOS</span>
+                    </button>
                     <button onclick="startLiveCeremony()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-2xl text-sm shadow-md transition-all flex items-center gap-2.5 hover:scale-105">
                         <i class="fa-solid fa-play text-base"></i><span>INICIAR CERIMÔNIA</span>
                     </button>
@@ -438,19 +441,57 @@
             btn.classList.remove('text-gray-300');
         }
 
+        function isCeremonyCompleted() {
+            return groups.length > 0 && groups.every(g => g.is_revealed);
+        }
+
+        async function resetCeremonyResults() {
+            try {
+                await apiFetch('/ceremony/reset/', { method: 'POST' });
+                groups = groups.map(g => ({ ...g, is_revealed: false }));
+                renderAll();
+            } catch (e) {}
+        }
+
         // ============================================================
         // RENDERIZAÇÃO: PÓDIO DOS CAMPEÕES (TOP 3 AUTOMÁTICO)
         // ============================================================
         function renderWinnerSpotlight() {
             const container = document.getElementById('winnerSpotlightContainer');
+            const hideBtn = document.getElementById('hideResultsBtn');
             const sorted = getSortedGroups();
+
             if (sorted.length === 0) {
+                if (hideBtn) hideBtn.classList.add('hidden');
                 container.innerHTML = `<div class="bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400 shadow-tech">
                     <i class="fa-solid fa-trophy text-4xl mb-3 block text-slate-300"></i>
                     <p class="text-sm font-medium">Nenhum grupo cadastrado na arena ainda.</p>
                 </div>`;
                 return;
             }
+
+            if (!isCeremonyCompleted()) {
+                if (hideBtn) hideBtn.classList.add('hidden');
+                const totalEvals = sorted.reduce((acc, g) => acc + (g.evaluations_count || 0), 0);
+                container.innerHTML = `
+                <div class="bg-white rounded-3xl border-2 border-dashed border-slate-200 p-10 sm:p-14 text-center shadow-tech space-y-4">
+                    <div class="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-200 text-senac-orange flex items-center justify-center mx-auto shadow-sm">
+                        <i class="fa-solid fa-lock text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="inline-block bg-slate-100 text-senac-blue text-[11px] font-extrabold font-heading uppercase tracking-wider px-3.5 py-1 rounded-full mb-2">
+                            Resultados em Sigilo · ${sorted.length} Grupo(s) · ${totalEvals} Avaliação(ões) Registrada(s)
+                        </span>
+                        <h3 class="text-xl sm:text-2xl font-black font-heading text-senac-blue uppercase">AGUARDANDO CERIMÔNIA DE PREMIAÇÃO</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto mt-1">
+                            O Pódio dos Campeões, o Gráfico do Pódio e a Tabela de Classificação serão revelados automaticamente ao concluir a cerimônia!
+                        </p>
+                    </div>
+                </div>`;
+                return;
+            }
+
+            if (hideBtn) hideBtn.classList.remove('hidden');
 
             const first = sorted[0] || null;
             const second = sorted[1] || null;
@@ -566,7 +607,7 @@
         function renderTop5Chart() {
             const container = document.getElementById('top5ChartContainer');
             const sorted = getSortedGroups();
-            if (sorted.length === 0) {
+            if (sorted.length === 0 || !isCeremonyCompleted()) {
                 container.innerHTML = '';
                 return;
             }
@@ -654,6 +695,11 @@
             const container = document.getElementById('leaderboardContainer');
             const search = (document.getElementById('searchRankingInput').value || '').toLowerCase();
             const sorted = getSortedGroups();
+
+            if (sorted.length === 0 || !isCeremonyCompleted()) {
+                section.classList.add('hidden');
+                return;
+            }
             section.classList.remove('hidden');
 
             const filtered = sorted.filter(g =>
@@ -1167,6 +1213,7 @@
             try {
                 await apiFetch('/ceremony/reset/', { method: 'POST' });
                 groups = groups.map(g => ({ ...g, is_revealed: false }));
+                renderAll();
             } catch(e) {}
 
             const sorted = getSortedGroups();
