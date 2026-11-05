@@ -1,0 +1,36 @@
+.raffle-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(290px,1fr);gap:24px}
+.raffle-stage{position:relative;overflow:hidden;border-radius:28px;background:radial-gradient(ellipse at 50% 0%,#12629b 0%,#062b64 48%,#051934 100%);color:white;min-height:490px;display:grid;place-items:center;border:1px solid #2481ad;box-shadow:0 20px 50px #002d7226}
+.raffle-stage:before{content:"";position:absolute;inset:0;background-image:radial-gradient(#ffffff30 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(#000,transparent)}
+.raffle-orbit{position:absolute;width:480px;height:480px;border:1px solid #ffffff12;border-radius:50%;pointer-events:none}
+.raffle-orbit-one{top:-330px;left:-160px;width:700px;height:700px;border:40px solid #ffffff04}
+.raffle-orbit-two{right:-310px;bottom:-330px;border:55px solid #00d2ff08;width:650px;height:650px}
+.raffle-stage-content{position:relative;z-index:1;width:100%;padding:36px 24px;text-align:center}
+.raffle-live{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:2px;border:1px solid #ffffff26;background:#ffffff09;border-radius:30px;padding:9px 16px}
+.raffle-live span{width:6px;height:6px;border-radius:50%;background:#54e8cc;box-shadow:0 0 12px #54e8cc}
+.raffle-star{color:#ffba65;font-size:62px;line-height:1.1;margin:25px 0 16px;filter:drop-shadow(0 0 20px #f3702180)}
+.raffle-eyebrow{text-transform:uppercase;letter-spacing:3px;font-size:10px;color:#9dc8e9;font-weight:800;margin-bottom:12px}
+.raffle-name{font-family:Montserrat,sans-serif;font-size:clamp(24px,3.2vw,44px);line-height:1.2;font-weight:900;min-height:106px;display:flex;align-items:center;justify-content:center;overflow-wrap:anywhere;text-wrap:balance}
+.raffle-unit{font-size:14px;color:#b7d7ed;margin:16px 0 28px;min-height:22px}
+.raffle-draw{border-radius:16px;background:linear-gradient(110deg,#f37021,#ffa53e);box-shadow:0 8px 30px #f3702140;border:1px solid #ffbf77;padding:17px 40px;color:#fff;font-weight:900;text-transform:uppercase;font-size:14px;transition:transform .2s,box-shadow .2s}
+.raffle-draw:hover:enabled{transform:translateY(-3px);box-shadow:0 10px 36px #f3702180}
+.raffle-draw:disabled{opacity:.5;cursor:not-allowed}
+.raffle-stage-note{color:#8cacc7;font-size:11px;margin-top:18px}
+.raffle-stat{background:#f5f8fc;border:1px solid #e8eef6;border-radius:14px;padding:14px 4px}
+.raffle-stat strong{display:block;color:#002d72;font-size:25px;font-weight:900}
+.raffle-stat span{font-size:10px;color:#64748b}
+.raffle-upload{border:2px dashed #cbd5e1;border-radius:18px;padding:24px 16px;text-align:center;background:#f8fafc;cursor:pointer}
+.raffle-upload:focus-within,.raffle-upload:hover{border-color:#f37021}
+.raffle-history{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-height:520px;overflow:auto}
+.raffle-history li{border:1px solid #e2e8f0;border-radius:16px;padding:18px;display:flex;gap:12px;align-items:flex-start}
+.raffle-history .raffle-place{flex-shrink:0;background:#fff2e7;color:#c65712;font-weight:900;padding:7px;border-radius:10px;font-size:12px}
+.raffle-history strong{font-size:13px;color:#002d72;display:block}
+.raffle-history p,.raffle-history time{display:block;font-size:11px;color:#64748b;margin-top:5px}
+.raffle-rolling .raffle-name{filter:blur(.6px);color:#c5eaff}
+.raffle-rolling .raffle-star{animation:raffleSpin 2s linear infinite}
+.raffle-revealed .raffle-name{color:#ffdb9a;text-shadow:0 0 25px #ffb80040;animation:raffleReveal .8s cubic-bezier(.2,.8,.2,1)}
+.raffle-revealed .raffle-star{animation:raffleGlow 2s ease-in-out infinite}
+@keyframes raffleSpin{to{transform:rotate(360deg)}}
+@keyframes raffleReveal{from{opacity:0;transform:translateY(20px) scale(.85);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes raffleGlow{50%{transform:scale(1.15);filter:drop-shadow(0 0 30px #ffb800)}}
+@media(max-width:900px){.raffle-layout{grid-template-columns:1fr}.raffle-stage{min-height:440px}}
+@media(prefers-reduced-motion:reduce){.raffle-stage *{animation:none!important;transition:none!important}}

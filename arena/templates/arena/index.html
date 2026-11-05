@@ -61,6 +61,7 @@
         .score-radio-1:checked + label { background-color: #F59E0B; color: #FFFFFF; border-color: #F59E0B; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
         .score-radio-2:checked + label { background-color: #10B981; color: #FFFFFF; border-color: #10B981; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
     </style>
+    <link rel="stylesheet" href="{% static 'arena/raffle.css' %}">
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
@@ -75,12 +76,15 @@
                         <p class="text-xs font-semibold text-senac-orange tracking-wider uppercase mt-0.5">Edição - 2026</p>
                     </div>
                 </div>
-                <nav class="flex items-center gap-1.5 bg-white/10 p-1.5 rounded-2xl border border-white/10 w-full lg:w-auto justify-center">
+                <nav class="flex items-center gap-1.5 flex-wrap bg-white/10 p-1.5 rounded-2xl border border-white/10 w-full lg:w-auto justify-center">
                     <button onclick="switchTab('ranking')" id="tab-btn-ranking" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 bg-senac-orange text-white shadow-md uppercase">
                         <i class="fa-solid fa-trophy text-amber-300"></i><span>ARENA DO RANKING</span>
                     </button>
                     <button onclick="switchTab('import')" id="tab-btn-import" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-gray-300 hover:text-white flex items-center gap-2 uppercase">
                         <i class="fa-solid fa-file-excel"></i><span>IMPORTAR PLANILHAS</span>
+                    </button>
+                    <button onclick="switchTab('raffle')" id="tab-btn-raffle" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-gray-300 hover:text-white flex items-center gap-2 uppercase">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i><span>SORTEIO</span>
                     </button>
                 </nav>
             </div>
@@ -294,6 +298,7 @@
                 </div>
             </div>
         </section>
+        {% include 'arena/raffle.html' %}
     </main>
 
     <!-- MODAL CERIMÔNIA -->
@@ -1697,6 +1702,7 @@
             });
         });
     </script>
+    <script src="{% static 'arena/raffle.js' %}"></script>
 </body>
 </html>
 

@@ -1,0 +1,55 @@
+<section id="tab-raffle" class="tab-content hidden space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between gap-4 sm:items-end">
+        <div>
+            <span class="text-xs font-extrabold text-senac-orange uppercase tracking-widest">Experts Senac RN · Sorteios</span>
+            <h2 class="text-3xl font-black font-heading text-senac-blue mt-2">A próxima estrela pode ser você.</h2>
+            <p class="text-sm text-slate-500 mt-2">Uma base salva. Novas chances a cada sorteio. Cada pessoa ganha uma única vez.</p>
+        </div>
+        <button type="button" id="raffle-refresh" class="text-sm font-bold text-senac-blue px-4 py-2 rounded-xl border border-slate-200 bg-white">↻ Atualizar</button>
+    </div>
+    <div class="raffle-layout">
+        <div class="raffle-stage" id="raffle-stage">
+            <div class="raffle-orbit raffle-orbit-one" aria-hidden="true"></div>
+            <div class="raffle-orbit raffle-orbit-two" aria-hidden="true"></div>
+            <div class="raffle-stage-content">
+                <span class="raffle-live"><span></span> MOMENTO DA SORTE</span>
+                <div class="raffle-star" aria-hidden="true">✦</div>
+                <p id="raffle-eyebrow" class="raffle-eyebrow">O palco está pronto</p>
+                <div id="raffle-result" aria-live="polite" aria-atomic="true">
+                    <h3 id="raffle-name" class="raffle-name">Quem vai brilhar agora?</h3>
+                    <p id="raffle-unit" class="raffle-unit">Importe sua lista para começar</p>
+                </div>
+                <button type="button" id="raffle-draw" class="raffle-draw" disabled>✦ Sortear agora</button>
+                <p class="raffle-stage-note" id="raffle-stage-note">Nome e unidade revelados em grande estilo.</p>
+            </div>
+        </div>
+        <aside class="bg-white rounded-3xl border border-slate-200 p-6 shadow-tech flex flex-col gap-5">
+            <div>
+                <h3 class="font-heading font-extrabold text-senac-blue text-lg">Sua lista de convidados</h3>
+                <p class="text-xs text-slate-500 mt-2">Importe uma vez e continue sorteando quando quiser.</p>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="raffle-stat"><strong id="raffle-total">—</strong><span>Aptos</span></div>
+                <div class="raffle-stat"><strong id="raffle-remaining">—</strong><span>Na disputa</span></div>
+                <div class="raffle-stat"><strong id="raffle-count">—</strong><span>Sorteados</span></div>
+            </div>
+            <label class="raffle-upload" for="raffle-file">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-senac-orange" aria-hidden="true"></i>
+                <strong class="block mt-3 text-sm text-senac-blue">Importar participantes</strong>
+                <span class="block text-xs text-slate-500 mt-2">CSV ou XLSX · até 5 MB</span>
+                <input type="file" id="raffle-file" accept=".csv,.xlsx" class="block w-full text-xs mt-4">
+            </label>
+            <p class="text-xs text-slate-500 leading-relaxed">Participam pessoas com nome, unidade e cargo preenchidos. Registros com “SAIU DO SENAC” são excluídos. Nomes repetidos contam uma única vez.</p>
+            <p class="text-xs text-slate-500 leading-relaxed">Uma nova importação atualiza a lista ativa e mantém todos os resultados anteriores.</p>
+        </aside>
+    </div>
+    <p id="raffle-message" role="status" class="text-sm font-semibold text-senac-blue min-h-[1.5rem]"></p>
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div><span class="text-xs font-bold text-senac-orange uppercase tracking-widest">Galeria da sorte</span>
+                <h3 class="text-xl font-black font-heading text-senac-blue mt-1">Quem já brilhou por aqui</h3></div>
+            <span class="text-xs text-slate-500">Histórico salvo automaticamente</span>
+        </div>
+        <ol id="raffle-history" class="raffle-history"></ol>
+    </div>
+</section>

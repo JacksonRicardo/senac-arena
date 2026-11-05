@@ -102,3 +102,31 @@ class Evaluation(models.Model):
         eval_name = f" [{self.evaluator.name}]" if self.evaluator else ""
         return f"{self.group.title} — {self.category.name}{eval_name}: {self.score} pts"
 
+
+
+class RaffleLock(models.Model):
+    """Linha única que serializa sorteios e importações."""
+    version = models.PositiveBigIntegerField(default=0)
+
+
+class RaffleParticipant(models.Model):
+    identity = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250)
+    unit = models.CharField(max_length=200)
+    role = models.CharField(max_length=200)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return f"{self.name} — {self.unit}"
+
+
+class RaffleWinner(models.Model):
+    participant = models.OneToOneField(
+        RaffleParticipant, on_delete=models.PROTECT, related_name='winner')
+    name = models.CharField(max_length=250)
+    unit = models.CharField(max_length=200)
+    request_id = models.UUIDField(unique=True)
+    drawn_at = models.DateTimeField(auto_now_add=True)

@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from . import views
+from . import views, raffle
 
 router = DefaultRouter()
 router.register(r'categories', views.CategoryViewSet, basename='category')
@@ -8,6 +8,9 @@ router.register(r'groups', views.GroupViewSet, basename='group')
 router.register(r'evaluators', views.EvaluatorViewSet, basename='evaluator')
 
 urlpatterns = [
+    path('api/raffle/', raffle.raffle_state, name='raffle_state'),
+    path('api/raffle/import/', raffle.raffle_import, name='raffle_import'),
+    path('api/raffle/draw/', raffle.raffle_draw, name='raffle_draw'),
     path('', views.index, name='index'),
     path('api/', include(router.urls)),
     path('api/evaluate/', views.submit_evaluation, name='submit_evaluation'),

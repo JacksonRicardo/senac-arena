@@ -106,3 +106,21 @@ senac_arena/
 └── .env.example
 ```
 
+
+## Sorteios de Experts
+
+A aba **Sorteio** importa CSV (UTF-8/Windows-1252, vírgula ou ponto e vírgula) ou XLSX de até 5 MB.
+O cabeçalho pode vir depois de linhas de título; são obrigatórias as colunas EDUCADOR/NOME, UNIDADE e CARGO.
+Somente pessoas com nome, unidade e cargo preenchidos participam. Linhas com SAIU DO SENAC e cargos SELECIONAR/SELECIONE são excluídos.
+Nomes são comparados sem acentos, pontuação ou diferenças de maiúsculas e espaços. Sem CPF ou matrícula, homônimos completos são tratados como uma única pessoa.
+
+Cada importação substitui a lista ativa, preservando participantes anteriores e resultados.
+O banco impede repetir vencedores por uma relação única. Sorteios e importações são serializados na mesma transação.
+Um identificador por pedido permite recuperar a mesma apuração após uma falha de rede, sem consumir outro participante.
+Quando todos tiverem ganhado, o sorteio para; importe pessoas novas para continuar. Não há reinício automático.
+
+Preparação: `python manage.py migrate`.
+Validação: `python manage.py test arena.test_raffle --settings=config.settings.base`.
+
+API: GET /api/raffle/, POST /api/raffle/import/ (multipart, file),
+POST /api/raffle/draw/ (JSON, request_id UUID).
