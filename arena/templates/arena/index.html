@@ -111,11 +111,11 @@
             <div id="top5ChartContainer" class="w-full"></div>
             <div id="leaderboardSection" class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-senac-blue text-white flex items-center justify-center font-bold text-base shadow-md">
-                            <i class="fa-solid fa-ranking-star text-senac-cyan"></i>
-                        </div>
-                        <h3 class="text-lg font-bold font-heading text-senac-blue">CLASSIFICAÇÃO</h3>
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-senac-orange"></i>
+                            <span>CLASSIFICAÇÃO</span>
+                        </h3>
                     </div>
                     <div class="relative w-full sm:w-64">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -694,8 +694,8 @@
                     <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">${medalEl}</div>
                     <div class="flex-grow min-w-0">
                         <div class="flex items-center justify-between gap-2 mb-1">
-                            <h4 class="font-bold text-slate-800 text-sm truncate">${g.title}</h4>
-                            <span class="text-xs font-black font-tech text-senac-blue flex-shrink-0">${total} pts <span class="text-[10px] font-sans font-semibold text-slate-400">(${evalsCount} aval.)</span></span>
+                            <h4 class="font-bold text-senac-blue text-xs sm:text-sm truncate">${g.title}</h4>
+                            <span class="text-xs font-black font-heading text-senac-blue flex-shrink-0">${total} pts <span class="text-[10px] font-sans font-semibold text-slate-400">(${evalsCount} aval.)</span></span>
                         </div>
                         <p class="text-xs text-slate-500 truncate mb-2">${g.authors}${g.unit ? ' · ' + g.unit : ''}</p>
                         <div class="w-full bg-slate-100 rounded-full h-1.5">
