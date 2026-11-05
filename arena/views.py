@@ -36,9 +36,17 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.prefetch_related('evaluations').all()
     serializer_class = GroupSerializer
 
+    def get_queryset(self):
+        # Remove automaticamente quaisquer projetos antigos cadastrados manualmente antes das modalidades
+        if Group.objects.exclude(unit__in=['COLETIVA', 'INDIVIDUAL']).exists():
+            Group.objects.exclude(unit__in=['COLETIVA', 'INDIVIDUAL']).delete()
+            Evaluator.objects.filter(evaluations__isnull=True).delete()
+        return Group.objects.prefetch_related('evaluations', 'evaluations__evaluator').all()
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
+        Evaluator.objects.filter(evaluations__isnull=True).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -340,13 +348,18 @@ def import_spreadsheet(request):
 
 @api_view(['POST'])
 def clear_modality(request):
-    """Remove os grupos e avaliações de uma modalidade específica (COLETIVA ou INDIVIDUAL)."""
+    """Remove os grupos e avaliações de uma modalidade específica (COLETIVA, INDIVIDUAL ou ALL)."""
     modality = str(request.data.get('modality', '')).strip().upper()
-    if modality not in ('COLETIVA', 'INDIVIDUAL'):
+    if modality not in ('COLETIVA', 'INDIVIDUAL', 'ALL'):
         return Response({'detail': 'Modalidade inválida.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    Group.objects.filter(unit__iexact=modality).delete()
-    Evaluator.objects.filter(evaluations__isnull=True).delete()
+    if modality == 'ALL':
+        Group.objects.all().delete()
+        Evaluator.objects.all().delete()
+    else:
+        Group.objects.filter(unit__iexact=modality).delete()
+        Group.objects.exclude(unit__in=['COLETIVA', 'INDIVIDUAL']).delete()
+        Evaluator.objects.filter(evaluations__isnull=True).delete()
 
     categories_qs = Category.objects.all()
     groups_qs = Group.objects.prefetch_related('evaluations', 'evaluations__evaluator').all()

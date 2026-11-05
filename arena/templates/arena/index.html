@@ -173,6 +173,9 @@
                         <h2 class="text-2xl font-black font-heading text-senac-blue uppercase mt-2">IMPORTAÇÃO DE PLANILHAS E APURAÇÃO DE PONTOS</h2>
                         <p class="text-xs text-slate-500 mt-1">Anexe separadamente a planilha exportada do Microsoft Forms para a <strong>Categoria Coletiva</strong> e para a <strong>Categoria Individual</strong>. Os pontos das 6 rúbricas (0 a 2 pts) são somados automaticamente.</p>
                     </div>
+                    <button onclick="handleClearModality('ALL')" id="clearAllBtn" class="hidden bg-red-50 hover:bg-red-500 text-red-600 hover:text-white border border-red-200 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 uppercase flex-shrink-0">
+                        <i class="fa-solid fa-trash-can"></i><span>LIMPAR TODOS OS PROJETOS</span>
+                    </button>
                 </div>
             </div>
 
@@ -413,11 +416,7 @@
         }
 
         function getModalityGroups(modality = activeModality) {
-            const modGroups = groups.filter(g => String(g.unit || '').toUpperCase() === modality);
-            if (modGroups.length > 0) return modGroups;
-            // Fallback se não houver grupos com COLETIVA/INDIVIDUAL mas existirem grupos antigos
-            const anyModality = groups.some(g => ['COLETIVA', 'INDIVIDUAL'].includes(String(g.unit || '').toUpperCase()));
-            return anyModality ? [] : (modality === 'COLETIVA' ? groups : []);
+            return groups.filter(g => String(g.unit || '').toUpperCase() === modality);
         }
 
         function getSortedGroups(modality = activeModality) {
@@ -946,8 +945,8 @@
         }
 
         async function handleClearModality(modality) {
-            const label = formatModalityLabel(modality);
-            if (!confirm(`Deseja remover todos os projetos e pontos importados da ${label}?`)) return;
+            const label = modality === 'ALL' ? 'todas as categorias' : formatModalityLabel(modality);
+            if (!confirm(`Deseja remover todos os projetos e pontos de ${label}?`)) return;
             try {
                 const data = await apiFetch('/clear-modality/', {
                     method: 'POST',
@@ -956,11 +955,31 @@
                 categories = data.categories || [];
                 groups = data.groups || [];
                 evaluators = data.evaluators || [];
-                const statusBadge = document.getElementById(`uploadStatus-${modality}`);
-                if (statusBadge) statusBadge.textContent = 'Selecionar Arquivo';
+                if (modality === 'ALL') {
+                    ['COLETIVA', 'INDIVIDUAL'].forEach(m => {
+                        const sb = document.getElementById(`uploadStatus-${m}`);
+                        if (sb) sb.textContent = 'Selecionar Arquivo';
+                    });
+                } else {
+                    const statusBadge = document.getElementById(`uploadStatus-${modality}`);
+                    if (statusBadge) statusBadge.textContent = 'Selecionar Arquivo';
+                }
                 renderAll();
             } catch (err) {
-                alert('Erro ao limpar modalidade: ' + err.message);
+                alert('Erro ao limpar projetos: ' + err.message);
+            }
+        }
+
+        async function deleteGroup(groupId, evt) {
+            if (evt) evt.stopPropagation();
+            if (!confirm('Deseja excluir este projeto e suas avaliações?')) return;
+            try {
+                await apiFetch(`/groups/${groupId}/`, { method: 'DELETE' });
+                groups = groups.filter(g => g.id !== groupId);
+                evaluators = await apiFetch('/evaluators/');
+                renderAll();
+            } catch (err) {
+                alert('Erro ao excluir projeto: ' + err.message);
             }
         }
 
@@ -1017,9 +1036,14 @@
                                 <p class="text-[11px] text-slate-500 font-medium mt-0.5">${g.authors}</p>
                                 ${g.evaluator_names && g.evaluator_names.length ? `<p class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-user-check mr-1 text-senac-orange"></i>Jurados: ${g.evaluator_names.join(', ')}</p>` : ''}
                             </div>
-                            <div class="text-right flex-shrink-0 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
-                                <span class="text-[9px] font-bold uppercase text-slate-400 block">Total</span>
-                                <span class="text-base sm:text-lg font-black font-heading text-senac-orange">${total}<span class="text-xs text-slate-400 font-bold">/${max}</span></span>
+                            <div class="flex items-start gap-2 flex-shrink-0">
+                                <div class="text-right bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
+                                    <span class="text-[9px] font-bold uppercase text-slate-400 block">Total</span>
+                                    <span class="text-base sm:text-lg font-black font-heading text-senac-orange">${total}<span class="text-xs text-slate-400 font-bold">/${max}</span></span>
+                                </div>
+                                <button onclick="deleteGroup(${g.id}, event)" class="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-500 text-red-500 hover:text-white border border-red-200 flex items-center justify-center transition-all" title="Excluir este projeto">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="bg-white rounded-xl border border-slate-100 px-3 py-1">
@@ -1039,6 +1063,11 @@
         }
 
         function renderImportTab() {
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            if (clearAllBtn) {
+                if (groups.length > 0) clearAllBtn.classList.remove('hidden');
+                else clearAllBtn.classList.add('hidden');
+            }
             renderModalitySummary('COLETIVA');
             renderModalitySummary('INDIVIDUAL');
         }
