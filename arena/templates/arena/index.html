@@ -79,11 +79,8 @@
                     <button onclick="switchTab('ranking')" id="tab-btn-ranking" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 bg-senac-orange text-white shadow-md uppercase">
                         <i class="fa-solid fa-trophy text-amber-300"></i><span>ARENA DO RANKING</span>
                     </button>
-                    <button onclick="switchTab('evaluator')" id="tab-btn-evaluator" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-gray-300 hover:text-white flex items-center gap-2 uppercase">
-                        <i class="fa-solid fa-clipboard-check"></i><span>AVALIADOR</span>
-                    </button>
-                    <button onclick="switchTab('manage')" id="tab-btn-manage" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-gray-300 hover:text-white flex items-center gap-2 uppercase">
-                        <i class="fa-solid fa-sliders"></i><span>GESTÃO &amp; CATEGORIAS</span>
+                    <button onclick="switchTab('import')" id="tab-btn-import" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-gray-300 hover:text-white flex items-center gap-2 uppercase">
+                        <i class="fa-solid fa-file-excel"></i><span>IMPORTAR PLANILHAS</span>
                     </button>
                 </nav>
             </div>
@@ -94,22 +91,57 @@
 
         <!-- ABA 1: ARENA DO RANKING -->
         <section id="tab-ranking" class="tab-content space-y-8">
-            <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-tech flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-senac-orange border border-orange-200 mb-2">
-                        <i class="fa-solid fa-bolt"></i>AS MELHORES PRÁTICAS INOVADORAS ESTÃO AQUI
-                    </span>
-                    <h2 class="text-2xl font-black font-heading text-senac-blue">RANKING DOS INOVADORES</h2>
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-tech space-y-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-senac-orange border border-orange-200 mb-2">
+                            <i class="fa-solid fa-bolt"></i>AS MELHORES PRÁTICAS INOVADORAS ESTÃO AQUI
+                        </span>
+                        <h2 class="text-2xl font-black font-heading text-senac-blue">RANKING DOS INOVADORES</h2>
+                        <p id="rankingModalitySubtitle" class="text-xs font-semibold text-slate-500 mt-0.5">Categoria 2: Prática Pedagógica Integradora Coletiva</p>
+                    </div>
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <button id="hideResultsBtn" onclick="resetCeremonyResults()" class="hidden bg-slate-100 hover:bg-slate-200 text-senac-blue font-bold px-5 py-3.5 rounded-2xl text-xs transition-all flex items-center gap-2 uppercase">
+                            <i class="fa-solid fa-eye-slash"></i><span>OCULTAR RESULTADOS</span>
+                        </button>
+                        <button onclick="startLiveCeremony()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-2xl text-sm shadow-md transition-all flex items-center gap-2.5 hover:scale-105 uppercase">
+                            <i class="fa-solid fa-play text-base"></i><span>INICIAR CERIMÔNIA</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                    <button id="hideResultsBtn" onclick="resetCeremonyResults()" class="hidden bg-slate-100 hover:bg-slate-200 text-senac-blue font-bold px-5 py-3.5 rounded-2xl text-xs transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-eye-slash"></i><span>OCULTAR RESULTADOS</span>
+
+                <!-- SELETOR DE CATEGORIA (COLETIVA vs INDIVIDUAL) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100">
+                    <button onclick="switchModality('COLETIVA')" id="modality-btn-COLETIVA" class="flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/60 text-left transition-all">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <div id="modality-icon-COLETIVA" class="w-11 h-11 rounded-xl bg-senac-orange text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-users text-lg"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-orange block">CATEGORIA 2</span>
+                                <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase truncate">CATEGORIA COLETIVA</h3>
+                                <p class="text-[11px] text-slate-500 truncate">Prática Pedagógica Integradora Coletiva</p>
+                            </div>
+                        </div>
+                        <span id="modality-count-COLETIVA" class="bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2">0 Projetos</span>
                     </button>
-                    <button onclick="startLiveCeremony()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-2xl text-sm shadow-md transition-all flex items-center gap-2.5 hover:scale-105">
-                        <i class="fa-solid fa-play text-base"></i><span>INICIAR CERIMÔNIA</span>
+
+                    <button onclick="switchModality('INDIVIDUAL')" id="modality-btn-INDIVIDUAL" class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <div id="modality-icon-INDIVIDUAL" class="w-11 h-11 rounded-xl bg-senac-blue text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-user-graduate text-lg"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue block">CATEGORIA 4</span>
+                                <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase truncate">CATEGORIA INDIVIDUAL</h3>
+                                <p class="text-[11px] text-slate-500 truncate">Projeto Integrador Individual</p>
+                            </div>
+                        </div>
+                        <span id="modality-count-INDIVIDUAL" class="bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2">0 Projetos</span>
                     </button>
                 </div>
             </div>
+
             <div id="winnerSpotlightContainer" class="w-full"></div>
             <div id="top5ChartContainer" class="w-full"></div>
             <div id="leaderboardSection" class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
@@ -117,9 +149,9 @@
                     <div>
                         <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue flex items-center gap-2">
                             <i class="fa-solid fa-list-ol text-senac-orange"></i>
-                            <span>CLASSIFICAÇÃO</span>
+                            <span id="leaderboardHeadingTitle">CLASSIFICAÇÃO — CATEGORIA COLETIVA</span>
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Acompanhe a pontuação e a colocação geral de todos os grupos.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Acompanhe a pontuação computada nas categorias da planilha e a colocação geral.</p>
                     </div>
                     <div class="relative w-full sm:w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -130,119 +162,85 @@
             </div>
         </section>
 
-        <!-- ABA 2: PORTAL DO AVALIADOR -->
-        <section id="tab-evaluator" class="tab-content hidden space-y-6">
+        <!-- ABA 2: IMPORTAR PLANILHAS (COLETIVA E INDIVIDUAL) -->
+        <section id="tab-import" class="tab-content hidden space-y-8">
             <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6 sm:p-8">
-                <div class="max-w-3xl mb-8">
-                    <span class="bg-blue-50 text-senac-blue border border-blue-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Formulário do Jurado</span>
-                    <h2 class="text-2xl font-black font-heading text-senac-blue mt-2">ATRIBUIÇÃO DE NOTAS</h2>
-                    <p class="text-xs text-slate-600 mt-1">Selecione o projeto e escolha entre 0, 1 ou 2 para cada critério.</p>
-                </div>
-                <form id="evaluationForm" onsubmit="handleEvaluationSubmit(event)" class="space-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                            <label for="evalEvaluatorSelect" class="block text-xs font-bold uppercase tracking-wider text-senac-blue mb-2">1. Selecione o Avaliador (Jurado):</label>
-                            <select id="evalEvaluatorSelect" required onchange="onEvaluatorChange()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-senac-blue">
-                                <option value="">-- Selecione o Avaliador --</option>
-                            </select>
-                        </div>
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                            <label for="evalGroupSelect" class="block text-xs font-bold uppercase tracking-wider text-senac-blue mb-2">2. Selecione o Trabalho / Grupo Concorrente:</label>
-                            <select id="evalGroupSelect" required onchange="loadGroupExistingScore()" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-senac-blue">
-                                <option value="">-- Selecione o Projeto --</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="space-y-6">
-                        <h3 class="text-sm font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center justify-between">
-                            <span>3. AVALIAÇÃO POR CATEGORIA CADASTRADA:</span>
-                            <span class="text-xs text-senac-orange font-normal" id="categoriesCountTag">0 Categorias</span>
-                        </h3>
-                        <div id="dynamicCriteriaRadioGrid" class="grid grid-cols-1 gap-6"></div>
-                    </div>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <label for="evalNotes" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Observações e Parecer Técnico (Opcional):</label>
-                        <textarea id="evalNotes" rows="3" placeholder="Insira destaques ou justificativas..." class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-700 focus:outline-none focus:border-senac-blue"></textarea>
+                        <span class="bg-orange-50 text-senac-orange border border-orange-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                            <i class="fa-solid fa-file-excel mr-1"></i>Microsoft Forms · Apuração Automática
+                        </span>
+                        <h2 class="text-2xl font-black font-heading text-senac-blue uppercase mt-2">IMPORTAÇÃO DE PLANILHAS E APURAÇÃO DE PONTOS</h2>
+                        <p class="text-xs text-slate-500 mt-1">Anexe separadamente a planilha exportada do Microsoft Forms para a <strong>Categoria Coletiva</strong> e para a <strong>Categoria Individual</strong>. Os pontos das 6 rúbricas (0 a 2 pts) são somados automaticamente.</p>
                     </div>
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="submit" class="bg-senac-orange hover:bg-orange-600 text-white font-bold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i><span>SALVAR</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <!-- ABA 3: GESTÃO -->
-        <section id="tab-manage" class="tab-content hidden space-y-8">
-            <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6 sm:p-8">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
-                    <div>
-                        <span class="bg-orange-50 text-senac-orange border border-orange-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Preenchimento Manual de Categorias</span>
-                        <h3 class="text-2xl font-black font-heading text-senac-blue uppercase mt-2">CATEGORIAS CONCORRENTES (CRITÉRIOS)</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Adicione ou edite livremente as categorias do evento. Cada uma vale de 0 a 2 pontos.</p>
-                    </div>
-                    <button onclick="openCategoryModal()" class="bg-senac-blue hover:bg-senac-darkNavy text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-md transition-all flex items-center gap-2 uppercase">
-                        <i class="fa-solid fa-plus text-senac-cyan"></i><span>ADICIONAR CATEGORIA</span>
-                    </button>
-                </div>
-                <div id="categoriesListGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
-                    <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus text-senac-orange"></i> CADASTRAR NOVO GRUPO
-                    </h3>
-                    <form id="createGroupForm" onsubmit="handleCreateGroup(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Título do Projeto</label>
-                            <input type="text" id="newProjectTitle" required placeholder="ex: Robótica Educacional Aplicada" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Integrantes / Autores</label>
-                            <input type="text" id="newProjectAuthors" required placeholder="ex: Prof. Fernando &amp; Equipe" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Unidade / Eixo</label>
-                            <input type="text" id="newProjectUnit" placeholder="ex: Faculdade Senac" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
-                        </div>
-                        <button type="submit" class="w-full bg-senac-blue hover:bg-senac-darkNavy text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition-all uppercase">INSERIR GRUPO CONCORRENTE</button>
-                    </form>
-                </div>
-                <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
-                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
-                        <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase">GRUPOS CADASTRADOS NA ARENA</h3>
-                        <span id="managedGroupCountBadge" class="bg-blue-50 text-senac-blue text-xs font-bold px-3 py-1 rounded-full border border-blue-100">0 Grupos</span>
-                    </div>
-                    <div id="managedGroupsContainer" class="space-y-3 max-h-[400px] overflow-y-auto pr-1"></div>
                 </div>
             </div>
 
-            <!-- GESTÃO DE AVALIADORES -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
-                    <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-user-tie text-senac-orange"></i> CADASTRAR NOVO AVALIADOR
-                    </h3>
-                    <form id="createEvaluatorForm" onsubmit="handleCreateEvaluator(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nome do Avaliador (Jurado)</label>
-                            <input type="text" id="newEvaluatorName" required placeholder="ex: Profª. Ana Paula" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- UPLOAD CATEGORIA COLETIVA -->
+                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-battle p-6 sm:p-7 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-senac-orange text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="fa-solid fa-users text-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-orange">CATEGORIA 2 · MICROSOFT FORMS</span>
+                                    <h3 class="text-base sm:text-lg font-black font-heading text-senac-blue uppercase">CATEGORIA COLETIVA</h3>
+                                    <p class="text-xs text-slate-500">Prática Pedagógica Integradora Coletiva</p>
+                                </div>
+                            </div>
+                            <button onclick="handleClearModality('COLETIVA')" id="clearBtn-COLETIVA" class="hidden text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-all uppercase flex-shrink-0">
+                                <i class="fa-solid fa-trash-can mr-1"></i>LIMPAR
+                            </button>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Cargo / Área / Unidade (Opcional)</label>
-                            <input type="text" id="newEvaluatorRole" placeholder="ex: Coordenação Pedagógica" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
-                        </div>
-                        <button type="submit" class="w-full bg-senac-orange hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition-all uppercase">INSERIR AVALIADOR</button>
-                    </form>
-                </div>
-                <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-battle p-6">
-                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
-                        <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase">AVALIADORES CADASTRADOS</h3>
-                        <span id="managedEvaluatorCountBadge" class="bg-orange-50 text-senac-orange text-xs font-bold px-3 py-1 rounded-full border border-orange-200">0 Avaliadores</span>
+
+                        <label for="fileInput-COLETIVA" class="group block border-2 border-dashed border-orange-300 hover:border-senac-orange bg-orange-50/40 hover:bg-orange-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all">
+                            <input type="file" id="fileInput-COLETIVA" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleSpreadsheetUpload('COLETIVA', this)">
+                            <div class="w-12 h-12 rounded-2xl bg-white border border-orange-200 text-senac-orange flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm font-extrabold font-heading text-senac-blue uppercase">ANEXAR PLANILHA — CATEGORIA COLETIVA</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Clique para selecionar o arquivo <strong>.xlsx</strong> ou <strong>.csv</strong> gerado pelo Forms (Categoria 2)</p>
+                            <span id="uploadStatus-COLETIVA" class="inline-block mt-3 text-[11px] font-bold text-senac-orange bg-white px-3 py-1 rounded-full border border-orange-200">Selecionar Arquivo</span>
+                        </label>
+
+                        <div id="summaryContainer-COLETIVA" class="space-y-3"></div>
                     </div>
-                    <div id="managedEvaluatorsContainer" class="space-y-3 max-h-[320px] overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- UPLOAD CATEGORIA INDIVIDUAL -->
+                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-battle p-6 sm:p-7 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-senac-blue text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="fa-solid fa-user-graduate text-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue">CATEGORIA 4 · MICROSOFT FORMS</span>
+                                    <h3 class="text-base sm:text-lg font-black font-heading text-senac-blue uppercase">CATEGORIA INDIVIDUAL</h3>
+                                    <p class="text-xs text-slate-500">Projeto Integrador Individual</p>
+                                </div>
+                            </div>
+                            <button onclick="handleClearModality('INDIVIDUAL')" id="clearBtn-INDIVIDUAL" class="hidden text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-all uppercase flex-shrink-0">
+                                <i class="fa-solid fa-trash-can mr-1"></i>LIMPAR
+                            </button>
+                        </div>
+
+                        <label for="fileInput-INDIVIDUAL" class="group block border-2 border-dashed border-blue-300 hover:border-senac-blue bg-blue-50/40 hover:bg-blue-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all">
+                            <input type="file" id="fileInput-INDIVIDUAL" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleSpreadsheetUpload('INDIVIDUAL', this)">
+                            <div class="w-12 h-12 rounded-2xl bg-white border border-blue-200 text-senac-blue flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm font-extrabold font-heading text-senac-blue uppercase">ANEXAR PLANILHA — CATEGORIA INDIVIDUAL</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Clique para selecionar o arquivo <strong>.xlsx</strong> ou <strong>.csv</strong> gerado pelo Forms (Categoria 4)</p>
+                            <span id="uploadStatus-INDIVIDUAL" class="inline-block mt-3 text-[11px] font-bold text-senac-blue bg-white px-3 py-1 rounded-full border border-blue-200">Selecionar Arquivo</span>
+                        </label>
+
+                        <div id="summaryContainer-INDIVIDUAL" class="space-y-3"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -272,29 +270,6 @@
         </div>
     </div>
 
-    <!-- MODAL CATEGORIA -->
-    <div id="categoryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeModal('categoryModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="categoryModalTitle" class="text-lg font-bold font-heading text-senac-blue mb-4">Adicionar Categoria</h3>
-            <form onsubmit="handleSaveCategory(event)" class="space-y-4">
-                <input type="hidden" id="editCatId" value="">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nome da Categoria / Critério</label>
-                    <input type="text" id="catNameInput" required placeholder="ex: Inovação Pedagógica" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-senac-blue">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Descrição para o Avaliador</label>
-                    <textarea id="catDescInput" rows="3" placeholder="ex: Avalia a originalidade..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-senac-blue"></textarea>
-                </div>
-                <div class="pt-3 flex justify-end gap-2">
-                    <button type="button" onclick="closeModal('categoryModal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 border border-slate-200">Cancelar</button>
-                    <button type="submit" class="bg-senac-orange text-white px-5 py-2 rounded-xl text-xs font-bold shadow-md">Salvar Categoria</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- MODAL DETALHES -->
     <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl border border-slate-200 max-w-lg w-full p-6 sm:p-8 shadow-2xl relative">
@@ -304,7 +279,7 @@
             <p id="detailAuthors" class="text-xs font-medium text-slate-500 mb-6">Autores</p>
             <div class="space-y-2.5 mb-6" id="detailCriteriaGrid"></div>
             <div id="detailNotesBox" class="hidden bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600 mb-4">
-                <strong>Parecer:</strong> <span id="detailNotesText"></span>
+                <span id="detailNotesText"></span>
             </div>
             <div class="flex justify-between items-center pt-4 border-t border-slate-100">
                 <span class="text-xs text-slate-500 font-bold">Total Obtido:</span>
@@ -407,8 +382,23 @@
         }
 
         // ============================================================
-        // HELPERS DE CÁLCULO
+        // HELPERS DE CÁLCULO E MODALIDADE (COLETIVA vs INDIVIDUAL)
         // ============================================================
+        let activeModality = 'COLETIVA';
+
+        function formatModalityLabel(unit) {
+            const u = String(unit || '').toUpperCase();
+            if (u === 'COLETIVA') return 'Categoria Coletiva';
+            if (u === 'INDIVIDUAL') return 'Categoria Individual';
+            return unit || 'Finalista';
+        }
+
+        function formatModalityFullTitle(modality) {
+            return modality === 'INDIVIDUAL'
+                ? 'Categoria 4: Projeto Integrador Individual'
+                : 'Categoria 2: Prática Pedagógica Integradora Coletiva';
+        }
+
         function getMaxPossibleScore(group) {
             const evals = group && group.evaluations_count ? Math.max(1, group.evaluations_count) : 1;
             return categories.length * 2 * evals;
@@ -422,12 +412,20 @@
             }, 0);
         }
 
-        function getSortedGroups() {
-            return [...groups].sort((a, b) => calculateGroupTotalScore(b) - calculateGroupTotalScore(a));
+        function getModalityGroups(modality = activeModality) {
+            const modGroups = groups.filter(g => String(g.unit || '').toUpperCase() === modality);
+            if (modGroups.length > 0) return modGroups;
+            // Fallback se não houver grupos com COLETIVA/INDIVIDUAL mas existirem grupos antigos
+            const anyModality = groups.some(g => ['COLETIVA', 'INDIVIDUAL'].includes(String(g.unit || '').toUpperCase()));
+            return anyModality ? [] : (modality === 'COLETIVA' ? groups : []);
+        }
+
+        function getSortedGroups(modality = activeModality) {
+            return [...getModalityGroups(modality)].sort((a, b) => calculateGroupTotalScore(b) - calculateGroupTotalScore(a));
         }
 
         // ============================================================
-        // NAVEGAÇÃO ENTRE ABAS
+        // NAVEGAÇÃO ENTRE ABAS E CATEGORIAS
         // ============================================================
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -441,14 +439,59 @@
             btn.classList.remove('text-gray-300');
         }
 
-        function isCeremonyCompleted() {
-            return groups.length > 0 && groups.every(g => g.is_revealed);
+        function switchModality(modality) {
+            activeModality = modality;
+            renderAll();
+        }
+
+        function renderModalitySelector() {
+            const coletivaCount = getModalityGroups('COLETIVA').length;
+            const individualCount = getModalityGroups('INDIVIDUAL').length;
+
+            const countColEl = document.getElementById('modality-count-COLETIVA');
+            const countIndEl = document.getElementById('modality-count-INDIVIDUAL');
+            if (countColEl) countColEl.textContent = `${coletivaCount} Projeto${coletivaCount !== 1 ? 's' : ''}`;
+            if (countIndEl) countIndEl.textContent = `${individualCount} Projeto${individualCount !== 1 ? 's' : ''}`;
+
+            const btnCol = document.getElementById('modality-btn-COLETIVA');
+            const btnInd = document.getElementById('modality-btn-INDIVIDUAL');
+            const subtitleEl = document.getElementById('rankingModalitySubtitle');
+            const lbTitleEl = document.getElementById('leaderboardHeadingTitle');
+
+            if (subtitleEl) subtitleEl.textContent = formatModalityFullTitle(activeModality);
+            if (lbTitleEl) lbTitleEl.textContent = `CLASSIFICAÇÃO — CATEGORIA ${activeModality}`;
+
+            if (btnCol && btnInd) {
+                if (activeModality === 'COLETIVA') {
+                    btnCol.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/70 text-left transition-all shadow-sm';
+                    btnInd.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all opacity-80 hover:opacity-100';
+                    countColEl.className = 'bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
+                    countIndEl.className = 'bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
+                } else {
+                    btnInd.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/70 text-left transition-all shadow-sm';
+                    btnCol.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all opacity-80 hover:opacity-100';
+                    countIndEl.className = 'bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
+                    countColEl.className = 'bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
+                }
+            }
+        }
+
+        function isCeremonyCompleted(modality = activeModality) {
+            const modGroups = getModalityGroups(modality);
+            return modGroups.length > 0 && modGroups.every(g => g.is_revealed);
         }
 
         async function resetCeremonyResults() {
             try {
-                await apiFetch('/ceremony/reset/', { method: 'POST' });
-                groups = groups.map(g => ({ ...g, is_revealed: false }));
+                await apiFetch('/ceremony/reset/', {
+                    method: 'POST',
+                    body: JSON.stringify({ modality: activeModality })
+                });
+                groups = groups.map(g =>
+                    String(g.unit || '').toUpperCase() === activeModality
+                        ? { ...g, is_revealed: false }
+                        : g
+                );
                 renderAll();
             } catch (e) {}
         }
@@ -459,18 +502,23 @@
         function renderWinnerSpotlight() {
             const container = document.getElementById('winnerSpotlightContainer');
             const hideBtn = document.getElementById('hideResultsBtn');
-            const sorted = getSortedGroups();
+            const sorted = getSortedGroups(activeModality);
+            const modalityTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
 
             if (sorted.length === 0) {
                 if (hideBtn) hideBtn.classList.add('hidden');
-                container.innerHTML = `<div class="bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400 shadow-tech">
-                    <i class="fa-solid fa-trophy text-4xl mb-3 block text-slate-300"></i>
-                    <p class="text-sm font-medium">Nenhum grupo cadastrado na arena ainda.</p>
+                container.innerHTML = `<div class="bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400 shadow-tech space-y-3">
+                    <i class="fa-solid fa-file-excel text-4xl block text-slate-300"></i>
+                    <p class="text-sm font-bold font-heading text-senac-blue uppercase">NENHUMA PLANILHA IMPORTADA PARA A ${modalityTitle}</p>
+                    <p class="text-xs text-slate-500 max-w-md mx-auto">Acesse a aba <strong>IMPORTAR PLANILHAS</strong> no topo para anexar o arquivo gerado pelo Microsoft Forms desta categoria.</p>
+                    <button onclick="switchTab('import')" class="mt-2 inline-flex items-center gap-2 bg-senac-orange hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-sm transition-all uppercase">
+                        <i class="fa-solid fa-cloud-arrow-up"></i><span>ANEXAR PLANILHA AGORA</span>
+                    </button>
                 </div>`;
                 return;
             }
 
-            if (!isCeremonyCompleted()) {
+            if (!isCeremonyCompleted(activeModality)) {
                 if (hideBtn) hideBtn.classList.add('hidden');
                 const totalEvals = sorted.reduce((acc, g) => acc + (g.evaluations_count || 0), 0);
                 container.innerHTML = `
@@ -480,11 +528,11 @@
                     </div>
                     <div>
                         <span class="inline-block bg-slate-100 text-senac-blue text-[11px] font-extrabold font-heading uppercase tracking-wider px-3.5 py-1 rounded-full mb-2">
-                            Resultados em Sigilo · ${sorted.length} Grupo(s) · ${totalEvals} Avaliação(ões) Registrada(s)
+                            ${modalityTitle} · ${sorted.length} Projeto(s) · ${totalEvals} Avaliação(ões) Computada(s)
                         </span>
-                        <h3 class="text-xl sm:text-2xl font-black font-heading text-senac-blue uppercase">AGUARDANDO CERIMÔNIA DE PREMIAÇÃO</h3>
+                        <h3 class="text-xl sm:text-2xl font-black font-heading text-senac-blue uppercase">AGUARDANDO CERIMÔNIA — ${modalityTitle}</h3>
                         <p class="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto mt-1">
-                            O Pódio dos Campeões, o Gráfico do Pódio e a Tabela de Classificação serão revelados automaticamente ao concluir a cerimônia!
+                            O Pódio dos Campeões, o Gráfico do Pódio e a Tabela de Classificação da <strong>${formatModalityLabel(activeModality)}</strong> serão revelados automaticamente ao concluir a cerimônia!
                         </p>
                     </div>
                 </div>`;
@@ -520,7 +568,7 @@
                     </div>
                     <div class="relative z-10 flex items-center justify-between gap-2 pt-4 mt-6 border-t border-slate-100">
                         <span class="text-xs font-medium text-slate-500">Medalha de Prata</span>
-                        <span class="text-xs font-bold text-senac-blue">${g.unit || 'Finalista'}</span>
+                        <span class="text-xs font-bold text-senac-blue">${formatModalityLabel(g.unit)}</span>
                     </div>
                 </div>`;
             }
@@ -544,7 +592,7 @@
                     </div>
                     <div class="relative z-10 flex items-center justify-between gap-2 pt-4 mt-6 border-t border-senac-orange/25">
                         <span class="text-xs font-bold text-senac-orange">Medalha de Ouro</span>
-                        <span class="bg-senac-orange text-white text-[11px] font-bold px-3 py-1 rounded-xl shadow-md">${g.unit || 'Campeão'}</span>
+                        <span class="bg-senac-orange text-white text-[11px] font-bold px-3 py-1 rounded-xl shadow-md">${formatModalityLabel(g.unit)}</span>
                     </div>
                 </div>`;
             }
@@ -572,7 +620,7 @@
                     </div>
                     <div class="relative z-10 flex items-center justify-between gap-2 pt-4 mt-6 border-t border-slate-100">
                         <span class="text-xs font-medium text-slate-500">Medalha de Bronze</span>
-                        <span class="text-xs font-bold text-slate-800">${g.unit || 'Finalista'}</span>
+                        <span class="text-xs font-bold text-slate-800">${formatModalityLabel(g.unit)}</span>
                     </div>
                 </div>`;
             }
@@ -585,7 +633,7 @@
                                 <i class="fa-solid fa-award text-lg"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue leading-tight">PÓDIO DOS CAMPEÕES</h3>
+                                <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue leading-tight uppercase">PÓDIO DOS CAMPEÕES — ${modalityTitle}</h3>
                                 <p class="text-xs text-slate-500">O topo pertence a quem transforma metas em conquistas.</p>
                             </div>
                         </div>
@@ -606,8 +654,8 @@
         // ============================================================
         function renderTop5Chart() {
             const container = document.getElementById('top5ChartContainer');
-            const sorted = getSortedGroups();
-            if (sorted.length === 0 || !isCeremonyCompleted()) {
+            const sorted = getSortedGroups(activeModality);
+            if (sorted.length === 0 || !isCeremonyCompleted(activeModality)) {
                 container.innerHTML = '';
                 return;
             }
@@ -648,13 +696,15 @@
                 return `<span class="absolute -translate-x-1/2 text-[11px] font-medium text-slate-500" style="left:${leftPct}%">${val}</span>`;
             }).join('');
 
+            const modalityTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
+
             container.innerHTML = `
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-100">
                         <div>
-                            <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue flex items-center gap-2">
+                            <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue flex items-center gap-2 uppercase">
                                 <i class="fa-solid fa-bars-progress text-senac-orange"></i>
-                                <span>GRÁFICO DO PÓDIO</span>
+                                <span>GRÁFICO DO PÓDIO — ${modalityTitle}</span>
                             </h3>
                             <p class="text-xs text-slate-500 mt-0.5">Onde o mérito ganha palco e a excelência faz história.</p>
                         </div>
@@ -688,15 +738,15 @@
         }
 
         // ============================================================
-        // RENDERIZAÇÃO: LEADERBOARD (TODOS OS GRUPOS A PARTIR DO 1º)
+        // RENDERIZAÇÃO: LEADERBOARD (TODOS OS GRUPOS DA MODALIDADE)
         // ============================================================
         function renderLeaderboard() {
             const section = document.getElementById('leaderboardSection');
             const container = document.getElementById('leaderboardContainer');
             const search = (document.getElementById('searchRankingInput').value || '').toLowerCase();
-            const sorted = getSortedGroups();
+            const sorted = getSortedGroups(activeModality);
 
-            if (sorted.length === 0 || !isCeremonyCompleted()) {
+            if (sorted.length === 0 || !isCeremonyCompleted(activeModality)) {
                 section.classList.add('hidden');
                 return;
             }
@@ -722,7 +772,7 @@
                 <div class="hidden md:grid md:grid-cols-12 gap-4 px-5 py-2 text-[11px] font-extrabold font-heading uppercase tracking-wider text-slate-400">
                     <div class="col-span-2">Posição</div>
                     <div class="col-span-4">Projeto &amp; Integrantes</div>
-                    <div class="col-span-2">Unidade / Eixo</div>
+                    <div class="col-span-2">Categoria</div>
                     <div class="col-span-2">Desempenho</div>
                     <div class="col-span-2 text-right">Pontuação</div>
                 </div>`;
@@ -733,12 +783,13 @@
                 const evalsCount = g.evaluations_count || 0;
                 const pct = maxTopScore > 0 ? Math.min(100, Math.round((total / maxTopScore) * 100)) : 0;
                 const barWidth = total > 0 ? Math.max(pct, 6) : 2;
+                const modLabel = formatModalityLabel(g.unit);
 
                 let posBadge = '';
                 let cardBorder = 'border border-slate-200 bg-white hover:border-senac-blue/30';
                 let barColor = 'bg-senac-blue';
                 let scoreColor = 'text-senac-blue';
-                let unitBadge = `<span class="inline-block bg-slate-100 text-senac-blue text-[11px] font-bold px-2.5 py-1 rounded-lg truncate max-w-full">${g.unit || 'Finalista'}</span>`;
+                let unitBadge = `<span class="inline-block bg-slate-100 text-senac-blue text-[11px] font-bold px-2.5 py-1 rounded-lg truncate max-w-full">${modLabel}</span>`;
 
                 if (rank === 1) {
                     posBadge = `<span class="inline-flex items-center gap-1.5 bg-senac-orange text-white text-xs font-extrabold px-3 py-1.5 rounded-full shadow-sm">
@@ -747,7 +798,7 @@
                     cardBorder = 'border-2 border-senac-orange bg-white shadow-sm';
                     barColor = 'bg-senac-orange';
                     scoreColor = 'text-senac-orange';
-                    unitBadge = `<span class="inline-block bg-senac-orange text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm truncate max-w-full">${g.unit || 'Campeão'}</span>`;
+                    unitBadge = `<span class="inline-block bg-senac-orange text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm truncate max-w-full">${modLabel}</span>`;
                 } else if (rank === 2) {
                     posBadge = `<span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-extrabold px-3 py-1.5 rounded-full">
                         <i class="fa-solid fa-medal text-slate-500"></i> 2.º LUGAR
@@ -799,15 +850,16 @@
         function showDetailModal(groupId) {
             const g = groups.find(x => x.id === groupId);
             if (!g) return;
-            const sorted = getSortedGroups();
+            const mod = String(g.unit || '').toUpperCase() === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COLETIVA';
+            const sorted = getSortedGroups(mod);
             const rank = sorted.indexOf(g) + 1;
             const total = calculateGroupTotalScore(g);
             const max = getMaxPossibleScore(g);
             const evalsCount = g.evaluations_count || 0;
 
-            document.getElementById('detailRankBadge').textContent = `#${rank} Colocado · ${evalsCount} Avaliação(ões)`;
+            document.getElementById('detailRankBadge').textContent = `#${rank} Colocado · ${formatModalityLabel(g.unit)} · ${evalsCount} Avaliação(ões)`;
             document.getElementById('detailProjectTitle').textContent = g.title;
-            document.getElementById('detailAuthors').textContent = g.authors + (g.unit ? ' · ' + g.unit : '');
+            document.getElementById('detailAuthors').textContent = g.authors;
             document.getElementById('detailTotalScore').textContent = `${total} / ${max} pts`;
 
             const maxCatScore = Math.max(1, evalsCount) * 2;
@@ -824,14 +876,16 @@
                 }
                 return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100 last:border-0">
                     <span class="text-xs text-slate-700 font-medium">${cat.name}</span>
-                    <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:${color}20;color:${color}">${badgeText}</span>
+                    <span class="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0" style="background:${color}20;color:${color}">${badgeText}</span>
                 </div>`;
             }).join('');
 
             const notesBox = document.getElementById('detailNotesBox');
-            if (g.notes && g.notes.trim()) {
+            if (g.evaluator_names && g.evaluator_names.length > 0) {
+                document.getElementById('detailNotesText').textContent = `Avaliadores computados: ${g.evaluator_names.join(', ')}`;
+                notesBox.classList.remove('hidden');
+            } else if (g.notes && g.notes.trim()) {
                 document.getElementById('detailNotesText').textContent = g.notes;
-                document.getElementById('detailNotesText').style.whiteSpace = 'pre-line';
                 notesBox.classList.remove('hidden');
             } else {
                 notesBox.classList.add('hidden');
@@ -845,385 +899,186 @@
         }
 
         // ============================================================
-        // RENDERIZAÇÃO: ABA AVALIADOR
+        // ABA IMPORTAR PLANILHAS E APURAÇÃO DE PONTOS
         // ============================================================
-        function renderEvaluatorForm() {
-            const evalSelect = document.getElementById('evalEvaluatorSelect');
-            const currentEvaluatorVal = evalSelect.value;
-            evalSelect.innerHTML = '<option value="">-- Selecione o Avaliador --</option>';
-            evaluators.forEach(ev => {
-                const opt = document.createElement('option');
-                opt.value = ev.id;
-                opt.textContent = ev.role ? `${ev.name} (${ev.role})` : ev.name;
-                evalSelect.appendChild(opt);
-            });
-            if (currentEvaluatorVal && evaluators.some(e => String(e.id) === String(currentEvaluatorVal))) {
-                evalSelect.value = currentEvaluatorVal;
+        async function handleSpreadsheetUpload(modality, inputEl) {
+            const file = inputEl.files && inputEl.files[0];
+            if (!file) return;
+
+            const statusBadge = document.getElementById(`uploadStatus-${modality}`);
+            if (statusBadge) {
+                statusBadge.textContent = `⏳ Processando ${file.name}...`;
             }
 
-            populateEvalGroupsDropdown();
-
-            document.getElementById('categoriesCountTag').textContent = `${categories.length} Categorias`;
-
-            const grid = document.getElementById('dynamicCriteriaRadioGrid');
-            grid.innerHTML = categories.map(cat => `
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <div class="flex items-start justify-between gap-2 mb-3">
-                        <div>
-                            <p class="text-sm font-bold text-slateac-800">${cat.name}</p>
-                            ${cat.description ? `<p class="text-xs text-slate-500 mt-0.5">${cat.description}</p>` : ''}
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        ${[0,1,2].map(val => `
-                        <div class="flex-1">
-                            <input type="radio" name="cat_${cat.id}" id="cat_${cat.id}_${val}" value="${val}" class="sr-only score-radio-${val}">
-                            <label for="cat_${cat.id}_${val}" class="block text-center text-xs font-bold py-2 rounded-xl border-2 border-slate-200 cursor-pointer transition-all hover:border-slate-400 bg-white">
-                                ${val}
-                            </label>
-                        </div>`).join('')}
-                    </div>
-                </div>`).join('');
-        }
-
-        function populateEvalGroupsDropdown() {
-            const evalId = document.getElementById('evalEvaluatorSelect').value;
-            const select = document.getElementById('evalGroupSelect');
-            const currentVal = select.value;
-            const selectedEv = evaluators.find(e => String(e.id) === String(evalId));
-            const alreadyVotedGroupIds = selectedEv && selectedEv.evaluated_group_ids ? selectedEv.evaluated_group_ids : [];
-
-            select.innerHTML = '<option value="">-- Selecione o Projeto --</option>';
-            groups.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g.id;
-                const alreadyVoted = alreadyVotedGroupIds.includes(g.id) || (evalId && g.evaluated_by_ids && g.evaluated_by_ids.includes(Number(evalId)));
-                if (alreadyVoted) {
-                    opt.textContent = `${g.title} (✅ Já avaliado por este jurado)`;
-                    opt.disabled = true;
-                } else {
-                    opt.textContent = g.title;
-                }
-                select.appendChild(opt);
-            });
-            if (currentVal && !alreadyVotedGroupIds.includes(Number(currentVal))) {
-                select.value = currentVal;
-            } else {
-                select.value = '';
-            }
-        }
-
-        function onEvaluatorChange() {
-            populateEvalGroupsDropdown();
-            loadGroupExistingScore();
-        }
-
-        function loadGroupExistingScore() {
-            // Cada avaliador registra uma nova avaliação que será somada à pontuação do grupo.
-            // Limpa as seleções anteriores para o novo avaliador votar.
-            categories.forEach(cat => {
-                [0, 1, 2].forEach(v => {
-                    const r = document.getElementById(`cat_${cat.id}_${v}`);
-                    if (r) r.checked = false;
-                });
-            });
-            document.getElementById('evalNotes').value = '';
-        }
-
-        async function handleEvaluationSubmit(e) {
-            e.preventDefault();
-            const evaluatorId = document.getElementById('evalEvaluatorSelect').value;
-            if (!evaluatorId) return alert('Selecione o avaliador (jurado)!');
-
-            const groupId = document.getElementById('evalGroupSelect').value;
-            if (!groupId) return alert('Selecione um grupo!');
-
-            const scores = {};
-            let missingCategory = false;
-            categories.forEach(cat => {
-                const checked = document.querySelector(`input[name="cat_${cat.id}"]:checked`);
-                if (checked) {
-                    scores[String(cat.id)] = parseInt(checked.value);
-                } else {
-                    missingCategory = true;
-                }
-            });
-            if (missingCategory) {
-                return alert('Por favor, selecione uma nota (0, 1 ou 2) para todas as categorias!');
-            }
-            const notes = document.getElementById('evalNotes').value;
+            const formData = new FormData();
+            formData.append('modality', modality);
+            formData.append('file', file);
 
             try {
-                const updated = await apiFetch('/evaluate/', {
+                const res = await fetch(`${API_BASE}/import-spreadsheet/`, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        group_id: parseInt(groupId),
-                        evaluator_id: parseInt(evaluatorId),
-                        scores,
-                        notes,
-                    }),
+                    headers: { 'X-CSRFToken': CSRF_TOKEN },
+                    body: formData,
                 });
-                const idx = groups.findIndex(g => g.id === updated.id);
-                if (idx >= 0) groups[idx] = updated;
-                const evObj = evaluators.find(ev => ev.id === parseInt(evaluatorId));
-                if (evObj) {
-                    evObj.evaluated_group_ids = evObj.evaluated_group_ids || [];
-                    if (!evObj.evaluated_group_ids.includes(updated.id)) {
-                        evObj.evaluated_group_ids.push(updated.id);
-                    }
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.detail || `Erro ${res.status}`);
+                }
+
+                categories = data.categories || [];
+                groups = data.groups || [];
+                evaluators = data.evaluators || [];
+                activeModality = modality;
+
+                if (statusBadge) {
+                    statusBadge.textContent = `✅ ${file.name} importado!`;
                 }
                 playAudioEffect('fanfare');
-                document.getElementById('evalGroupSelect').value = '';
                 renderAll();
-                loadGroupExistingScore();
-                alert(`✅ Avaliação salva com sucesso! Pontuação acumulada do grupo: ${updated.total_score} pts (${updated.evaluations_count} avaliação(ões)).`);
-            } catch(err) {
+            } catch (err) {
+                if (statusBadge) {
+                    statusBadge.textContent = '⚠️ Erro ao importar arquivo';
+                }
                 alert('⚠️ ' + err.message);
+            } finally {
+                inputEl.value = '';
             }
         }
 
-        // ============================================================
-        // RENDERIZAÇÃO: ABA GESTÃO
-        // ============================================================
-        function renderManageTab() {
-            // Categories grid
-            const catGrid = document.getElementById('categoriesListGrid');
-            if (categories.length === 0) {
-                catGrid.innerHTML = `<div class="col-span-3 text-center py-8 text-slate-400 text-sm">
-                    <i class="fa-solid fa-tags text-3xl mb-2 block"></i>Nenhuma categoria cadastrada.
-                </div>`;
-            } else {
-                catGrid.innerHTML = categories.map(cat => `
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-2">
-                        <div class="flex items-start justify-between gap-2">
-                            <div>
-                                <p class="font-bold text-slate-800 text-sm">${cat.name}</p>
-                                ${cat.description ? `<p class="text-xs text-slate-500 mt-0.5 line-clamp-2">${cat.description}</p>` : ''}
+        async function handleClearModality(modality) {
+            const label = formatModalityLabel(modality);
+            if (!confirm(`Deseja remover todos os projetos e pontos importados da ${label}?`)) return;
+            try {
+                const data = await apiFetch('/clear-modality/', {
+                    method: 'POST',
+                    body: JSON.stringify({ modality }),
+                });
+                categories = data.categories || [];
+                groups = data.groups || [];
+                evaluators = data.evaluators || [];
+                const statusBadge = document.getElementById(`uploadStatus-${modality}`);
+                if (statusBadge) statusBadge.textContent = 'Selecionar Arquivo';
+                renderAll();
+            } catch (err) {
+                alert('Erro ao limpar modalidade: ' + err.message);
+            }
+        }
+
+        function renderModalitySummary(modality) {
+            const container = document.getElementById(`summaryContainer-${modality}`);
+            const clearBtn = document.getElementById(`clearBtn-${modality}`);
+            if (!container) return;
+
+            const sorted = getSortedGroups(modality);
+            if (sorted.length === 0) {
+                if (clearBtn) clearBtn.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-5 text-center text-slate-400">
+                        <i class="fa-solid fa-table-list text-2xl mb-1.5 block text-slate-300"></i>
+                        <p class="text-xs font-semibold">Nenhuma planilha anexada para esta categoria.</p>
+                    </div>`;
+                return;
+            }
+
+            if (clearBtn) clearBtn.classList.remove('hidden');
+
+            const totalVotes = sorted.reduce((acc, g) => acc + (g.evaluations_count || 0), 0);
+            const allEvaluators = [...new Set(sorted.flatMap(g => g.evaluator_names || []))];
+
+            const cardsHtml = sorted.map((g, idx) => {
+                const total = calculateGroupTotalScore(g);
+                const max = getMaxPossibleScore(g);
+                const evalsCount = g.evaluations_count || 0;
+                const maxCat = Math.max(1, evalsCount) * 2;
+
+                const criteriaRows = categories.map(cat => {
+                    const sc = g.scores && g.scores[String(cat.id)] !== undefined ? Number(g.scores[String(cat.id)]) : 0;
+                    const ratio = maxCat > 0 ? sc / maxCat : 0;
+                    const pillClass = ratio >= 0.75
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : ratio >= 0.4
+                        ? 'bg-amber-50 text-amber-700 border-amber-200'
+                        : 'bg-red-50 text-red-600 border-red-200';
+                    return `
+                        <div class="flex items-center justify-between gap-2 py-1.5 border-b border-slate-100 last:border-0 text-xs">
+                            <span class="text-slate-600 font-medium truncate" title="${cat.name}">${cat.name}</span>
+                            <span class="font-extrabold font-heading px-2.5 py-0.5 rounded-full border text-[11px] flex-shrink-0 ${pillClass}">${sc} / ${maxCat} pts</span>
+                        </div>`;
+                }).join('');
+
+                return `
+                    <div class="bg-slate-50/80 rounded-2xl border border-slate-200 p-4 space-y-3">
+                        <div class="flex items-start justify-between gap-3 pb-2.5 border-b border-slate-200/80">
+                            <div class="min-w-0">
+                                <span class="inline-block bg-senac-blue text-white text-[10px] font-extrabold font-heading px-2.5 py-0.5 rounded-full mb-1">
+                                    ${evalsCount} Avaliação(ões) Computada(s)
+                                </span>
+                                <h4 class="text-xs sm:text-sm font-extrabold font-heading text-senac-blue leading-snug">${g.title}</h4>
+                                <p class="text-[11px] text-slate-500 font-medium mt-0.5">${g.authors}</p>
+                                ${g.evaluator_names && g.evaluator_names.length ? `<p class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-user-check mr-1 text-senac-orange"></i>Jurados: ${g.evaluator_names.join(', ')}</p>` : ''}
                             </div>
-                            <span class="bg-senac-blue/10 text-senac-blue text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">#${cat.order}</span>
+                            <div class="text-right flex-shrink-0 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
+                                <span class="text-[9px] font-bold uppercase text-slate-400 block">Total</span>
+                                <span class="text-base sm:text-lg font-black font-heading text-senac-orange">${total}<span class="text-xs text-slate-400 font-bold">/${max}</span></span>
+                            </div>
                         </div>
-                        <div class="flex gap-2 mt-auto pt-2 border-t border-slate-200">
-                            <button onclick="openCategoryModal(${cat.id})" class="flex-1 text-xs font-bold py-1.5 rounded-lg bg-senac-blue/10 text-senac-blue hover:bg-senac-blue hover:text-white transition-all">
-                                <i class="fa-solid fa-pen text-[10px] mr-1"></i>Editar
-                            </button>
-                            <button onclick="deleteCategory(${cat.id})" class="flex-1 text-xs font-bold py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all">
-                                <i class="fa-solid fa-trash text-[10px] mr-1"></i>Excluir
-                            </button>
+                        <div class="bg-white rounded-xl border border-slate-100 px-3 py-1">
+                            ${criteriaRows}
                         </div>
-                    </div>`).join('');
-            }
-
-            // Groups list
-            const badge = document.getElementById('managedGroupCountBadge');
-            badge.textContent = `${groups.length} Grupo${groups.length !== 1 ? 's' : ''}`;
-            const mgContainer = document.getElementById('managedGroupsContainer');
-            if (groups.length === 0) {
-                mgContainer.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">
-                    <i class="fa-solid fa-users-slash text-3xl mb-2 block"></i>Nenhum grupo cadastrado.
-                </div>`;
-            } else {
-                const sorted = getSortedGroups();
-                mgContainer.innerHTML = sorted.map(g => {
-                    const total = calculateGroupTotalScore(g);
-                    const max = getMaxPossibleScore(g);
-                    return `
-                    <div class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white transition-all">
-                        <div class="flex-grow min-w-0">
-                            <p class="font-bold text-slate-800 text-xs truncate">${g.title}</p>
-                            <p class="text-[10px] text-slate-500 truncate">${g.authors}</p>
-                        </div>
-                        <span class="text-xs font-black font-tech text-senac-blue flex-shrink-0">${total}/${max}</span>
-                        <button onclick="deleteGroup(${g.id})" class="text-red-400 hover:text-red-600 flex-shrink-0 p-1" title="Excluir grupo">
-                            <i class="fa-solid fa-xmark text-xs"></i>
-                        </button>
                     </div>`;
-                }).join('');
-            }
+            }).join('');
 
-            // Evaluators list
-            const evalBadge = document.getElementById('managedEvaluatorCountBadge');
-            evalBadge.textContent = `${evaluators.length} Avaliador${evaluators.length !== 1 ? 'es' : ''}`;
-            const evalContainer = document.getElementById('managedEvaluatorsContainer');
-            if (evaluators.length === 0) {
-                evalContainer.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">
-                    <i class="fa-solid fa-user-tie text-3xl mb-2 block"></i>Nenhum avaliador cadastrado.
+            container.innerHTML = `
+                <div class="flex items-center justify-between bg-slate-100/80 px-4 py-2.5 rounded-xl border border-slate-200 text-xs">
+                    <span class="font-bold text-senac-blue"><i class="fa-solid fa-circle-check text-emerald-500 mr-1.5"></i>${sorted.length} Projeto(s) · ${totalVotes} Voto(s)</span>
+                    <span class="text-[11px] text-slate-500 font-semibold">${allEvaluators.length} Avaliador(es)</span>
+                </div>
+                <div class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+                    ${cardsHtml}
                 </div>`;
-            } else {
-                evalContainer.innerHTML = evaluators.map(ev => {
-                    const votedCount = ev.evaluated_group_ids ? ev.evaluated_group_ids.length : 0;
-                    return `
-                    <div class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white transition-all">
-                        <div class="w-8 h-8 rounded-lg bg-senac-blue/10 text-senac-blue flex items-center justify-center font-bold text-xs flex-shrink-0">
-                            <i class="fa-solid fa-user-check"></i>
-                        </div>
-                        <div class="flex-grow min-w-0">
-                            <p class="font-bold text-slate-800 text-xs truncate">${ev.name}</p>
-                            <p class="text-[10px] text-slate-500 truncate">${ev.role || 'Jurado Oficial'}</p>
-                        </div>
-                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-orange-50 text-senac-orange border border-orange-200 flex-shrink-0">${votedCount} grupo(s) avaliado(s)</span>
-                        <button onclick="deleteEvaluator(${ev.id})" class="text-red-400 hover:text-red-600 flex-shrink-0 p-1" title="Excluir avaliador">
-                            <i class="fa-solid fa-xmark text-xs"></i>
-                        </button>
-                    </div>`;
-                }).join('');
-            }
+        }
+
+        function renderImportTab() {
+            renderModalitySummary('COLETIVA');
+            renderModalitySummary('INDIVIDUAL');
         }
 
         // ============================================================
-        // CRUD: CATEGORIAS
-        // ============================================================
-        function openCategoryModal(catId) {
-            document.getElementById('editCatId').value = catId || '';
-            document.getElementById('catNameInput').value = '';
-            document.getElementById('catDescInput').value = '';
-            document.getElementById('categoryModalTitle').textContent = catId ? 'Editar Categoria' : 'Adicionar Categoria';
-
-            if (catId) {
-                const cat = categories.find(c => c.id === catId);
-                if (cat) {
-                    document.getElementById('catNameInput').value = cat.name;
-                    document.getElementById('catDescInput').value = cat.description || '';
-                }
-            }
-            document.getElementById('categoryModal').classList.remove('hidden');
-        }
-
-        async function handleSaveCategory(e) {
-            e.preventDefault();
-            const catId = document.getElementById('editCatId').value;
-            const name = document.getElementById('catNameInput').value.trim();
-            const description = document.getElementById('catDescInput').value.trim();
-            const order = catId
-                ? (categories.find(c => c.id === parseInt(catId))?.order || 0)
-                : (Math.max(0, ...categories.map(c => c.order)) + 1);
-
-            try {
-                if (catId) {
-                    const updated = await apiFetch(`/categories/${catId}/`, {
-                        method: 'PATCH',
-                        body: JSON.stringify({ name, description, order }),
-                    });
-                    const idx = categories.findIndex(c => c.id === updated.id);
-                    if (idx >= 0) categories[idx] = updated;
-                } else {
-                    const created = await apiFetch('/categories/', {
-                        method: 'POST',
-                        body: JSON.stringify({ name, description, order }),
-                    });
-                    categories.push(created);
-                }
-                closeModal('categoryModal');
-                renderAll();
-            } catch(err) {
-                alert('Erro ao salvar categoria: ' + err.message);
-            }
-        }
-
-        async function deleteCategory(catId) {
-            if (!confirm('Excluir esta categoria? Todas as avaliações relacionadas também serão removidas.')) return;
-            try {
-                await apiFetch(`/categories/${catId}/`, { method: 'DELETE' });
-                categories = categories.filter(c => c.id !== catId);
-                // Reload groups to reflect deleted evaluations
-                groups = await apiFetch('/groups/');
-                renderAll();
-            } catch(err) {
-                alert('Erro ao excluir categoria: ' + err.message);
-            }
-        }
-
-        // ============================================================
-        // CRUD: GRUPOS
-        // ============================================================
-        async function handleCreateGroup(e) {
-            e.preventDefault();
-            const title = document.getElementById('newProjectTitle').value.trim();
-            const authors = document.getElementById('newProjectAuthors').value.trim();
-            const unit = document.getElementById('newProjectUnit').value.trim();
-
-            try {
-                const created = await apiFetch('/groups/', {
-                    method: 'POST',
-                    body: JSON.stringify({ title, authors, unit }),
-                });
-                groups.push(created);
-                document.getElementById('createGroupForm').reset();
-                playAudioEffect('pop');
-                renderAll();
-            } catch(err) {
-                alert('Erro ao criar grupo: ' + err.message);
-            }
-        }
-
-        async function deleteGroup(groupId) {
-            if (!confirm('Excluir este grupo e todas as suas avaliações?')) return;
-            try {
-                await apiFetch(`/groups/${groupId}/`, { method: 'DELETE' });
-                groups = groups.filter(g => g.id !== groupId);
-                evaluators = await apiFetch('/evaluators/');
-                renderAll();
-            } catch(err) {
-                alert('Erro ao excluir grupo: ' + err.message);
-            }
-        }
-
-        // ============================================================
-        // CRUD: AVALIADORES
-        // ============================================================
-        async function handleCreateEvaluator(e) {
-            e.preventDefault();
-            const name = document.getElementById('newEvaluatorName').value.trim();
-            const role = document.getElementById('newEvaluatorRole').value.trim();
-
-            try {
-                const created = await apiFetch('/evaluators/', {
-                    method: 'POST',
-                    body: JSON.stringify({ name, role }),
-                });
-                evaluators.push(created);
-                document.getElementById('createEvaluatorForm').reset();
-                playAudioEffect('pop');
-                renderAll();
-            } catch(err) {
-                alert('Erro ao cadastrar avaliador: ' + err.message);
-            }
-        }
-
-        async function deleteEvaluator(evaluatorId) {
-            if (!confirm('Excluir este avaliador? As avaliações feitas por ele também serão removidas.')) return;
-            try {
-                await apiFetch(`/evaluators/${evaluatorId}/`, { method: 'DELETE' });
-                evaluators = evaluators.filter(e => e.id !== evaluatorId);
-                groups = await apiFetch('/groups/');
-                renderAll();
-            } catch(err) {
-                alert('Erro ao excluir avaliador: ' + err.message);
-            }
-        }
-
-        // ============================================================
-        // CERIMÔNIA AO VIVO
+        // CERIMÔNIA AO VIVO (POR CATEGORIA ATIVA)
         // ============================================================
         let ceremonyQueue = [];
         let ceremonyCurrentIdx = -1;
         let ceremonyTimerRunning = false;
 
         async function startLiveCeremony() {
-            // Reset is_revealed for all groups
+            const sorted = getSortedGroups(activeModality);
+            if (sorted.length === 0) {
+                alert(`Importe primeiro a planilha da ${formatModalityLabel(activeModality)} na aba "IMPORTAR PLANILHAS"!`);
+                switchTab('import');
+                return;
+            }
+
             try {
-                await apiFetch('/ceremony/reset/', { method: 'POST' });
-                groups = groups.map(g => ({ ...g, is_revealed: false }));
+                await apiFetch('/ceremony/reset/', {
+                    method: 'POST',
+                    body: JSON.stringify({ modality: activeModality })
+                });
+                groups = groups.map(g =>
+                    String(g.unit || '').toUpperCase() === activeModality
+                        ? { ...g, is_revealed: false }
+                        : g
+                );
                 renderAll();
             } catch(e) {}
 
-            const sorted = getSortedGroups();
-            ceremonyQueue = [...sorted].reverse(); // reveal from last to first (worst to best)
+            ceremonyQueue = [...getSortedGroups(activeModality)].reverse();
             ceremonyCurrentIdx = -1;
             ceremonyTimerRunning = false;
 
+            const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
             document.getElementById('ceremonyTitle').textContent = 'Vamos Começar?';
-            document.getElementById('ceremonySubtitle').textContent = 'Apresentaremos a seguir a classificação de cada grupo.';
-            document.getElementById('ceremonyRankTag').textContent = 'INÍCIO DA CERIMÔNIA';
+            document.getElementById('ceremonySubtitle').textContent = `Apresentaremos a seguir a classificação da ${formatModalityFullTitle(activeModality)}.`;
+            document.getElementById('ceremonyRankTag').textContent = `INÍCIO DA CERIMÔNIA — ${modTitle}`;
             document.getElementById('ceremonyScoreBadge').classList.add('hidden');
             document.getElementById('nextCeremonyBtn').disabled = false;
             document.getElementById('ceremonyModalOverlay').classList.remove('hidden');
@@ -1234,7 +1089,6 @@
             ceremonyCurrentIdx++;
 
             if (ceremonyCurrentIdx >= ceremonyQueue.length) {
-                // Ceremony finished
                 document.getElementById('ceremonyTitle').textContent = '🎉 Cerimônia Concluída!';
                 document.getElementById('ceremonySubtitle').textContent = 'Parabéns a todos os participantes!';
                 document.getElementById('ceremonyRankTag').textContent = 'FIM DA CERIMÔNIA';
@@ -1254,14 +1108,12 @@
             document.getElementById('nextCeremonyBtn').disabled = true;
             ceremonyTimerRunning = true;
 
-            // 3 second countdown
             let count = 3;
-            const box = document.getElementById('ceremonyStepBox');
             const interval = setInterval(() => {
                 playAudioEffect('tick');
                 document.getElementById('ceremonyTitle').textContent = `${count}...`;
                 document.getElementById('ceremonyTitle').classList.remove('timer-pop');
-                void document.getElementById('ceremonyTitle').offsetWidth; // reflow
+                void document.getElementById('ceremonyTitle').offsetWidth;
                 document.getElementById('ceremonyTitle').classList.add('timer-pop');
                 count--;
                 if (count < 0) {
@@ -1281,12 +1133,12 @@
             const total = calculateGroupTotalScore(group);
             const max = getMaxPossibleScore(group);
 
-            document.getElementById('ceremonyRankTag').textContent = `🏅 ${rank}º LUGAR`;
+            document.getElementById('ceremonyRankTag').textContent = `🏅 ${rank}º LUGAR — ${formatModalityLabel(group.unit).toUpperCase()}`;
             document.getElementById('ceremonyTitle').textContent = group.title;
             document.getElementById('ceremonyTitle').classList.remove('timer-pop');
             void document.getElementById('ceremonyTitle').offsetWidth;
             document.getElementById('ceremonyTitle').classList.add('timer-pop');
-            document.getElementById('ceremonySubtitle').textContent = group.authors + (group.unit ? ' · ' + group.unit : '');
+            document.getElementById('ceremonySubtitle').textContent = group.authors;
             document.getElementById('ceremonyScoreValue').textContent = `${total} / ${max} pts`;
             document.getElementById('ceremonyScoreBadge').classList.remove('hidden');
 
@@ -1303,9 +1155,7 @@
             ceremonyTimerRunning = false;
             document.getElementById('nextCeremonyBtn').disabled = (ceremonyCurrentIdx + 1 >= ceremonyQueue.length && rank === 1);
 
-            renderWinnerSpotlight();
-            renderTop5Chart();
-            renderLeaderboard();
+            renderAll();
         }
 
         function closeCeremonyModal() {
@@ -1318,11 +1168,11 @@
         // RENDER ALL
         // ============================================================
         function renderAll() {
+            renderModalitySelector();
             renderWinnerSpotlight();
             renderTop5Chart();
             renderLeaderboard();
-            renderEvaluatorForm();
-            renderManageTab();
+            renderImportTab();
         }
 
         // ============================================================

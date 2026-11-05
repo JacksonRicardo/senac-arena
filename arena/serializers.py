@@ -34,12 +34,13 @@ class GroupSerializer(serializers.ModelSerializer):
     max_possible_score = serializers.SerializerMethodField()
     evaluations_count = serializers.SerializerMethodField()
     evaluated_by_ids = serializers.SerializerMethodField()
+    evaluator_names = serializers.SerializerMethodField()
 
     class Meta:
         model = Group
         fields = ['id', 'title', 'authors', 'unit', 'notes', 'is_revealed',
                   'scores', 'total_score', 'max_possible_score', 'evaluations_count',
-                  'evaluated_by_ids']
+                  'evaluated_by_ids', 'evaluator_names']
 
     def get_scores(self, obj):
         scores = {}
@@ -61,6 +62,13 @@ class GroupSerializer(serializers.ModelSerializer):
         return list(
             obj.evaluations.exclude(evaluator__isnull=True)
             .values_list('evaluator_id', flat=True)
+            .distinct()
+        )
+
+    def get_evaluator_names(self, obj):
+        return list(
+            obj.evaluations.exclude(evaluator__isnull=True)
+            .values_list('evaluator__name', flat=True)
             .distinct()
         )
 
