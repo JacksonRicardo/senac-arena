@@ -16,7 +16,11 @@ class EvaluatorSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'role', 'evaluated_group_ids']
 
     def get_evaluated_group_ids(self, obj):
-        return list(obj.evaluations.values_list('group_id', flat=True).distinct())
+        seen = []
+        for e in obj.evaluations.all():
+            if e.group_id not in seen:
+                seen.append(e.group_id)
+        return seen
 
 
 class EvaluationSerializer(serializers.ModelSerializer):
@@ -59,18 +63,18 @@ class GroupSerializer(serializers.ModelSerializer):
         return obj.evaluations_count()
 
     def get_evaluated_by_ids(self, obj):
-        return list(
-            obj.evaluations.exclude(evaluator__isnull=True)
-            .values_list('evaluator_id', flat=True)
-            .distinct()
-        )
+        seen = []
+        for e in obj.evaluations.all():
+            if e.evaluator_id and e.evaluator_id not in seen:
+                seen.append(e.evaluator_id)
+        return seen
 
     def get_evaluator_names(self, obj):
-        return list(
-            obj.evaluations.exclude(evaluator__isnull=True)
-            .values_list('evaluator__name', flat=True)
-            .distinct()
-        )
+        seen = []
+        for e in obj.evaluations.select_related('evaluator').all():
+            if e.evaluator and e.evaluator.name not in seen:
+                seen.append(e.evaluator.name)
+        return seen
 
 
 class EvaluationSubmitSerializer(serializers.Serializer):

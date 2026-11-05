@@ -280,18 +280,18 @@
 
     <!-- MODAL DETALHES -->
     <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl border border-slate-200 max-w-lg w-full p-6 sm:p-8 shadow-2xl relative">
-            <button onclick="closeModal('detailModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-            <span id="detailRankBadge" class="bg-senac-blue text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">#1 Colocado</span>
-            <h3 id="detailProjectTitle" class="text-xl font-bold font-heading text-senac-blue mb-1">Nome do Projeto</h3>
-            <p id="detailAuthors" class="text-xs font-medium text-slate-500 mb-6">Autores</p>
-            <div class="space-y-2.5 mb-6" id="detailCriteriaGrid"></div>
-            <div id="detailNotesBox" class="hidden bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600 mb-4">
-                <span id="detailNotesText"></span>
+        <div class="bg-white rounded-3xl border border-slate-200 max-w-xl w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeModal('detailModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            <span id="detailRankBadge" class="bg-senac-orange text-white text-xs font-extrabold font-heading uppercase tracking-wider px-3.5 py-1 rounded-full inline-block mb-3 shadow-sm">#1 Colocado</span>
+            <h3 id="detailProjectTitle" class="text-lg sm:text-xl font-black font-heading text-senac-blue leading-snug mb-1 pr-8">Nome do Projeto</h3>
+            <p id="detailAuthors" class="text-xs font-semibold text-slate-500 mb-5">Autores</p>
+            <div class="bg-slate-50/80 rounded-2xl border border-slate-200/80 p-4 space-y-2.5 mb-5" id="detailCriteriaGrid"></div>
+            <div id="detailNotesBox" class="hidden bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-5">
+                <div id="detailNotesText"></div>
             </div>
             <div class="flex justify-between items-center pt-4 border-t border-slate-100">
-                <span class="text-xs text-slate-500 font-bold">Total Obtido:</span>
-                <span id="detailTotalScore" class="text-2xl font-black font-heading text-senac-orange">0 pts</span>
+                <span class="text-xs text-slate-500 font-extrabold font-heading uppercase tracking-wider">Pontuação Total Conquistada</span>
+                <span id="detailTotalScore" class="text-2xl sm:text-3xl font-black font-heading text-senac-orange">0 pts</span>
             </div>
         </div>
     </div>
@@ -877,8 +877,9 @@
             const total = calculateGroupTotalScore(g);
             const max = getMaxPossibleScore(g);
             const evalsCount = g.evaluations_count || 0;
+            const evalWord = evalsCount === 1 ? 'Avaliação' : 'Avaliações';
 
-            document.getElementById('detailRankBadge').textContent = `#${rank} Colocado · ${formatModalityLabel(g.unit)} · ${evalsCount} Avaliação(ões)`;
+            document.getElementById('detailRankBadge').textContent = `${rank}.º LUGAR · ${formatModalityLabel(g.unit)} · ${evalsCount} ${evalWord}`;
             document.getElementById('detailProjectTitle').textContent = g.title;
             document.getElementById('detailAuthors').textContent = g.authors;
             document.getElementById('detailTotalScore').textContent = `${total} / ${max} pts`;
@@ -888,22 +889,46 @@
             grid.innerHTML = categories.map(cat => {
                 const hasScore = g.scores && g.scores[String(cat.id)] !== undefined;
                 const score = hasScore ? Number(g.scores[String(cat.id)]) : null;
-                let color = '#94a3b8';
+                let pillClass = 'bg-slate-100 text-slate-500 border-slate-200';
                 let badgeText = 'Não Avaliado';
                 if (score !== null) {
                     const ratio = maxCatScore > 0 ? score / maxCatScore : 0;
-                    color = ratio >= 0.75 ? '#10B981' : ratio >= 0.4 ? '#F59E0B' : '#EF4444';
+                    pillClass = ratio >= 0.75
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : ratio >= 0.4
+                        ? 'bg-amber-50 text-amber-700 border-amber-200'
+                        : 'bg-red-50 text-red-600 border-red-200';
                     badgeText = `${score} / ${maxCatScore} pts`;
                 }
-                return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100 last:border-0">
-                    <span class="text-xs text-slate-700 font-medium">${cat.name}</span>
-                    <span class="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0" style="background:${color}20;color:${color}">${badgeText}</span>
+                return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-slate-200/70 last:border-0">
+                    <span class="text-xs text-slate-700 font-semibold">${cat.name}</span>
+                    <span class="text-xs font-extrabold font-heading px-2.5 py-0.5 rounded-full border flex-shrink-0 ${pillClass}">${badgeText}</span>
                 </div>`;
             }).join('');
 
             const notesBox = document.getElementById('detailNotesBox');
-            if (g.evaluator_names && g.evaluator_names.length > 0) {
-                document.getElementById('detailNotesText').textContent = `Avaliadores computados: ${g.evaluator_names.join(', ')}`;
+            const uniqueEvaluators = [...new Set(g.evaluator_names || [])];
+            if (uniqueEvaluators.length > 0) {
+                const jurWord = uniqueEvaluators.length === 1 ? 'Jurado' : 'Jurados';
+                const pillsHtml = uniqueEvaluators.map(name => `
+                    <span class="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-senac-blue text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm">
+                        <i class="fa-solid fa-user-check text-senac-orange text-[11px]"></i>
+                        <span>${name}</span>
+                    </span>
+                `).join('');
+                document.getElementById('detailNotesText').innerHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="text-[11px] font-extrabold font-heading uppercase tracking-wider text-senac-blue flex items-center gap-1.5">
+                            <i class="fa-solid fa-users-viewfinder text-senac-orange"></i>
+                            <span>AVALIADORES COMPUTADOS</span>
+                        </span>
+                        <span class="text-[10px] font-extrabold font-heading uppercase bg-orange-50 text-senac-orange border border-orange-200 px-2.5 py-0.5 rounded-full">
+                            ${uniqueEvaluators.length} ${jurWord}
+                        </span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${pillsHtml}
+                    </div>`;
                 notesBox.classList.remove('hidden');
             } else if (g.notes && g.notes.trim()) {
                 document.getElementById('detailNotesText').textContent = g.notes;
@@ -1030,7 +1055,9 @@
                 const total = calculateGroupTotalScore(g);
                 const max = getMaxPossibleScore(g);
                 const evalsCount = g.evaluations_count || 0;
+                const evalWord = evalsCount === 1 ? 'Avaliação Computada' : 'Avaliações Computadas';
                 const maxCat = Math.max(1, evalsCount) * 2;
+                const uniqueEvaluators = [...new Set(g.evaluator_names || [])];
 
                 const criteriaRows = categories.map(cat => {
                     const sc = g.scores && g.scores[String(cat.id)] !== undefined ? Number(g.scores[String(cat.id)]) : 0;
@@ -1047,16 +1074,30 @@
                         </div>`;
                 }).join('');
 
+                const evaluatorPillsHtml = uniqueEvaluators.length > 0 ? `
+                    <div class="pt-2 border-t border-slate-200/70">
+                        <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue block mb-1.5">
+                            <i class="fa-solid fa-users-viewfinder text-senac-orange mr-1"></i>AVALIADORES COMPUTADOS
+                        </span>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${uniqueEvaluators.map(name => `
+                                <span class="inline-flex items-center gap-1 bg-white border border-slate-200 text-senac-blue text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                                    <i class="fa-solid fa-user-check text-senac-orange text-[10px]"></i>
+                                    <span>${name}</span>
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>` : '';
+
                 return `
                     <div class="bg-slate-50/80 rounded-2xl border border-slate-200 p-4 space-y-3">
                         <div class="flex items-start justify-between gap-3 pb-2.5 border-b border-slate-200/80">
                             <div class="min-w-0">
                                 <span class="inline-block bg-senac-blue text-white text-[10px] font-extrabold font-heading px-2.5 py-0.5 rounded-full mb-1">
-                                    ${evalsCount} Avaliação(ões) Computada(s)
+                                    ${evalsCount} ${evalWord}
                                 </span>
                                 <h4 class="text-xs sm:text-sm font-extrabold font-heading text-senac-blue leading-snug">${g.title}</h4>
                                 <p class="text-[11px] text-slate-500 font-medium mt-0.5">${g.authors}</p>
-                                ${g.evaluator_names && g.evaluator_names.length ? `<p class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-user-check mr-1 text-senac-orange"></i>Jurados: ${g.evaluator_names.join(', ')}</p>` : ''}
                             </div>
                             <div class="flex items-start gap-2 flex-shrink-0">
                                 <div class="text-right bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
@@ -1071,13 +1112,18 @@
                         <div class="bg-white rounded-xl border border-slate-100 px-3 py-1">
                             ${criteriaRows}
                         </div>
+                        ${evaluatorPillsHtml}
                     </div>`;
             }).join('');
 
+            const projWord = sorted.length === 1 ? 'Projeto' : 'Projetos';
+            const voteWord = totalVotes === 1 ? 'Voto' : 'Votos';
+            const evalTotalWord = allEvaluators.length === 1 ? 'Avaliador' : 'Avaliadores';
+
             container.innerHTML = `
                 <div class="flex items-center justify-between bg-slate-100/80 px-4 py-2.5 rounded-xl border border-slate-200 text-xs">
-                    <span class="font-bold text-senac-blue"><i class="fa-solid fa-circle-check text-emerald-500 mr-1.5"></i>${sorted.length} Projeto(s) · ${totalVotes} Voto(s)</span>
-                    <span class="text-[11px] text-slate-500 font-semibold">${allEvaluators.length} Avaliador(es)</span>
+                    <span class="font-bold text-senac-blue"><i class="fa-solid fa-circle-check text-emerald-500 mr-1.5"></i>${sorted.length} ${projWord} · ${totalVotes} ${voteWord}</span>
+                    <span class="text-[11px] text-slate-500 font-semibold">${allEvaluators.length} ${evalTotalWord}</span>
                 </div>
                 <div class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
                     ${cardsHtml}
