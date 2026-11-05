@@ -15,9 +15,5 @@ urlpatterns = [
     path('api/clear-modality/', views.clear_modality, name='clear_modality'),
     path('api/groups/<int:pk>/reveal/', views.reveal_group, name='reveal_group'),
     path('api/ceremony/reset/', views.reset_ceremony, name='reset_ceremony'),
-    path('api/raffle/', views.raffle_status, name='raffle_status'),
-    path('api/raffle/import/', views.raffle_import, name='raffle_import'),
-    path('api/raffle/draw/', views.raffle_draw, name='raffle_draw'),
-    path('api/raffle/reset/', views.raffle_reset, name='raffle_reset'),
 ]
 
