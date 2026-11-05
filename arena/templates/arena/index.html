@@ -251,11 +251,16 @@
 
     <!-- MODAL CERIMÔNIA -->
     <div id="ceremonyModalOverlay" class="fixed inset-0 bg-senac-darkNavy/90 backdrop-blur-md z-40 hidden flex flex-col items-center justify-center p-4">
-        <div class="max-w-2xl w-full text-center space-y-6">
-            <div class="inline-flex items-center gap-2 border border-senac-orange/40 bg-senac-orange/10 px-4 py-1 rounded-full text-xs font-tech text-senac-orange uppercase tracking-widest">
-                <span>CERIMÔNIA DE MELHORES PRÁTICAS</span>
+        <div class="max-w-2xl w-full text-center space-y-5">
+            <div class="inline-flex items-center gap-2 border border-senac-orange/40 bg-senac-orange/15 px-4 py-1.5 rounded-full text-xs font-extrabold font-heading text-senac-orange uppercase tracking-widest">
+                <i class="fa-solid fa-trophy text-amber-300"></i>
+                <span id="ceremonyTopPillText">CERIMÔNIA DE MELHORES PRÁTICAS</span>
             </div>
             <div id="ceremonyStepBox" class="bg-white rounded-3xl p-8 border-2 border-senac-orange shadow-gold transition-all duration-500">
+                <div id="ceremonyCategoryBadge" class="inline-flex items-center gap-2 bg-senac-blue text-white text-xs font-extrabold font-heading uppercase tracking-wider px-4 py-1.5 rounded-full mb-4 shadow-sm">
+                    <i id="ceremonyCategoryIcon" class="fa-solid fa-users text-senac-orange"></i>
+                    <span id="ceremonyCategoryText">CATEGORIA 2: PRÁTICA PEDAGÓGICA INTEGRADORA COLETIVA</span>
+                </div>
                 <span id="ceremonyRankTag" class="text-xs font-black font-tech uppercase tracking-wider text-senac-orange block mb-2">ETAPA DA REVELAÇÃO</span>
                 <h3 id="ceremonyTitle" class="text-2xl sm:text-3xl font-black font-heading text-senac-blue mb-2">Vamos Começar?</h3>
                 <p id="ceremonySubtitle" class="text-xs sm:text-sm text-slate-500 mb-6">Apresentaremos a seguir a classificação de cada grupo.</p>
@@ -264,10 +269,10 @@
                     <span id="ceremonyScoreValue" class="text-3xl font-black font-heading text-senac-orange">0 / 0 pts</span>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
-                    <button id="nextCeremonyBtn" onclick="revealNextCeremonyStep()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-hourglass-start"></i><span>REVELAR CLASSIFICAÇÃO</span>
+                    <button id="nextCeremonyBtn" onclick="revealNextCeremonyStep()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2 uppercase">
+                        <i class="fa-solid fa-hourglass-start"></i><span id="nextCeremonyBtnLabel">REVELAR CLASSIFICAÇÃO</span>
                     </button>
-                    <button onclick="closeCeremonyModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3.5 rounded-xl text-xs transition-all">ENCERRAR CERIMÔNIA</button>
+                    <button onclick="closeCeremonyModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3.5 rounded-xl text-xs transition-all uppercase">ENCERRAR CERIMÔNIA</button>
                 </div>
             </div>
         </div>
@@ -624,6 +629,27 @@
                 </div>`;
             }
 
+            let podiumGridHtml = '';
+            if (sorted.length === 1) {
+                podiumGridHtml = `
+                    <div class="max-w-xl mx-auto pt-2">
+                        ${renderFirstCard(first)}
+                    </div>`;
+            } else if (sorted.length === 2) {
+                podiumGridHtml = `
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch pt-2 max-w-4xl mx-auto">
+                        <div class="order-2 lg:order-1">${renderSecondCard(second)}</div>
+                        <div class="order-1 lg:order-2">${renderFirstCard(first)}</div>
+                    </div>`;
+            } else {
+                podiumGridHtml = `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch pt-2">
+                        <div class="order-2 lg:order-1">${renderSecondCard(second)}</div>
+                        <div class="order-1 lg:order-2">${renderFirstCard(first)}</div>
+                        <div class="order-3 lg:order-3">${renderThirdCard(third)}</div>
+                    </div>`;
+            }
+
             container.innerHTML = `
                 <div class="space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -640,11 +666,7 @@
                             <i class="fa-solid fa-bolt text-senac-orange"></i> ATUALIZAÇÃO EM TEMPO REAL
                         </span>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch pt-2">
-                        <div class="order-2 lg:order-1">${renderSecondCard(second)}</div>
-                        <div class="order-1 lg:order-2">${renderFirstCard(first)}</div>
-                        <div class="order-3 lg:order-3">${renderThirdCard(third)}</div>
-                    </div>
+                    ${podiumGridHtml}
                 </div>`;
         }
 
@@ -1079,6 +1101,22 @@
         let ceremonyCurrentIdx = -1;
         let ceremonyTimerRunning = false;
 
+        function updateCeremonyCategoryHeader(modality) {
+            const modShort = modality === 'INDIVIDUAL' ? 'CATEGORIA INDIVIDUAL' : 'CATEGORIA COLETIVA';
+            const modFull = formatModalityFullTitle(modality).toUpperCase();
+            const topPill = document.getElementById('ceremonyTopPillText');
+            const catText = document.getElementById('ceremonyCategoryText');
+            const catIcon = document.getElementById('ceremonyCategoryIcon');
+
+            if (topPill) topPill.textContent = `CERIMÔNIA DE PREMIAÇÃO — ${modShort}`;
+            if (catText) catText.textContent = modFull;
+            if (catIcon) {
+                catIcon.className = modality === 'INDIVIDUAL'
+                    ? 'fa-solid fa-user-graduate text-senac-orange'
+                    : 'fa-solid fa-users text-senac-orange';
+            }
+        }
+
         async function startLiveCeremony() {
             const sorted = getSortedGroups(activeModality);
             if (sorted.length === 0) {
@@ -1105,10 +1143,14 @@
             ceremonyTimerRunning = false;
 
             const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
-            document.getElementById('ceremonyTitle').textContent = 'Vamos Começar?';
-            document.getElementById('ceremonySubtitle').textContent = `Apresentaremos a seguir a classificação da ${formatModalityFullTitle(activeModality)}.`;
-            document.getElementById('ceremonyRankTag').textContent = `INÍCIO DA CERIMÔNIA — ${modTitle}`;
+            updateCeremonyCategoryHeader(activeModality);
+
+            document.getElementById('ceremonyRankTag').textContent = `PREPARAÇÃO DA REVELAÇÃO · ${ceremonyQueue.length} PROJETO(S)`;
+            document.getElementById('ceremonyTitle').textContent = `Revelação da ${formatModalityLabel(activeModality)}`;
+            document.getElementById('ceremonySubtitle').textContent = `Apresentaremos a seguir a classificação oficial de "${formatModalityFullTitle(activeModality)}".`;
             document.getElementById('ceremonyScoreBadge').classList.add('hidden');
+            const btnLabel = document.getElementById('nextCeremonyBtnLabel');
+            if (btnLabel) btnLabel.textContent = `REVELAR ${modTitle}`;
             document.getElementById('nextCeremonyBtn').disabled = false;
             document.getElementById('ceremonyModalOverlay').classList.remove('hidden');
         }
@@ -1117,10 +1159,12 @@
             if (ceremonyTimerRunning) return;
             ceremonyCurrentIdx++;
 
+            const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
+
             if (ceremonyCurrentIdx >= ceremonyQueue.length) {
                 document.getElementById('ceremonyTitle').textContent = '🎉 Cerimônia Concluída!';
-                document.getElementById('ceremonySubtitle').textContent = 'Parabéns a todos os participantes!';
-                document.getElementById('ceremonyRankTag').textContent = 'FIM DA CERIMÔNIA';
+                document.getElementById('ceremonySubtitle').textContent = `Todos os resultados da ${formatModalityFullTitle(activeModality)} foram revelados!`;
+                document.getElementById('ceremonyRankTag').textContent = `FIM DA CERIMÔNIA — ${modTitle}`;
                 document.getElementById('nextCeremonyBtn').disabled = true;
                 playAudioEffect('fanfare');
                 confetti({ particleCount: 200, spread: 160, origin: { y: 0.6 } });
@@ -1131,9 +1175,10 @@
             const rank = totalGroups - ceremonyCurrentIdx;
             const group = ceremonyQueue[ceremonyCurrentIdx];
 
-            document.getElementById('ceremonyRankTag').textContent = `REVELANDO — ${rank}º LUGAR`;
+            document.getElementById('ceremonyRankTag').textContent = `REVELANDO ${rank}º LUGAR — ${modTitle}`;
             document.getElementById('ceremonyTitle').textContent = '⏳ Preparando revelação...';
-            document.getElementById('ceremonySubtitle').textContent = '';
+            document.getElementById('ceremonySubtitle').textContent = formatModalityFullTitle(activeModality);
+            document.getElementById('ceremonyScoreBadge').classList.add('hidden');
             document.getElementById('nextCeremonyBtn').disabled = true;
             ceremonyTimerRunning = true;
 
@@ -1161,8 +1206,11 @@
 
             const total = calculateGroupTotalScore(group);
             const max = getMaxPossibleScore(group);
+            const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
 
-            document.getElementById('ceremonyRankTag').textContent = `🏅 ${rank}º LUGAR — ${formatModalityLabel(group.unit).toUpperCase()}`;
+            document.getElementById('ceremonyRankTag').textContent = rank === 1
+                ? `👑 1º LUGAR (CAMPEÃO) — ${modTitle}`
+                : `🏅 ${rank}º LUGAR — ${modTitle}`;
             document.getElementById('ceremonyTitle').textContent = group.title;
             document.getElementById('ceremonyTitle').classList.remove('timer-pop');
             void document.getElementById('ceremonyTitle').offsetWidth;
@@ -1170,6 +1218,12 @@
             document.getElementById('ceremonySubtitle').textContent = group.authors;
             document.getElementById('ceremonyScoreValue').textContent = `${total} / ${max} pts`;
             document.getElementById('ceremonyScoreBadge').classList.remove('hidden');
+
+            const btnLabel = document.getElementById('nextCeremonyBtnLabel');
+            if (btnLabel) {
+                const nextRank = rank - 1;
+                btnLabel.textContent = nextRank >= 1 ? `REVELAR ${nextRank}º LUGAR (${modTitle})` : 'CONCLUIR CERIMÔNIA';
+            }
 
             if (rank === 1) {
                 playAudioEffect('fanfare');
