@@ -1,4 +1,4 @@
-.raffle-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(290px,1fr);gap:24px}
+.raffle-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
 .raffle-stage{position:relative;overflow:hidden;border-radius:28px;background:radial-gradient(ellipse at 50% 0%,#12629b 0%,#062b64 48%,#051934 100%);color:white;min-height:490px;display:grid;place-items:center;border:1px solid #2481ad;box-shadow:0 20px 50px #002d7226}
 .raffle-stage:before{content:"";position:absolute;inset:0;background-image:radial-gradient(#ffffff30 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(#000,transparent)}
 .raffle-orbit{position:absolute;width:480px;height:480px;border:1px solid #ffffff12;border-radius:50%;pointer-events:none}

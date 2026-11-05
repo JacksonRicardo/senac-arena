@@ -115,7 +115,35 @@ class RaffleTests(TestCase):
         self.assertEqual(self.client.post('/api/raffle/import/', {'file': file}, format='multipart').status_code, 200)
         self.assertEqual(RaffleParticipant.objects.get().name, 'Ana')
 
+    def test_reset_clears_history_and_releases_active_participants(self):
+        self.upload('NOME;UNIDADE;CARGO\nAna;Centro;Instrutor\nBia;Centro;Instrutor\n')
+        self.draw()
+        self.upload('NOME;UNIDADE;CARGO\nAna;Centro;Instrutor\n')
+        self.assertEqual(self.client.post('/api/raffle/reset/', {}, format='json').status_code, 200)
+        self.assertEqual(RaffleWinner.objects.count(), 0)
+        self.assertEqual(RaffleParticipant.objects.count(), 2)
+        state = self.client.get('/api/raffle/').data
+        self.assertEqual((state['total'], state['remaining'], state['winners']), (1, 1, []))
+        self.assertEqual(self.draw().data['name'], 'Ana')
+        self.assertEqual(self.draw().status_code, 409)
+
+    def test_reset_is_post_only_and_can_be_repeated(self):
+        self.assertEqual(self.client.get('/api/raffle/reset/').status_code, 405)
+        for _ in range(2):
+            self.assertEqual(self.client.post('/api/raffle/reset/', {}, format='json').status_code, 200)
+        self.assertEqual(self.client.get('/api/raffle/').data['remaining'], 0)
+
     def test_home_includes_new_tab(self):
         response = self.client.get('/')
         self.assertContains(response, 'tab-raffle')
         self.assertContains(response, 'raffle.js')
+
+    def test_participant_import_is_in_import_tab(self):
+        response = self.client.get('/')
+        html = response.content.decode('utf-8')
+        import_tab = html.split('id="tab-import"', 1)[1].split('</section>', 1)[0]
+        raffle_tab = html.split('id="tab-raffle"', 1)[1].split('</section>', 1)[0]
+        self.assertIn('id="raffle-file"', import_tab)
+        self.assertIn('id="raffle-reset"', import_tab)
+        self.assertNotIn('id="raffle-file"', raffle_tab)
+        self.assertIn('Sua chance continua até a sua vitória chegar.', raffle_tab)

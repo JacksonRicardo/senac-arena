@@ -5,13 +5,16 @@
     let pending = localStorage.getItem(storageKey);
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     function message(text, error = false) {
-        el('message').textContent = text;
-        el('message').style.color = error ? '#b91c1c' : '#002d72';
+        ['message', 'import-message'].forEach(id => {
+            el(id).textContent = text;
+            el(id).style.color = error ? '#b91c1c' : '#002d72';
+        });
     }
     function controls() {
         el('draw').disabled = busy || !state || (!pending && !state.remaining);
         el('file').disabled = busy || Boolean(pending);
         el('refresh').disabled = busy;
+        el('reset').disabled = busy || !state || (!pending && !state.winners.length);
         el('draw').textContent = busy ? '✦ Sorteando…' : pending ? 'Recuperar sorteio pendente' : '✦ Sortear agora';
     }
     function showWinner(winner) {
@@ -62,6 +65,21 @@
         busy = true; controls();
         try { await load(); message('Dados atualizados.'); }
         catch (error) { message(error.message, true); }
+        finally { busy = false; controls(); }
+    });
+    el('reset').addEventListener('click', async () => {
+        if (busy || !window.confirm('Resetar todos os sorteios? O histórico de sorteados será apagado e todos os participantes da lista ativa poderão ganhar novamente.')) return;
+        busy = true; controls(); message('Reiniciando os sorteios…');
+        try {
+            const result = await apiFetch('/raffle/reset/', {method: 'POST'});
+            localStorage.removeItem(storageKey); pending = null;
+            el('stage').classList.remove('raffle-rolling', 'raffle-revealed');
+            el('eyebrow').textContent = 'O palco está pronto';
+            el('name').textContent = 'Quem vai brilhar agora?';
+            el('unit').textContent = 'Sorteios reiniciados. Boa sorte!';
+            await load();
+            message(result.detail);
+        } catch (error) { message(error.message, true); }
         finally { busy = false; controls(); }
     });
     el('file').addEventListener('change', async event => {

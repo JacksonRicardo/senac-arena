@@ -151,3 +151,12 @@ def raffle_draw(request):
         winner = RaffleWinner.objects.create(
             participant=person, name=person.name, unit=person.unit, request_id=request_id)
     return Response(winner_data(winner), status=201)
+
+
+@api_view(['POST'])
+def raffle_reset(request):
+    """Reinicia os sorteios mantendo a lista de participantes importada."""
+    with transaction.atomic():
+        lock_raffle()
+        RaffleWinner.objects.all().delete()
+    return Response({'detail': 'Sorteios reiniciados. Todos os participantes ativos podem concorrer novamente.'})

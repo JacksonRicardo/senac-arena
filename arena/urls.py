@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/raffle/', raffle.raffle_state, name='raffle_state'),
     path('api/raffle/import/', raffle.raffle_import, name='raffle_import'),
     path('api/raffle/draw/', raffle.raffle_draw, name='raffle_draw'),
+    path('api/raffle/reset/', raffle.raffle_reset, name='raffle_reset'),
     path('', views.index, name='index'),
     path('api/', include(router.urls)),
     path('api/evaluate/', views.submit_evaluation, name='submit_evaluation'),

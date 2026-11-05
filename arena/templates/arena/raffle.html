@@ -3,7 +3,7 @@
         <div>
             <span class="text-xs font-extrabold text-senac-orange uppercase tracking-widest">Experts Senac RN · Sorteios</span>
             <h2 class="text-3xl font-black font-heading text-senac-blue mt-2">A próxima estrela pode ser você.</h2>
-            <p class="text-sm text-slate-500 mt-2">Uma base salva. Novas chances a cada sorteio. Cada pessoa ganha uma única vez.</p>
+            <p class="text-sm text-slate-500 mt-2">Sua chance continua até a sua vitória chegar.</p>
         </div>
         <button type="button" id="raffle-refresh" class="text-sm font-bold text-senac-blue px-4 py-2 rounded-xl border border-slate-200 bg-white">↻ Atualizar</button>
     </div>
@@ -23,25 +23,7 @@
                 <p class="raffle-stage-note" id="raffle-stage-note">Nome e unidade revelados em grande estilo.</p>
             </div>
         </div>
-        <aside class="bg-white rounded-3xl border border-slate-200 p-6 shadow-tech flex flex-col gap-5">
-            <div>
-                <h3 class="font-heading font-extrabold text-senac-blue text-lg">Sua lista de convidados</h3>
-                <p class="text-xs text-slate-500 mt-2">Importe uma vez e continue sorteando quando quiser.</p>
-            </div>
-            <div class="grid grid-cols-3 gap-2 text-center">
-                <div class="raffle-stat"><strong id="raffle-total">—</strong><span>Aptos</span></div>
-                <div class="raffle-stat"><strong id="raffle-remaining">—</strong><span>Na disputa</span></div>
-                <div class="raffle-stat"><strong id="raffle-count">—</strong><span>Sorteados</span></div>
-            </div>
-            <label class="raffle-upload" for="raffle-file">
-                <i class="fa-solid fa-cloud-arrow-up text-3xl text-senac-orange" aria-hidden="true"></i>
-                <strong class="block mt-3 text-sm text-senac-blue">Importar participantes</strong>
-                <span class="block text-xs text-slate-500 mt-2">CSV ou XLSX · até 5 MB</span>
-                <input type="file" id="raffle-file" accept=".csv,.xlsx" class="block w-full text-xs mt-4">
-            </label>
-            <p class="text-xs text-slate-500 leading-relaxed">Participam pessoas com nome, unidade e cargo preenchidos. Registros com “SAIU DO SENAC” são excluídos. Nomes repetidos contam uma única vez.</p>
-            <p class="text-xs text-slate-500 leading-relaxed">Uma nova importação atualiza a lista ativa e mantém todos os resultados anteriores.</p>
-        </aside>
+
     </div>
     <p id="raffle-message" role="status" class="text-sm font-semibold text-senac-blue min-h-[1.5rem]"></p>
     <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8">
