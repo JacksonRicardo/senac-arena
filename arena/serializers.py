@@ -54,12 +54,27 @@ class GroupSerializer(serializers.ModelSerializer):
         return scores
 
     def get_total_score(self, obj):
+        if obj.unit in ('CATEGORIA_2', 'CATEGORIA_4'):
+            try:
+                return int(str(obj.notes or '0').strip())
+            except ValueError:
+                return 0
         return obj.total_score()
 
     def get_max_possible_score(self, obj):
+        if obj.unit in ('CATEGORIA_2', 'CATEGORIA_4'):
+            try:
+                return int(str(obj.notes or '0').strip())
+            except ValueError:
+                return 0
         return obj.max_possible_score()
 
     def get_evaluations_count(self, obj):
+        if obj.unit in ('CATEGORIA_2', 'CATEGORIA_4'):
+            try:
+                return int(str(obj.notes or '0').strip())
+            except ValueError:
+                return 0
         return obj.evaluations_count()
 
     def get_evaluated_by_ids(self, obj):

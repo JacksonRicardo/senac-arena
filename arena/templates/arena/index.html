@@ -98,7 +98,7 @@
                             <i class="fa-solid fa-bolt"></i>AS MELHORES PRÁTICAS INOVADORAS ESTÃO AQUI
                         </span>
                         <h2 class="text-2xl font-black font-heading text-senac-blue">RANKING DOS INOVADORES</h2>
-                        <p id="rankingModalitySubtitle" class="text-xs font-semibold text-slate-500 mt-0.5">Categoria 2: Prática Pedagógica Integradora Coletiva</p>
+                        <p id="rankingModalitySubtitle" class="text-xs font-semibold text-slate-500 mt-0.5">Categoria 1: Educação Inovadora — Geral</p>
                     </div>
                     <div class="flex items-center gap-3 w-full md:w-auto justify-end">
                         <button id="hideResultsBtn" onclick="resetCeremonyResults()" class="hidden bg-slate-100 hover:bg-slate-200 text-senac-blue font-bold px-5 py-3.5 rounded-2xl text-xs transition-all flex items-center gap-2 uppercase">
@@ -110,34 +110,48 @@
                     </div>
                 </div>
 
-                <!-- SELETOR DE CATEGORIA (COLETIVA vs INDIVIDUAL) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100">
-                    <button onclick="switchModality('COLETIVA')" id="modality-btn-COLETIVA" class="flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/60 text-left transition-all">
+                <!-- SELETOR DE CATEGORIA (CATEGORIA 1, CATEGORIA 2 e CATEGORIA 4) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4 border-t border-slate-100">
+                    <button onclick="switchModality('CATEGORIA_1')" id="modality-btn-CATEGORIA_1" class="flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/70 text-left transition-all shadow-sm">
                         <div class="flex items-center gap-3.5 min-w-0">
-                            <div id="modality-icon-COLETIVA" class="w-11 h-11 rounded-xl bg-senac-orange text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                            <div id="modality-icon-CATEGORIA_1" class="w-11 h-11 rounded-xl bg-senac-orange text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-trophy text-lg"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-orange block">CATEGORIA 1 · TOP 3</span>
+                                <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase truncate">CATEGORIA 1</h3>
+                                <p class="text-[11px] text-slate-500 truncate">Educação Inovadora — Geral</p>
+                            </div>
+                        </div>
+                        <span id="modality-count-CATEGORIA_1" class="bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2">0 Projetos</span>
+                    </button>
+
+                    <button onclick="switchModality('CATEGORIA_2')" id="modality-btn-CATEGORIA_2" class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all opacity-80 hover:opacity-100">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <div id="modality-icon-CATEGORIA_2" class="w-11 h-11 rounded-xl bg-senac-blue text-white flex items-center justify-center shadow-sm flex-shrink-0">
                                 <i class="fa-solid fa-users text-lg"></i>
                             </div>
                             <div class="min-w-0">
-                                <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-orange block">CATEGORIA 2</span>
-                                <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase truncate">CATEGORIA COLETIVA</h3>
+                                <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue block">CATEGORIA 2 · VENCEDOR</span>
+                                <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase truncate">CATEGORIA 2</h3>
                                 <p class="text-[11px] text-slate-500 truncate">Prática Pedagógica Integradora Coletiva</p>
                             </div>
                         </div>
-                        <span id="modality-count-COLETIVA" class="bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2">0 Projetos</span>
+                        <span id="modality-count-CATEGORIA_2" class="bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2">0 Projetos</span>
                     </button>
 
-                    <button onclick="switchModality('INDIVIDUAL')" id="modality-btn-INDIVIDUAL" class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all">
+                    <button onclick="switchModality('CATEGORIA_4')" id="modality-btn-CATEGORIA_4" class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all opacity-80 hover:opacity-100">
                         <div class="flex items-center gap-3.5 min-w-0">
-                            <div id="modality-icon-INDIVIDUAL" class="w-11 h-11 rounded-xl bg-senac-blue text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                            <div id="modality-icon-CATEGORIA_4" class="w-11 h-11 rounded-xl bg-senac-blue text-white flex items-center justify-center shadow-sm flex-shrink-0">
                                 <i class="fa-solid fa-user-graduate text-lg"></i>
                             </div>
                             <div class="min-w-0">
-                                <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue block">CATEGORIA 4</span>
-                                <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase truncate">CATEGORIA INDIVIDUAL</h3>
+                                <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue block">CATEGORIA 4 · VENCEDOR</span>
+                                <h3 class="text-sm sm:text-base font-black font-heading text-senac-blue uppercase truncate">CATEGORIA 4</h3>
                                 <p class="text-[11px] text-slate-500 truncate">Projeto Integrador Individual</p>
                             </div>
                         </div>
-                        <span id="modality-count-INDIVIDUAL" class="bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2">0 Projetos</span>
+                        <span id="modality-count-CATEGORIA_4" class="bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2">0 Projetos</span>
                     </button>
                 </div>
             </div>
@@ -149,7 +163,7 @@
                     <div>
                         <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue flex items-center gap-2">
                             <i class="fa-solid fa-list-ol text-senac-orange"></i>
-                            <span id="leaderboardHeadingTitle">CLASSIFICAÇÃO — CATEGORIA COLETIVA</span>
+                            <span id="leaderboardHeadingTitle">CLASSIFICAÇÃO — CATEGORIA 1</span>
                         </h3>
                         <p class="text-xs text-slate-500 mt-0.5">Acompanhe a pontuação computada nas categorias da planilha e a colocação geral.</p>
                     </div>
@@ -162,7 +176,7 @@
             </div>
         </section>
 
-        <!-- ABA 2: IMPORTAR PLANILHAS (COLETIVA E INDIVIDUAL) -->
+        <!-- ABA 2: IMPORTAR PLANILHAS (CATEGORIA 1, CATEGORIA 2 E CATEGORIA 4) -->
         <section id="tab-import" class="tab-content hidden space-y-8">
             <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6 sm:p-8">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -170,8 +184,8 @@
                         <span class="bg-orange-50 text-senac-orange border border-orange-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                             <i class="fa-solid fa-file-excel mr-1"></i>Microsoft Forms · Apuração Automática
                         </span>
-                        <h2 class="text-2xl font-black font-heading text-senac-blue uppercase mt-2">IMPORTAÇÃO DE PLANILHAS E APURAÇÃO DE PONTOS</h2>
-                        <p class="text-xs text-slate-500 mt-1">Anexe separadamente a planilha exportada do Microsoft Forms para a <strong>Categoria Coletiva</strong> e para a <strong>Categoria Individual</strong>. Os pontos das 6 rúbricas (0 a 2 pts) são somados automaticamente.</p>
+                        <h2 class="text-2xl font-black font-heading text-senac-blue uppercase mt-2">IMPORTAÇÃO DE PLANILHAS E APURAÇÃO DE RESULTADOS</h2>
+                        <p class="text-xs text-slate-500 mt-1">Anexe separadamente a planilha exportada do Microsoft Forms para a <strong>Categoria 1</strong> (avaliação por rúbricas, Top 3), <strong>Categoria 2</strong> e <strong>Categoria 4</strong> (contagem direta de votos, 1º Lugar).</p>
                     </div>
                     <button onclick="handleClearModality('ALL')" id="clearAllBtn" class="hidden bg-red-50 hover:bg-red-500 text-red-600 hover:text-white border border-red-200 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 uppercase flex-shrink-0">
                         <i class="fa-solid fa-trash-can"></i><span>LIMPAR TODOS OS PROJETOS</span>
@@ -179,42 +193,75 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- UPLOAD CATEGORIA COLETIVA -->
-                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-battle p-6 sm:p-7 flex flex-col justify-between space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- UPLOAD CATEGORIA 1 -->
+                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-battle p-6 flex flex-col justify-between space-y-6">
                     <div class="space-y-4">
                         <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
                             <div class="flex items-center gap-3">
                                 <div class="w-11 h-11 rounded-2xl bg-senac-orange text-white flex items-center justify-center shadow-sm flex-shrink-0">
-                                    <i class="fa-solid fa-users text-lg"></i>
+                                    <i class="fa-solid fa-trophy text-lg"></i>
                                 </div>
                                 <div>
-                                    <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-orange">CATEGORIA 2 · MICROSOFT FORMS</span>
-                                    <h3 class="text-base sm:text-lg font-black font-heading text-senac-blue uppercase">CATEGORIA COLETIVA</h3>
-                                    <p class="text-xs text-slate-500">Prática Pedagógica Integradora Coletiva</p>
+                                    <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-orange">CATEGORIA 1 · RÚBRICAS (TOP 3)</span>
+                                    <h3 class="text-base font-black font-heading text-senac-blue uppercase">CATEGORIA 1</h3>
+                                    <p class="text-xs text-slate-500">Educação Inovadora — Geral</p>
                                 </div>
                             </div>
-                            <button onclick="handleClearModality('COLETIVA')" id="clearBtn-COLETIVA" class="hidden text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-all uppercase flex-shrink-0">
+                            <button onclick="handleClearModality('CATEGORIA_1')" id="clearBtn-CATEGORIA_1" class="hidden text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-all uppercase flex-shrink-0">
                                 <i class="fa-solid fa-trash-can mr-1"></i>LIMPAR
                             </button>
                         </div>
 
-                        <label for="fileInput-COLETIVA" class="group block border-2 border-dashed border-orange-300 hover:border-senac-orange bg-orange-50/40 hover:bg-orange-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all">
-                            <input type="file" id="fileInput-COLETIVA" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleSpreadsheetUpload('COLETIVA', this)">
-                            <div class="w-12 h-12 rounded-2xl bg-white border border-orange-200 text-senac-orange flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-105 transition-transform">
-                                <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                        <label for="fileInput-CATEGORIA_1" class="group block border-2 border-dashed border-orange-300 hover:border-senac-orange bg-orange-50/40 hover:bg-orange-50/80 rounded-2xl p-5 text-center cursor-pointer transition-all">
+                            <input type="file" id="fileInput-CATEGORIA_1" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleSpreadsheetUpload('CATEGORIA_1', this)">
+                            <div class="w-11 h-11 rounded-2xl bg-white border border-orange-200 text-senac-orange flex items-center justify-center mx-auto mb-2.5 shadow-sm group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
                             </div>
-                            <p class="text-xs sm:text-sm font-extrabold font-heading text-senac-blue uppercase">ANEXAR PLANILHA — CATEGORIA COLETIVA</p>
-                            <p class="text-[11px] text-slate-500 mt-1">Clique para selecionar o arquivo <strong>.xlsx</strong> ou <strong>.csv</strong> gerado pelo Forms (Categoria 2)</p>
-                            <span id="uploadStatus-COLETIVA" class="inline-block mt-3 text-[11px] font-bold text-senac-orange bg-white px-3 py-1 rounded-full border border-orange-200">Selecionar Arquivo</span>
+                            <p class="text-xs font-extrabold font-heading text-senac-blue uppercase">ANEXAR PLANILHA — CATEGORIA 1</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Planilha de avaliação por critérios (0 a 2 pts)</p>
+                            <span id="uploadStatus-CATEGORIA_1" class="inline-block mt-2.5 text-[11px] font-bold text-senac-orange bg-white px-3 py-1 rounded-full border border-orange-200">Selecionar Arquivo</span>
                         </label>
 
-                        <div id="summaryContainer-COLETIVA" class="space-y-3"></div>
+                        <div id="summaryContainer-CATEGORIA_1" class="space-y-3"></div>
                     </div>
                 </div>
 
-                <!-- UPLOAD CATEGORIA INDIVIDUAL -->
-                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-battle p-6 sm:p-7 flex flex-col justify-between space-y-6">
+                <!-- UPLOAD CATEGORIA 2 -->
+                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-battle p-6 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-senac-blue text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                                    <i class="fa-solid fa-users text-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue">CATEGORIA 2 · VOTAÇÃO (1º LUGAR)</span>
+                                    <h3 class="text-base font-black font-heading text-senac-blue uppercase">CATEGORIA 2</h3>
+                                    <p class="text-xs text-slate-500">Prática Pedagógica Integradora Coletiva</p>
+                                </div>
+                            </div>
+                            <button onclick="handleClearModality('CATEGORIA_2')" id="clearBtn-CATEGORIA_2" class="hidden text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-all uppercase flex-shrink-0">
+                                <i class="fa-solid fa-trash-can mr-1"></i>LIMPAR
+                            </button>
+                        </div>
+
+                        <label for="fileInput-CATEGORIA_2" class="group block border-2 border-dashed border-blue-300 hover:border-senac-blue bg-blue-50/40 hover:bg-blue-50/80 rounded-2xl p-5 text-center cursor-pointer transition-all">
+                            <input type="file" id="fileInput-CATEGORIA_2" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleSpreadsheetUpload('CATEGORIA_2', this)">
+                            <div class="w-11 h-11 rounded-2xl bg-white border border-blue-200 text-senac-blue flex items-center justify-center mx-auto mb-2.5 shadow-sm group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                            </div>
+                            <p class="text-xs font-extrabold font-heading text-senac-blue uppercase">ANEXAR PLANILHA — CATEGORIA 2</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Planilha de votação direta da Categoria Coletiva</p>
+                            <span id="uploadStatus-CATEGORIA_2" class="inline-block mt-2.5 text-[11px] font-bold text-senac-blue bg-white px-3 py-1 rounded-full border border-blue-200">Selecionar Arquivo</span>
+                        </label>
+
+                        <div id="summaryContainer-CATEGORIA_2" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- UPLOAD CATEGORIA 4 -->
+                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-battle p-6 flex flex-col justify-between space-y-6">
                     <div class="space-y-4">
                         <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
                             <div class="flex items-center gap-3">
@@ -222,27 +269,27 @@
                                     <i class="fa-solid fa-user-graduate text-lg"></i>
                                 </div>
                                 <div>
-                                    <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue">CATEGORIA 4 · MICROSOFT FORMS</span>
-                                    <h3 class="text-base sm:text-lg font-black font-heading text-senac-blue uppercase">CATEGORIA INDIVIDUAL</h3>
+                                    <span class="text-[10px] font-extrabold font-heading uppercase tracking-wider text-senac-blue">CATEGORIA 4 · VOTAÇÃO (1º LUGAR)</span>
+                                    <h3 class="text-base font-black font-heading text-senac-blue uppercase">CATEGORIA 4</h3>
                                     <p class="text-xs text-slate-500">Projeto Integrador Individual</p>
                                 </div>
                             </div>
-                            <button onclick="handleClearModality('INDIVIDUAL')" id="clearBtn-INDIVIDUAL" class="hidden text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-all uppercase flex-shrink-0">
+                            <button onclick="handleClearModality('CATEGORIA_4')" id="clearBtn-CATEGORIA_4" class="hidden text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 bg-red-50 border border-red-200 px-3 py-1.5 rounded-xl transition-all uppercase flex-shrink-0">
                                 <i class="fa-solid fa-trash-can mr-1"></i>LIMPAR
                             </button>
                         </div>
 
-                        <label for="fileInput-INDIVIDUAL" class="group block border-2 border-dashed border-blue-300 hover:border-senac-blue bg-blue-50/40 hover:bg-blue-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all">
-                            <input type="file" id="fileInput-INDIVIDUAL" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleSpreadsheetUpload('INDIVIDUAL', this)">
-                            <div class="w-12 h-12 rounded-2xl bg-white border border-blue-200 text-senac-blue flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-105 transition-transform">
-                                <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                        <label for="fileInput-CATEGORIA_4" class="group block border-2 border-dashed border-blue-300 hover:border-senac-blue bg-blue-50/40 hover:bg-blue-50/80 rounded-2xl p-5 text-center cursor-pointer transition-all">
+                            <input type="file" id="fileInput-CATEGORIA_4" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleSpreadsheetUpload('CATEGORIA_4', this)">
+                            <div class="w-11 h-11 rounded-2xl bg-white border border-blue-200 text-senac-blue flex items-center justify-center mx-auto mb-2.5 shadow-sm group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
                             </div>
-                            <p class="text-xs sm:text-sm font-extrabold font-heading text-senac-blue uppercase">ANEXAR PLANILHA — CATEGORIA INDIVIDUAL</p>
-                            <p class="text-[11px] text-slate-500 mt-1">Clique para selecionar o arquivo <strong>.xlsx</strong> ou <strong>.csv</strong> gerado pelo Forms (Categoria 4)</p>
-                            <span id="uploadStatus-INDIVIDUAL" class="inline-block mt-3 text-[11px] font-bold text-senac-blue bg-white px-3 py-1 rounded-full border border-blue-200">Selecionar Arquivo</span>
+                            <p class="text-xs font-extrabold font-heading text-senac-blue uppercase">ANEXAR PLANILHA — CATEGORIA 4</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Planilha de votação direta da Categoria Individual</p>
+                            <span id="uploadStatus-CATEGORIA_4" class="inline-block mt-2.5 text-[11px] font-bold text-senac-blue bg-white px-3 py-1 rounded-full border border-blue-200">Selecionar Arquivo</span>
                         </label>
 
-                        <div id="summaryContainer-INDIVIDUAL" class="space-y-3"></div>
+                        <div id="summaryContainer-CATEGORIA_4" class="space-y-3"></div>
                     </div>
                 </div>
             </div>
@@ -265,7 +312,7 @@
                 <h3 id="ceremonyTitle" class="text-2xl sm:text-3xl font-black font-heading text-senac-blue mb-2">Vamos Começar?</h3>
                 <p id="ceremonySubtitle" class="text-xs sm:text-sm text-slate-500 mb-6">Apresentaremos a seguir a classificação de cada grupo.</p>
                 <div id="ceremonyScoreBadge" class="hidden inline-block bg-slate-100 border border-slate-200 px-6 py-2 rounded-2xl mb-6">
-                    <span class="text-xs text-slate-400 font-bold block uppercase">Pontuação Conquistada</span>
+                    <span id="ceremonyScoreLabel" class="text-xs text-slate-400 font-bold block uppercase">Pontuação Conquistada</span>
                     <span id="ceremonyScoreValue" class="text-3xl font-black font-heading text-senac-orange">0 / 0 pts</span>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
@@ -290,7 +337,7 @@
                 <div id="detailNotesText"></div>
             </div>
             <div class="flex justify-between items-center pt-4 border-t border-slate-100">
-                <span class="text-xs text-slate-500 font-extrabold font-heading uppercase tracking-wider">Pontuação Total Conquistada</span>
+                <span id="detailTotalLabel" class="text-xs text-slate-500 font-extrabold font-heading uppercase tracking-wider">Pontuação Total Conquistada</span>
                 <span id="detailTotalScore" class="text-2xl sm:text-3xl font-black font-heading text-senac-orange">0 pts</span>
             </div>
         </div>
@@ -415,34 +462,65 @@
         }
 
         // ============================================================
-        // HELPERS DE CÁLCULO E MODALIDADE (COLETIVA vs INDIVIDUAL)
+        // HELPERS DE CÁLCULO E MODALIDADE (CATEGORIA 1, CATEGORIA 2 E CATEGORIA 4)
         // ============================================================
-        let activeModality = 'COLETIVA';
+        let activeModality = 'CATEGORIA_1';
+
+        function isVoteModality(modality) {
+            const u = String(modality || '').toUpperCase();
+            return u === 'CATEGORIA_2' || u === 'CATEGORIA_4';
+        }
 
         function formatModalityLabel(unit) {
             const u = String(unit || '').toUpperCase();
-            if (u === 'COLETIVA') return 'Categoria Coletiva';
-            if (u === 'INDIVIDUAL') return 'Categoria Individual';
+            if (u === 'CATEGORIA_1') return 'Categoria 1';
+            if (u === 'CATEGORIA_2') return 'Categoria 2';
+            if (u === 'CATEGORIA_4') return 'Categoria 4';
             return unit || 'Finalista';
         }
 
+        function formatModalityUpperTitle(modality) {
+            const u = String(modality || '').toUpperCase();
+            if (u === 'CATEGORIA_1') return 'CATEGORIA 1';
+            if (u === 'CATEGORIA_2') return 'CATEGORIA 2';
+            if (u === 'CATEGORIA_4') return 'CATEGORIA 4';
+            return u;
+        }
+
         function formatModalityFullTitle(modality) {
-            return modality === 'INDIVIDUAL'
-                ? 'Categoria 4: Projeto Integrador Individual'
-                : 'Categoria 2: Prática Pedagógica Integradora Coletiva';
+            const u = String(modality || '').toUpperCase();
+            if (u === 'CATEGORIA_2') return 'Categoria 2: Prática Pedagógica Integradora Coletiva';
+            if (u === 'CATEGORIA_4') return 'Categoria 4: Projeto Integrador Individual';
+            return 'Categoria 1: Educação Inovadora — Geral';
         }
 
         function getMaxPossibleScore(group) {
-            const evals = group && group.evaluations_count ? Math.max(1, group.evaluations_count) : 1;
+            if (!group) return 0;
+            if (isVoteModality(group.unit)) {
+                return Number(group.total_score) || 0;
+            }
+            const evals = group.evaluations_count ? Math.max(1, group.evaluations_count) : 1;
             return categories.length * 2 * evals;
         }
 
         function calculateGroupTotalScore(group) {
-            if (!group.scores) return 0;
+            if (!group) return 0;
+            if (isVoteModality(group.unit)) {
+                return Number(group.total_score) || 0;
+            }
+            if (!group.scores) return Number(group.total_score) || 0;
             return categories.reduce((acc, cat) => {
                 const val = group.scores[String(cat.id)];
                 return acc + (val !== undefined ? Number(val) : 0);
             }, 0);
+        }
+
+        function formatScoreWithUnit(score, modality) {
+            const val = Number(score) || 0;
+            if (isVoteModality(modality)) {
+                return `${val} ${val === 1 ? 'voto' : 'votos'}`;
+            }
+            return `${val} pts`;
         }
 
         function getModalityGroups(modality = activeModality) {
@@ -474,35 +552,31 @@
         }
 
         function renderModalitySelector() {
-            const coletivaCount = getModalityGroups('COLETIVA').length;
-            const individualCount = getModalityGroups('INDIVIDUAL').length;
+            const modalities = ['CATEGORIA_1', 'CATEGORIA_2', 'CATEGORIA_4'];
+            modalities.forEach(mod => {
+                const count = getModalityGroups(mod).length;
+                const countEl = document.getElementById(`modality-count-${mod}`);
+                const btnEl = document.getElementById(`modality-btn-${mod}`);
+                const iconEl = document.getElementById(`modality-icon-${mod}`);
+                if (countEl) countEl.textContent = `${count} Projeto${count !== 1 ? 's' : ''}`;
+                if (btnEl && countEl) {
+                    if (activeModality === mod) {
+                        btnEl.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/70 text-left transition-all shadow-sm';
+                        countEl.className = 'bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
+                        if (iconEl) iconEl.className = 'w-11 h-11 rounded-xl bg-senac-orange text-white flex items-center justify-center shadow-sm flex-shrink-0';
+                    } else {
+                        btnEl.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all opacity-80 hover:opacity-100';
+                        countEl.className = 'bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
+                        if (iconEl) iconEl.className = 'w-11 h-11 rounded-xl bg-senac-blue text-white flex items-center justify-center shadow-sm flex-shrink-0';
+                    }
+                }
+            });
 
-            const countColEl = document.getElementById('modality-count-COLETIVA');
-            const countIndEl = document.getElementById('modality-count-INDIVIDUAL');
-            if (countColEl) countColEl.textContent = `${coletivaCount} Projeto${coletivaCount !== 1 ? 's' : ''}`;
-            if (countIndEl) countIndEl.textContent = `${individualCount} Projeto${individualCount !== 1 ? 's' : ''}`;
-
-            const btnCol = document.getElementById('modality-btn-COLETIVA');
-            const btnInd = document.getElementById('modality-btn-INDIVIDUAL');
             const subtitleEl = document.getElementById('rankingModalitySubtitle');
             const lbTitleEl = document.getElementById('leaderboardHeadingTitle');
 
             if (subtitleEl) subtitleEl.textContent = formatModalityFullTitle(activeModality);
-            if (lbTitleEl) lbTitleEl.textContent = `CLASSIFICAÇÃO — CATEGORIA ${activeModality}`;
-
-            if (btnCol && btnInd) {
-                if (activeModality === 'COLETIVA') {
-                    btnCol.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/70 text-left transition-all shadow-sm';
-                    btnInd.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all opacity-80 hover:opacity-100';
-                    countColEl.className = 'bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
-                    countIndEl.className = 'bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
-                } else {
-                    btnInd.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-senac-orange bg-orange-50/70 text-left transition-all shadow-sm';
-                    btnCol.className = 'flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 text-left transition-all opacity-80 hover:opacity-100';
-                    countIndEl.className = 'bg-senac-orange text-white text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
-                    countColEl.className = 'bg-slate-200 text-senac-blue text-xs font-extrabold font-heading px-3 py-1 rounded-full flex-shrink-0 ml-2';
-                }
-            }
+            if (lbTitleEl) lbTitleEl.textContent = `CLASSIFICAÇÃO — ${formatModalityUpperTitle(activeModality)}`;
         }
 
         function isCeremonyCompleted(modality = activeModality) {
@@ -526,13 +600,14 @@
         }
 
         // ============================================================
-        // RENDERIZAÇÃO: PÓDIO DOS CAMPEÕES (TOP 3 AUTOMÁTICO)
+        // RENDERIZAÇÃO: PÓDIO DOS CAMPEÕES (TOP 3 NA CAT 1 / VENCEDOR NA CAT 2 E 4)
         // ============================================================
         function renderWinnerSpotlight() {
             const container = document.getElementById('winnerSpotlightContainer');
             const hideBtn = document.getElementById('hideResultsBtn');
             const sorted = getSortedGroups(activeModality);
-            const modalityTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
+            const modalityTitle = formatModalityUpperTitle(activeModality);
+            const voteMode = isVoteModality(activeModality);
 
             if (sorted.length === 0) {
                 if (hideBtn) hideBtn.classList.add('hidden');
@@ -550,6 +625,13 @@
             if (!isCeremonyCompleted(activeModality)) {
                 if (hideBtn) hideBtn.classList.add('hidden');
                 const totalEvals = sorted.reduce((acc, g) => acc + (g.evaluations_count || 0), 0);
+                const countDesc = voteMode
+                    ? `${totalEvals} ${totalEvals === 1 ? 'Voto Computado' : 'Votos Computados'}`
+                    : `${totalEvals} ${totalEvals === 1 ? 'Avaliação Computada' : 'Avaliações Computadas'}`;
+                const unlockDesc = voteMode
+                    ? `O grande vencedor do 1.º Lugar e a quantidade de votos da <strong>${formatModalityFullTitle(activeModality)}</strong> serão revelados ao concluir a cerimônia!`
+                    : `O Pódio Top 3, o Gráfico do Pódio e a Tabela de Classificação da <strong>${formatModalityFullTitle(activeModality)}</strong> serão revelados automaticamente ao concluir a cerimônia!`;
+
                 container.innerHTML = `
                 <div class="bg-white rounded-3xl border-2 border-dashed border-slate-200 p-10 sm:p-14 text-center shadow-tech space-y-4">
                     <div class="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-200 text-senac-orange flex items-center justify-center mx-auto shadow-sm">
@@ -557,11 +639,11 @@
                     </div>
                     <div>
                         <span class="inline-block bg-slate-100 text-senac-blue text-[11px] font-extrabold font-heading uppercase tracking-wider px-3.5 py-1 rounded-full mb-2">
-                            ${modalityTitle} · ${sorted.length} Projeto(s) · ${totalEvals} Avaliação(ões) Computada(s)
+                            ${modalityTitle} · ${sorted.length} Projeto(s) · ${countDesc}
                         </span>
                         <h3 class="text-xl sm:text-2xl font-black font-heading text-senac-blue uppercase">AGUARDANDO CERIMÔNIA — ${modalityTitle}</h3>
                         <p class="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto mt-1">
-                            O Pódio dos Campeões, o Gráfico do Pódio e a Tabela de Classificação da <strong>${formatModalityLabel(activeModality)}</strong> serão revelados automaticamente ao concluir a cerimônia!
+                            ${unlockDesc}
                         </p>
                     </div>
                 </div>`;
@@ -590,7 +672,7 @@
                             <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-extrabold px-3.5 py-1.5 rounded-full">
                                 <i class="fa-solid fa-medal text-slate-500"></i> 2.º LUGAR
                             </span>
-                            <span class="text-2xl sm:text-3xl font-black font-heading text-senac-blue">${total} pts</span>
+                            <span class="text-2xl sm:text-3xl font-black font-heading text-senac-blue">${formatScoreWithUnit(total, g.unit)}</span>
                         </div>
                         <h3 class="text-lg sm:text-xl font-extrabold font-heading text-senac-blue leading-snug mb-1">${g.title}</h3>
                         <p class="text-xs text-slate-500 font-medium">${g.authors}</p>
@@ -604,6 +686,7 @@
 
             function renderFirstCard(g) {
                 const total = calculateGroupTotalScore(g);
+                const scoreDisplay = formatScoreWithUnit(total, g.unit);
                 return `
                 <div onclick="showDetailModal(${g.id})" class="relative overflow-hidden bg-white rounded-3xl border-2 border-senac-orange shadow-lg hover:shadow-xl transition-all p-6 sm:p-7 flex flex-col justify-between cursor-pointer min-h-[230px] lg:-mt-3">
                     <i class="fa-solid fa-trophy absolute -bottom-3 right-3 text-8xl text-senac-orange/15 pointer-events-none select-none"></i>
@@ -614,13 +697,13 @@
                                 <i class="fa-solid fa-trophy text-amber-300"></i>
                                 1.º LUGAR (CAMPEÃO)
                             </span>
-                            <span class="text-3xl sm:text-4xl font-black font-heading text-senac-orange">${total} pts</span>
+                            <span class="text-3xl sm:text-4xl font-black font-heading text-senac-orange">${scoreDisplay}</span>
                         </div>
                         <h3 class="text-xl sm:text-2xl font-black font-heading text-senac-darkNavy leading-snug mb-1">${g.title}</h3>
                         <p class="text-xs text-slate-600 font-medium">${g.authors}</p>
                     </div>
                     <div class="relative z-10 flex items-center justify-between gap-2 pt-4 mt-6 border-t border-senac-orange/25">
-                        <span class="text-xs font-bold text-senac-orange">Medalha de Ouro</span>
+                        <span class="text-xs font-bold text-senac-orange">${isVoteModality(g.unit) ? 'Vencedor por Votação' : 'Medalha de Ouro'}</span>
                         <span class="bg-senac-orange text-white text-[11px] font-bold px-3 py-1 rounded-xl shadow-md">${formatModalityLabel(g.unit)}</span>
                     </div>
                 </div>`;
@@ -642,7 +725,7 @@
                             <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200/70 text-xs font-extrabold px-3.5 py-1.5 rounded-full">
                                 <i class="fa-solid fa-award text-amber-700"></i> 3.º LUGAR
                             </span>
-                            <span class="text-2xl sm:text-3xl font-black font-heading text-slate-800">${total} pts</span>
+                            <span class="text-2xl sm:text-3xl font-black font-heading text-slate-800">${formatScoreWithUnit(total, g.unit)}</span>
                         </div>
                         <h3 class="text-lg sm:text-xl font-extrabold font-heading text-senac-blue leading-snug mb-1">${g.title}</h3>
                         <p class="text-xs text-slate-500 font-medium">${g.authors}</p>
@@ -655,18 +738,14 @@
             }
 
             let podiumGridHtml = '';
-            if (sorted.length === 1) {
+            if (voteMode) {
+                // Categoria 2 e Categoria 4: mostra apenas o vencedor do 1.º Lugar junto com a quantidade de votos
                 podiumGridHtml = `
-                    <div class="max-w-xl mx-auto pt-2">
+                    <div class="max-w-2xl mx-auto pt-2">
                         ${renderFirstCard(first)}
                     </div>`;
-            } else if (sorted.length === 2) {
-                podiumGridHtml = `
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch pt-2 max-w-4xl mx-auto">
-                        <div>${renderFirstCard(first)}</div>
-                        <div>${renderSecondCard(second)}</div>
-                    </div>`;
             } else {
+                // Categoria 1: mostra o Top 3 (1.º, 2.º e 3.º Lugar)
                 podiumGridHtml = `
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch pt-2">
                         <div>${renderFirstCard(first)}</div>
@@ -674,6 +753,10 @@
                         <div>${renderThirdCard(third)}</div>
                     </div>`;
             }
+
+            const podiumHeading = voteMode
+                ? `PROJETO VENCEDOR — ${modalityTitle}`
+                : `PÓDIO DOS CAMPEÕES (TOP 3) — ${modalityTitle}`;
 
             container.innerHTML = `
                 <div class="space-y-6">
@@ -683,12 +766,12 @@
                                 <i class="fa-solid fa-award text-lg"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue leading-tight uppercase">PÓDIO DOS CAMPEÕES — ${modalityTitle}</h3>
-                                <p class="text-xs text-slate-500">O topo pertence a quem transforma metas em conquistas.</p>
+                                <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue leading-tight uppercase">${podiumHeading}</h3>
+                                <p class="text-xs text-slate-500">${formatModalityFullTitle(activeModality)}</p>
                             </div>
                         </div>
                         <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-orange-50 text-senac-orange border border-orange-200 self-start sm:self-auto">
-                            <i class="fa-solid fa-bolt text-senac-orange"></i> ATUALIZAÇÃO EM TEMPO REAL
+                            <i class="fa-solid fa-bolt text-senac-orange"></i> RESULTADO OFICIAL
                         </span>
                     </div>
                     ${podiumGridHtml}
@@ -696,12 +779,12 @@
         }
 
         // ============================================================
-        // RENDERIZAÇÃO: GRÁFICO DO PÓDIO (TOP 5)
+        // RENDERIZAÇÃO: GRÁFICO DO PÓDIO (SOMENTE CATEGORIA 1)
         // ============================================================
         function renderTop5Chart() {
             const container = document.getElementById('top5ChartContainer');
             const sorted = getSortedGroups(activeModality);
-            if (sorted.length === 0 || !isCeremonyCompleted(activeModality)) {
+            if (sorted.length === 0 || !isCeremonyCompleted(activeModality) || isVoteModality(activeModality)) {
                 container.innerHTML = '';
                 return;
             }
@@ -742,7 +825,7 @@
                 return `<span class="absolute -translate-x-1/2 text-[11px] font-medium text-slate-500" style="left:${leftPct}%">${val}</span>`;
             }).join('');
 
-            const modalityTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
+            const modalityTitle = formatModalityUpperTitle(activeModality);
 
             container.innerHTML = `
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
@@ -784,7 +867,7 @@
         }
 
         // ============================================================
-        // RENDERIZAÇÃO: LEADERBOARD (TODOS OS GRUPOS DA MODALIDADE)
+        // RENDERIZAÇÃO: LEADERBOARD (SOMENTE CATEGORIA 1)
         // ============================================================
         function renderLeaderboard() {
             const section = document.getElementById('leaderboardSection');
@@ -792,7 +875,7 @@
             const search = (document.getElementById('searchRankingInput').value || '').toLowerCase();
             const sorted = getSortedGroups(activeModality);
 
-            if (sorted.length === 0 || !isCeremonyCompleted(activeModality)) {
+            if (sorted.length === 0 || !isCeremonyCompleted(activeModality) || isVoteModality(activeModality)) {
                 section.classList.add('hidden');
                 return;
             }
@@ -896,70 +979,82 @@
         function showDetailModal(groupId) {
             const g = groups.find(x => x.id === groupId);
             if (!g) return;
-            const mod = String(g.unit || '').toUpperCase() === 'INDIVIDUAL' ? 'INDIVIDUAL' : 'COLETIVA';
+            const mod = String(g.unit || '').toUpperCase();
+            const voteMode = isVoteModality(mod);
             const sorted = getSortedGroups(mod);
             const rank = sorted.indexOf(g) + 1;
             const total = calculateGroupTotalScore(g);
             const max = getMaxPossibleScore(g);
             const evalsCount = g.evaluations_count || 0;
-            const evalWord = evalsCount === 1 ? 'Avaliação' : 'Avaliações';
 
-            document.getElementById('detailRankBadge').textContent = `${rank}.º LUGAR · ${formatModalityLabel(g.unit)} · ${evalsCount} ${evalWord}`;
             document.getElementById('detailProjectTitle').textContent = g.title;
             document.getElementById('detailAuthors').textContent = g.authors;
-            document.getElementById('detailTotalScore').textContent = `${total} / ${max} pts`;
 
-            const maxCatScore = Math.max(1, evalsCount) * 2;
             const grid = document.getElementById('detailCriteriaGrid');
-            grid.innerHTML = categories.map(cat => {
-                const hasScore = g.scores && g.scores[String(cat.id)] !== undefined;
-                const score = hasScore ? Number(g.scores[String(cat.id)]) : null;
-                let pillClass = 'bg-slate-100 text-slate-500 border-slate-200';
-                let badgeText = 'Não Avaliado';
-                if (score !== null) {
-                    const ratio = maxCatScore > 0 ? score / maxCatScore : 0;
-                    pillClass = ratio >= 0.75
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                        : ratio >= 0.4
-                        ? 'bg-amber-50 text-amber-700 border-amber-200'
-                        : 'bg-red-50 text-red-600 border-red-200';
-                    badgeText = `${score} / ${maxCatScore} pts`;
-                }
-                return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-slate-200/70 last:border-0">
-                    <span class="text-xs text-slate-700 font-semibold">${cat.name}</span>
-                    <span class="text-xs font-extrabold font-heading px-2.5 py-0.5 rounded-full border flex-shrink-0 ${pillClass}">${badgeText}</span>
-                </div>`;
-            }).join('');
-
             const notesBox = document.getElementById('detailNotesBox');
-            const uniqueEvaluators = [...new Set(g.evaluator_names || [])];
-            if (uniqueEvaluators.length > 0) {
-                const jurWord = uniqueEvaluators.length === 1 ? 'Jurado' : 'Jurados';
-                const pillsHtml = uniqueEvaluators.map(name => `
-                    <span class="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-senac-blue text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm">
-                        <i class="fa-solid fa-user-check text-senac-orange text-[11px]"></i>
-                        <span>${name}</span>
-                    </span>
-                `).join('');
-                document.getElementById('detailNotesText').innerHTML = `
-                    <div class="flex items-center justify-between gap-2 mb-3">
-                        <span class="text-[11px] font-extrabold font-heading uppercase tracking-wider text-senac-blue flex items-center gap-1.5">
-                            <i class="fa-solid fa-users-viewfinder text-senac-orange"></i>
-                            <span>AVALIADORES COMPUTADOS</span>
-                        </span>
-                        <span class="text-[10px] font-extrabold font-heading uppercase bg-orange-50 text-senac-orange border border-orange-200 px-2.5 py-0.5 rounded-full">
-                            ${uniqueEvaluators.length} ${jurWord}
-                        </span>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        ${pillsHtml}
-                    </div>`;
-                notesBox.classList.remove('hidden');
-            } else if (g.notes && g.notes.trim()) {
-                document.getElementById('detailNotesText').textContent = g.notes;
-                notesBox.classList.remove('hidden');
-            } else {
+            const totalLabelEl = document.getElementById('detailTotalLabel');
+
+            if (voteMode) {
+                const voteWord = total === 1 ? 'Voto Computado' : 'Votos Computados';
+                document.getElementById('detailRankBadge').textContent = `${rank}.º LUGAR · ${formatModalityLabel(g.unit)} · ${total} ${voteWord}`;
+                if (totalLabelEl) totalLabelEl.textContent = 'Total de Votos Recebidos';
+                document.getElementById('detailTotalScore').textContent = `${total} ${total === 1 ? 'voto' : 'votos'}`;
+                grid.classList.add('hidden');
                 notesBox.classList.add('hidden');
+            } else {
+                const evalWord = evalsCount === 1 ? 'Avaliação' : 'Avaliações';
+                document.getElementById('detailRankBadge').textContent = `${rank}.º LUGAR · ${formatModalityLabel(g.unit)} · ${evalsCount} ${evalWord}`;
+                if (totalLabelEl) totalLabelEl.textContent = 'Pontuação Total Conquistada';
+                document.getElementById('detailTotalScore').textContent = `${total} / ${max} pts`;
+
+                const maxCatScore = Math.max(1, evalsCount) * 2;
+                grid.classList.remove('hidden');
+                grid.innerHTML = categories.map(cat => {
+                    const hasScore = g.scores && g.scores[String(cat.id)] !== undefined;
+                    const score = hasScore ? Number(g.scores[String(cat.id)]) : null;
+                    let pillClass = 'bg-slate-100 text-slate-500 border-slate-200';
+                    let badgeText = 'Não Avaliado';
+                    if (score !== null) {
+                        const ratio = maxCatScore > 0 ? score / maxCatScore : 0;
+                        pillClass = ratio >= 0.75
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : ratio >= 0.4
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : 'bg-red-50 text-red-600 border-red-200';
+                        badgeText = `${score} / ${maxCatScore} pts`;
+                    }
+                    return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-slate-200/70 last:border-0">
+                        <span class="text-xs text-slate-700 font-semibold">${cat.name}</span>
+                        <span class="text-xs font-extrabold font-heading px-2.5 py-0.5 rounded-full border flex-shrink-0 ${pillClass}">${badgeText}</span>
+                    </div>`;
+                }).join('');
+
+                const uniqueEvaluators = [...new Set(g.evaluator_names || [])];
+                if (uniqueEvaluators.length > 0) {
+                    const jurWord = uniqueEvaluators.length === 1 ? 'Jurado' : 'Jurados';
+                    const pillsHtml = uniqueEvaluators.map(name => `
+                        <span class="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-senac-blue text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm">
+                            <i class="fa-solid fa-user-check text-senac-orange text-[11px]"></i>
+                            <span>${name}</span>
+                        </span>
+                    `).join('');
+                    document.getElementById('detailNotesText').innerHTML = `
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-[11px] font-extrabold font-heading uppercase tracking-wider text-senac-blue flex items-center gap-1.5">
+                                <i class="fa-solid fa-users-viewfinder text-senac-orange"></i>
+                                <span>AVALIADORES COMPUTADOS</span>
+                            </span>
+                            <span class="text-[10px] font-extrabold font-heading uppercase bg-orange-50 text-senac-orange border border-orange-200 px-2.5 py-0.5 rounded-full">
+                                ${uniqueEvaluators.length} ${jurWord}
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            ${pillsHtml}
+                        </div>`;
+                    notesBox.classList.remove('hidden');
+                } else {
+                    notesBox.classList.add('hidden');
+                }
             }
 
             document.getElementById('detailModal').classList.remove('hidden');
@@ -970,7 +1065,7 @@
         }
 
         // ============================================================
-        // ABA IMPORTAR PLANILHAS E APURAÇÃO DE PONTOS
+        // ABA IMPORTAR PLANILHAS E APURAÇÃO DE PONTOS / VOTOS
         // ============================================================
         async function handleSpreadsheetUpload(modality, inputEl) {
             const file = inputEl.files && inputEl.files[0];
@@ -1017,8 +1112,8 @@
         }
 
         async function handleClearModality(modality) {
-            const label = modality === 'ALL' ? 'todas as categorias' : formatModalityLabel(modality);
-            if (!confirm(`Deseja remover todos os projetos e pontos de ${label}?`)) return;
+            const label = modality === 'ALL' ? 'todas as categorias' : formatModalityFullTitle(modality);
+            if (!confirm(`Deseja remover todos os projetos e resultados de ${label}?`)) return;
             try {
                 const data = await apiFetch('/clear-modality/', {
                     method: 'POST',
@@ -1028,7 +1123,7 @@
                 groups = data.groups || [];
                 evaluators = data.evaluators || [];
                 if (modality === 'ALL') {
-                    ['COLETIVA', 'INDIVIDUAL'].forEach(m => {
+                    ['CATEGORIA_1', 'CATEGORIA_2', 'CATEGORIA_4'].forEach(m => {
                         const sb = document.getElementById(`uploadStatus-${m}`);
                         if (sb) sb.textContent = 'Selecionar Arquivo';
                     });
@@ -1073,10 +1168,53 @@
 
             if (clearBtn) clearBtn.classList.remove('hidden');
 
+            const voteMode = isVoteModality(modality);
             const totalVotes = sorted.reduce((acc, g) => acc + (g.evaluations_count || 0), 0);
+
+            if (voteMode) {
+                // Resumo para Categoria 2 e Categoria 4 (contagem de votos por grupo)
+                const cardsHtml = sorted.map((g, idx) => {
+                    const votes = calculateGroupTotalScore(g);
+                    const voteWord = votes === 1 ? 'voto' : 'votos';
+                    return `
+                        <div class="bg-slate-50/80 rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-3">
+                            <div class="min-w-0">
+                                <span class="inline-block bg-senac-blue text-white text-[10px] font-extrabold font-heading px-2.5 py-0.5 rounded-full mb-1">
+                                    ${votes} ${voteWord.toUpperCase()}
+                                </span>
+                                <h4 class="text-xs sm:text-sm font-extrabold font-heading text-senac-blue leading-snug">${g.title}</h4>
+                                <p class="text-[11px] text-slate-500 font-medium mt-0.5">${g.authors}</p>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <div class="text-right bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-sm">
+                                    <span class="text-[9px] font-bold uppercase text-slate-400 block">Votos</span>
+                                    <span class="text-base sm:text-lg font-black font-heading text-senac-orange">${votes}</span>
+                                </div>
+                                <button onclick="deleteGroup(${g.id}, event)" class="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-500 text-red-500 hover:text-white border border-red-200 flex items-center justify-center transition-all" title="Excluir este projeto">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </div>`;
+                }).join('');
+
+                const projWord = sorted.length === 1 ? 'Projeto' : 'Projetos';
+                const voteTotalWord = totalVotes === 1 ? 'Voto Computado' : 'Votos Computados';
+
+                container.innerHTML = `
+                    <div class="flex items-center justify-between bg-slate-100/80 px-4 py-2.5 rounded-xl border border-slate-200 text-xs">
+                        <span class="font-bold text-senac-blue"><i class="fa-solid fa-circle-check text-emerald-500 mr-1.5"></i>${sorted.length} ${projWord}</span>
+                        <span class="text-[11px] text-senac-orange font-extrabold">${totalVotes} ${voteTotalWord}</span>
+                    </div>
+                    <div class="space-y-2.5 max-h-[520px] overflow-y-auto pr-1">
+                        ${cardsHtml}
+                    </div>`;
+                return;
+            }
+
+            // Resumo para Categoria 1 (rúbricas + avaliadores)
             const allEvaluators = [...new Set(sorted.flatMap(g => g.evaluator_names || []))];
 
-            const cardsHtml = sorted.map((g, idx) => {
+            const cardsHtml = sorted.map((g) => {
                 const total = calculateGroupTotalScore(g);
                 const max = getMaxPossibleScore(g);
                 const evalsCount = g.evaluations_count || 0;
@@ -1142,12 +1280,12 @@
             }).join('');
 
             const projWord = sorted.length === 1 ? 'Projeto' : 'Projetos';
-            const voteWord = totalVotes === 1 ? 'Voto' : 'Votos';
+            const evalsWord = totalVotes === 1 ? 'Avaliação' : 'Avaliações';
             const evalTotalWord = allEvaluators.length === 1 ? 'Avaliador' : 'Avaliadores';
 
             container.innerHTML = `
                 <div class="flex items-center justify-between bg-slate-100/80 px-4 py-2.5 rounded-xl border border-slate-200 text-xs">
-                    <span class="font-bold text-senac-blue"><i class="fa-solid fa-circle-check text-emerald-500 mr-1.5"></i>${sorted.length} ${projWord} · ${totalVotes} ${voteWord}</span>
+                    <span class="font-bold text-senac-blue"><i class="fa-solid fa-circle-check text-emerald-500 mr-1.5"></i>${sorted.length} ${projWord} · ${totalVotes} ${evalsWord}</span>
                     <span class="text-[11px] text-slate-500 font-semibold">${allEvaluators.length} ${evalTotalWord}</span>
                 </div>
                 <div class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
@@ -1161,8 +1299,9 @@
                 if (groups.length > 0) clearAllBtn.classList.remove('hidden');
                 else clearAllBtn.classList.add('hidden');
             }
-            renderModalitySummary('COLETIVA');
-            renderModalitySummary('INDIVIDUAL');
+            renderModalitySummary('CATEGORIA_1');
+            renderModalitySummary('CATEGORIA_2');
+            renderModalitySummary('CATEGORIA_4');
         }
 
         // ============================================================
@@ -1173,7 +1312,7 @@
         let ceremonyTimerRunning = false;
 
         function updateCeremonyCategoryHeader(modality) {
-            const modShort = modality === 'INDIVIDUAL' ? 'CATEGORIA INDIVIDUAL' : 'CATEGORIA COLETIVA';
+            const modShort = formatModalityUpperTitle(modality);
             const modFull = formatModalityFullTitle(modality).toUpperCase();
             const topPill = document.getElementById('ceremonyTopPillText');
             const catText = document.getElementById('ceremonyCategoryText');
@@ -1182,16 +1321,20 @@
             if (topPill) topPill.textContent = `CERIMÔNIA DE PREMIAÇÃO — ${modShort}`;
             if (catText) catText.textContent = modFull;
             if (catIcon) {
-                catIcon.className = modality === 'INDIVIDUAL'
-                    ? 'fa-solid fa-user-graduate text-senac-orange'
-                    : 'fa-solid fa-users text-senac-orange';
+                if (modality === 'CATEGORIA_1') {
+                    catIcon.className = 'fa-solid fa-trophy text-senac-orange';
+                } else if (modality === 'CATEGORIA_4') {
+                    catIcon.className = 'fa-solid fa-user-graduate text-senac-orange';
+                } else {
+                    catIcon.className = 'fa-solid fa-users text-senac-orange';
+                }
             }
         }
 
         async function startLiveCeremony() {
             const sorted = getSortedGroups(activeModality);
             if (sorted.length === 0) {
-                alert(`Importe primeiro a planilha da ${formatModalityLabel(activeModality)} na aba "IMPORTAR PLANILHAS"!`);
+                alert(`Importe primeiro a planilha da ${formatModalityFullTitle(activeModality)} na aba "IMPORTAR PLANILHAS"!`);
                 switchTab('import');
                 return;
             }
@@ -1210,17 +1353,17 @@
             } catch(e) {}
 
             const currentSorted = getSortedGroups(activeModality);
-            if (currentSorted.length <= 2) {
-                // Quando há até 2 grupos, revela diretamente apenas o 1.º Lugar (Campeão)
+            if (isVoteModality(activeModality)) {
+                // Categoria 2 e Categoria 4: revela apenas o vencedor do 1.º Lugar
                 ceremonyQueue = [{ group: currentSorted[0], rank: 1 }];
             } else {
-                // Quando há mais de 2 grupos, revela do último até o 1.º Lugar
-                ceremonyQueue = currentSorted.map((g, idx) => ({ group: g, rank: idx + 1 })).reverse();
+                // Categoria 1: revela os 3 primeiros lugares (3.º Lugar -> 2.º Lugar -> 1.º Lugar)
+                const top3 = currentSorted.slice(0, 3);
+                ceremonyQueue = top3.map((g, idx) => ({ group: g, rank: idx + 1 })).reverse();
             }
             ceremonyCurrentIdx = -1;
             ceremonyTimerRunning = false;
 
-            const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
             updateCeremonyCategoryHeader(activeModality);
 
             const projWord = currentSorted.length === 1 ? 'PROJETO' : 'PROJETOS';
@@ -1239,7 +1382,7 @@
             if (ceremonyTimerRunning) return;
             ceremonyCurrentIdx++;
 
-            const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
+            const modTitle = formatModalityUpperTitle(activeModality);
 
             if (ceremonyCurrentIdx >= ceremonyQueue.length) {
                 confetti({ particleCount: 200, spread: 160, origin: { y: 0.6 } });
@@ -1276,7 +1419,7 @@
         async function revealGroupInCeremony(group, rank) {
             try {
                 if (rank === 1) {
-                    // Ao revelar o 1.º Lugar, garante que todos os grupos da categoria fiquem revelados para liberar o pódio e gráfico
+                    // Ao revelar o 1.º Lugar, garante que todos os grupos da categoria fiquem revelados para liberar o pódio
                     const modGroups = getModalityGroups(activeModality);
                     for (const mg of modGroups) {
                         const updated = await apiFetch(`/groups/${mg.id}/reveal/`, { method: 'POST' });
@@ -1292,7 +1435,8 @@
 
             const total = calculateGroupTotalScore(group);
             const max = getMaxPossibleScore(group);
-            const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
+            const modTitle = formatModalityUpperTitle(activeModality);
+            const voteMode = isVoteModality(activeModality);
 
             document.getElementById('ceremonyRankTag').textContent = rank === 1
                 ? `👑 1º LUGAR (CAMPEÃO) — ${modTitle}`
@@ -1302,7 +1446,15 @@
             void document.getElementById('ceremonyTitle').offsetWidth;
             document.getElementById('ceremonyTitle').classList.add('timer-pop');
             document.getElementById('ceremonySubtitle').textContent = group.authors;
-            document.getElementById('ceremonyScoreValue').textContent = `${total} / ${max} pts`;
+
+            const scoreLabelEl = document.getElementById('ceremonyScoreLabel');
+            if (voteMode) {
+                if (scoreLabelEl) scoreLabelEl.textContent = 'Votos Recebidos';
+                document.getElementById('ceremonyScoreValue').textContent = `${total} ${total === 1 ? 'voto' : 'votos'}`;
+            } else {
+                if (scoreLabelEl) scoreLabelEl.textContent = 'Pontuação Conquistada';
+                document.getElementById('ceremonyScoreValue').textContent = `${total} / ${max} pts`;
+            }
             document.getElementById('ceremonyScoreBadge').classList.remove('hidden');
 
             const btnLabel = document.getElementById('nextCeremonyBtnLabel');

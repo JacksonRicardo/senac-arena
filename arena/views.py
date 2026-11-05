@@ -17,6 +17,14 @@ from .serializers import (
 )
 
 
+VALID_MODALITIES = ('CATEGORIA_1', 'CATEGORIA_2', 'CATEGORIA_4')
+MODALITY_LABELS = {
+    'CATEGORIA_1': 'Categoria 1: Educação Inovadora — Geral',
+    'CATEGORIA_2': 'Categoria 2: Prática Pedagógica Integradora Coletiva',
+    'CATEGORIA_4': 'Categoria 4: Projeto Integrador Individual',
+}
+
+
 def index(request):
     """Serve o frontend SPA."""
     return render(request, 'arena/index.html')
@@ -37,9 +45,9 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        # Remove automaticamente quaisquer projetos antigos cadastrados manualmente antes das modalidades
-        if Group.objects.exclude(unit__in=['COLETIVA', 'INDIVIDUAL']).exists():
-            Group.objects.exclude(unit__in=['COLETIVA', 'INDIVIDUAL']).delete()
+        # Remove automaticamente quaisquer projetos antigos cadastrados em modalidades anteriores
+        if Group.objects.exclude(unit__in=VALID_MODALITIES).exists():
+            Group.objects.exclude(unit__in=VALID_MODALITIES).delete()
             Evaluator.objects.filter(evaluations__isnull=True).delete()
         return Group.objects.prefetch_related('evaluations', 'evaluations__evaluator').all()
 
@@ -167,32 +175,38 @@ def _parse_rubric_score(raw_val: str):
     return None
 
 
-def _clean_evaluator_name(raw_name: str) -> str:
-    """Remove numeração inicial do nome do avaliador (ex: '1. Daniela Papelbaum' -> 'Daniela Papelbaum')."""
+def _clean_evaluator_name(raw_name: str) -> tuple[str, str]:
+    """Extrai (nome, cargo) do avaliador (ex: '1. Daniela Papelbaum – Gerente...' -> ('Daniela Papelbaum', 'Gerente...'))."""
     s = ' '.join(str(raw_name or '').strip().split())
     s = re.sub(r'^\d+[\.\)\-\s]+', '', s).strip()
-    return s
+    parts = re.split(r'\s+[–—-]\s+', s, maxsplit=1)
+    name = parts[0].strip()
+    role = parts[1].strip() if len(parts) > 1 and parts[1].strip() else ''
+    return name, role
 
 
 def _split_authors_and_title(raw_group: str) -> tuple[str, str]:
-    """Separa 'Autores | Título do Projeto' vindo da coluna de grupo do Forms."""
+    """Separa 'Autores | Título' ou 'Autores, com a prática Título' vindo da coluna de grupo do Forms."""
     s = ' '.join(str(raw_group or '').strip().split())
     if '|' in s:
         parts = [p.strip() for p in s.split('|', 1)]
         authors = parts[0] or 'Participante'
         title = parts[1] or parts[0]
         return authors, title
+    parts = re.split(r',?\s+com\s+a\s+pr[áa]tica\s+', s, maxsplit=1, flags=re.IGNORECASE)
+    if len(parts) == 2 and parts[0].strip() and parts[1].strip():
+        return parts[0].strip(), parts[1].strip()
     return 'Participante', s
 
 
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser, JSONParser])
 def import_spreadsheet(request):
-    """Importa a planilha do Microsoft Forms (Categoria Coletiva ou Individual) e computa os pontos."""
+    """Importa a planilha do Microsoft Forms (Categoria 1, Categoria 2 ou Categoria 4) e computa os resultados."""
     modality = str(request.data.get('modality', '')).strip().upper()
-    if modality not in ('COLETIVA', 'INDIVIDUAL'):
+    if modality not in VALID_MODALITIES:
         return Response(
-            {'detail': 'Modalidade inválida. Informe COLETIVA ou INDIVIDUAL.'},
+            {'detail': 'Categoria inválida. Informe CATEGORIA_1, CATEGORIA_2 ou CATEGORIA_4.'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -228,116 +242,162 @@ def import_spreadsheet(request):
 
     headers = [' '.join(str(h or '').strip().split()) for h in rows[0]]
     data_rows = rows[1:]
+    modality_label = MODALITY_LABELS.get(modality, modality)
 
-    # Identifica a coluna de Avaliadores
-    eval_col_idx = None
-    for idx, h in enumerate(headers):
-        hl = h.lower()
-        if 'avaliador' in hl or 'jurado' in hl:
-            eval_col_idx = idx
-            break
-    if eval_col_idx is None:
-        eval_col_idx = 6 if len(headers) > 7 else 0
-
-    # Identifica a coluna de Grupo / Projeto (Categoria 2 ou Categoria 4)
-    group_col_idx = eval_col_idx + 1
-    for idx in range(eval_col_idx + 1, len(headers)):
-        hl = headers[idx].lower()
-        if any(k in hl for k in ('categoria', 'prática', 'pratica', 'projeto', 'grupo', 'trabalho', 'coletiva', 'individual')):
-            group_col_idx = idx
-            break
-
-    # Todas as colunas seguintes com cabeçalho são os critérios/rúbricas (ex: as 6 categorias de 0 a 2 pontos)
-    rubric_cols = []
-    for idx in range(group_col_idx + 1, len(headers)):
-        col_name = headers[idx]
-        if col_name:
-            rubric_cols.append((idx, col_name))
-
-    if not rubric_cols:
-        return Response(
-            {'detail': 'Não foram encontradas as colunas de critérios/rúbricas na planilha.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    # Garante o cadastro das categorias (rúbricas) na ordem da planilha
-    col_to_category = {}
-    active_category_ids = []
-    for order_idx, (col_idx, col_name) in enumerate(rubric_cols, start=1):
-        cat = Category.objects.filter(name__iexact=col_name).first()
-        if not cat:
-            cat = Category.objects.create(
-                name=col_name,
-                description='Critério oficial importado da planilha Microsoft Forms (0 a 2 pontos).',
-                order=order_idx
-            )
-        else:
-            if cat.order != order_idx:
-                cat.order = order_idx
-                cat.save(update_fields=['order'])
-        col_to_category[col_idx] = cat
-        active_category_ids.append(cat.id)
-
-    # Remove grupos antigos desta modalidade (e grupos legados de teste sem modalidade definida)
+    # Remove grupos antigos desta modalidade e grupos legados
     Group.objects.filter(unit__iexact=modality).delete()
-    Group.objects.exclude(unit__in=['COLETIVA', 'INDIVIDUAL']).delete()
-
-    # Remove categorias antigas que não pertencem às rúbricas da planilha se não tiverem avaliações
-    Category.objects.exclude(id__in=active_category_ids).filter(evaluations__isnull=True).delete()
+    Group.objects.exclude(unit__in=VALID_MODALITIES).delete()
 
     rows_processed = 0
-    modality_label = 'Categoria Coletiva' if modality == 'COLETIVA' else 'Categoria Individual'
 
-    for row in data_rows:
-        if len(row) <= group_col_idx:
-            continue
-        raw_eval = row[eval_col_idx] if eval_col_idx < len(row) else ''
-        raw_group = row[group_col_idx] if group_col_idx < len(row) else ''
+    if modality in ('CATEGORIA_2', 'CATEGORIA_4'):
+        # Votação direta: cada linha da planilha representa 1 voto para o grupo selecionado
+        group_col_idx = None
+        for idx, h in enumerate(headers):
+            hl = h.lower()
+            if any(k in hl for k in ('categoria', 'prática', 'pratica', 'projeto', 'grupo', 'trabalho', 'coletiva', 'individual')):
+                group_col_idx = idx
+                break
+        if group_col_idx is None:
+            group_col_idx = len(headers) - 1
 
-        eval_name = _clean_evaluator_name(raw_eval)
-        if not eval_name or not str(raw_group).strip():
-            continue
-
-        authors, title = _split_authors_and_title(raw_group)
-
-        evaluator = Evaluator.objects.filter(name__iexact=eval_name).first()
-        if not evaluator:
-            evaluator = Evaluator.objects.create(name=eval_name, role=modality_label)
-
-        group = Group.objects.filter(title__iexact=title, unit=modality).first()
-        if not group:
-            group = Group.objects.create(
-                title=title,
-                authors=authors,
-                unit=modality,
-                is_revealed=False
-            )
-
-        row_has_score = False
-        for col_idx, cat in col_to_category.items():
-            cell_val = row[col_idx] if col_idx < len(row) else ''
-            score = _parse_rubric_score(cell_val)
-            if score is not None:
-                Evaluation.objects.update_or_create(
-                    group=group,
-                    category=cat,
-                    evaluator=evaluator,
-                    defaults={'score': score}
-                )
-                row_has_score = True
-
-        if row_has_score:
+        votes_by_project = {}
+        for row in data_rows:
+            if len(row) <= group_col_idx:
+                continue
+            raw_group = str(row[group_col_idx] or '').strip()
+            if not raw_group:
+                continue
+            authors, title = _split_authors_and_title(raw_group)
+            key = title.lower()
+            if key not in votes_by_project:
+                votes_by_project[key] = {
+                    'title': title,
+                    'authors': authors,
+                    'votes': 0,
+                }
+            votes_by_project[key]['votes'] += 1
             rows_processed += 1
 
-    # Remove avaliadores órfãos sem nenhuma avaliação
+        if not votes_by_project:
+            return Response(
+                {'detail': 'Nenhum voto válido encontrado na coluna de projetos da planilha.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        for info in votes_by_project.values():
+            Group.objects.create(
+                title=info['title'],
+                authors=info['authors'],
+                unit=modality,
+                notes=str(info['votes']),
+                is_revealed=False
+            )
+    else:
+        # CATEGORIA_1: Avaliação por critérios/rúbricas (0 a 2 pontos por critério)
+        eval_col_idx = None
+        for idx, h in enumerate(headers):
+            hl = h.lower()
+            if 'avaliador' in hl or 'jurado' in hl:
+                eval_col_idx = idx
+                break
+        if eval_col_idx is None:
+            eval_col_idx = 5 if len(headers) > 6 else 0
+
+        group_col_idx = eval_col_idx + 1
+        for idx in range(eval_col_idx + 1, len(headers)):
+            hl = headers[idx].lower()
+            if any(k in hl for k in ('categoria', 'prática', 'pratica', 'projeto', 'grupo', 'trabalho', 'coletiva', 'individual')):
+                group_col_idx = idx
+                break
+
+        rubric_cols = []
+        for idx in range(group_col_idx + 1, len(headers)):
+            col_name = headers[idx]
+            if col_name:
+                rubric_cols.append((idx, col_name))
+
+        if not rubric_cols:
+            return Response(
+                {'detail': 'Não foram encontradas as colunas de critérios/rúbricas na planilha da Categoria 1.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        col_to_category = {}
+        active_category_ids = []
+        for order_idx, (col_idx, col_name) in enumerate(rubric_cols, start=1):
+            cat = Category.objects.filter(name__iexact=col_name).first()
+            if not cat:
+                cat = Category.objects.create(
+                    name=col_name,
+                    description='Critério oficial importado da planilha Microsoft Forms (0 a 2 pontos).',
+                    order=order_idx
+                )
+            else:
+                if cat.order != order_idx:
+                    cat.order = order_idx
+                    cat.save(update_fields=['order'])
+            col_to_category[col_idx] = cat
+            active_category_ids.append(cat.id)
+
+        Category.objects.exclude(id__in=active_category_ids).filter(evaluations__isnull=True).delete()
+
+        for row in data_rows:
+            if len(row) <= group_col_idx:
+                continue
+            raw_eval = row[eval_col_idx] if eval_col_idx < len(row) else ''
+            raw_group = row[group_col_idx] if group_col_idx < len(row) else ''
+
+            eval_name, eval_role = _clean_evaluator_name(raw_eval)
+            if not eval_name or not str(raw_group).strip():
+                continue
+
+            authors, title = _split_authors_and_title(raw_group)
+
+            evaluator = Evaluator.objects.filter(name__iexact=eval_name).first()
+            if not evaluator:
+                evaluator = Evaluator.objects.create(
+                    name=eval_name,
+                    role=eval_role or modality_label
+                )
+            elif eval_role and evaluator.role != eval_role:
+                evaluator.role = eval_role
+                evaluator.save(update_fields=['role'])
+
+            group = Group.objects.filter(title__iexact=title, unit=modality).first()
+            if not group:
+                group = Group.objects.create(
+                    title=title,
+                    authors=authors,
+                    unit=modality,
+                    is_revealed=False
+                )
+
+            row_has_score = False
+            for col_idx, cat in col_to_category.items():
+                cell_val = row[col_idx] if col_idx < len(row) else ''
+                score = _parse_rubric_score(cell_val)
+                if score is not None:
+                    Evaluation.objects.update_or_create(
+                        group=group,
+                        category=cat,
+                        evaluator=evaluator,
+                        defaults={'score': score}
+                    )
+                    row_has_score = True
+
+            if row_has_score:
+                rows_processed += 1
+
     Evaluator.objects.filter(evaluations__isnull=True).delete()
 
     categories_qs = Category.objects.all()
     groups_qs = Group.objects.prefetch_related('evaluations', 'evaluations__evaluator').all()
     evaluators_qs = Evaluator.objects.prefetch_related('evaluations').all()
 
+    unit_word = 'voto(s) computado(s)' if modality in ('CATEGORIA_2', 'CATEGORIA_4') else 'avaliação(ões) processada(s)'
     return Response({
-        'detail': f'Planilha da {modality_label} importada com sucesso ({rows_processed} avaliação(ões) processada(s)).',
+        'detail': f'Planilha de {modality_label} importada com sucesso ({rows_processed} {unit_word}).',
         'modality': modality,
         'rows_processed': rows_processed,
         'categories': CategorySerializer(categories_qs, many=True).data,
@@ -348,9 +408,9 @@ def import_spreadsheet(request):
 
 @api_view(['POST'])
 def clear_modality(request):
-    """Remove os grupos e avaliações de uma modalidade específica (COLETIVA, INDIVIDUAL ou ALL)."""
+    """Remove os grupos e avaliações de uma modalidade específica (CATEGORIA_1, CATEGORIA_2, CATEGORIA_4 ou ALL)."""
     modality = str(request.data.get('modality', '')).strip().upper()
-    if modality not in ('COLETIVA', 'INDIVIDUAL', 'ALL'):
+    if modality not in (*VALID_MODALITIES, 'ALL'):
         return Response({'detail': 'Modalidade inválida.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if modality == 'ALL':
@@ -358,7 +418,7 @@ def clear_modality(request):
         Evaluator.objects.all().delete()
     else:
         Group.objects.filter(unit__iexact=modality).delete()
-        Group.objects.exclude(unit__in=['COLETIVA', 'INDIVIDUAL']).delete()
+        Group.objects.exclude(unit__in=VALID_MODALITIES).delete()
         Evaluator.objects.filter(evaluations__isnull=True).delete()
 
     categories_qs = Category.objects.all()
@@ -431,7 +491,7 @@ def reveal_group(request, pk):
 def reset_ceremony(request):
     """Reseta is_revealed dos grupos (opcionalmente filtrado por modalidade/unit)."""
     modality = str(request.data.get('modality', '')).strip().upper() if isinstance(request.data, dict) else ''
-    if modality in ('COLETIVA', 'INDIVIDUAL'):
+    if modality in VALID_MODALITIES:
         Group.objects.filter(unit__iexact=modality).update(is_revealed=False)
     else:
         Group.objects.all().update(is_revealed=False)
