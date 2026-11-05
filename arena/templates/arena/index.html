@@ -361,30 +361,55 @@
         function playAudioEffect(type) {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
                 if (type === 'pop') {
                     const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
                     osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.frequency.setValueAtTime(450, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(450, now);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
                 } else if (type === 'tick') {
                     const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
                     osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.frequency.setValueAtTime(750, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.08);
-                } else if (type === 'fanfare') {
-                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
-                        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-                        o.connect(g); g.connect(audioCtx.destination);
-                        o.frequency.value = freq;
-                        g.gain.setValueAtTime(0.15, audioCtx.currentTime + (i * 0.12));
-                        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.12) + 0.6);
-                        o.start(audioCtx.currentTime + (i * 0.12));
-                        o.stop(audioCtx.currentTime + (i * 0.12) + 0.6);
-                    });
+                    osc.frequency.setValueAtTime(750, now);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now); osc.stop(now + 0.08);
+                } else if (type === 'victory' || type === 'fanfare') {
+                    // Efeito "TAN - NAAAAAM!" (2 acordes triunfais estilo trompete/orquestra)
+                    const playBrassChord = (freqs, startTime, duration, peakGain) => {
+                        freqs.forEach((freq) => {
+                            ['triangle', 'sawtooth'].forEach((wave, wIdx) => {
+                                const osc = audioCtx.createOscillator();
+                                const filter = audioCtx.createBiquadFilter();
+                                const gain = audioCtx.createGain();
+
+                                osc.type = wave;
+                                osc.frequency.setValueAtTime(freq, startTime);
+
+                                filter.type = 'lowpass';
+                                filter.frequency.setValueAtTime(wave === 'sawtooth' ? 1800 : 3200, startTime);
+
+                                const noteGain = wIdx === 0 ? peakGain : peakGain * 0.45;
+                                gain.gain.setValueAtTime(0.0001, startTime);
+                                gain.gain.linearRampToValueAtTime(noteGain, startTime + 0.025);
+                                gain.gain.exponentialRampToValueAtTime(0.0008, startTime + duration);
+
+                                osc.connect(filter);
+                                filter.connect(gain);
+                                gain.connect(audioCtx.destination);
+
+                                osc.start(startTime);
+                                osc.stop(startTime + duration + 0.02);
+                            });
+                        });
+                    };
+
+                    // 1º impacto curto: "TAN!"
+                    playBrassChord([392.00, 493.88, 587.33, 783.99], now, 0.19, 0.09);
+                    // 2º impacto longo e triunfal: "NAAAAAM!"
+                    playBrassChord([261.63, 392.00, 523.25, 659.25, 783.99, 1046.50], now + 0.23, 1.55, 0.11);
                 }
             } catch(e) {}
         }
@@ -1184,15 +1209,22 @@
                 renderAll();
             } catch(e) {}
 
-            ceremonyQueue = [...getSortedGroups(activeModality)].reverse();
+            const currentSorted = getSortedGroups(activeModality);
+            if (currentSorted.length <= 2) {
+                // Quando há até 2 grupos, revela diretamente apenas o 1.º Lugar (Campeão)
+                ceremonyQueue = [{ group: currentSorted[0], rank: 1 }];
+            } else {
+                // Quando há mais de 2 grupos, revela do último até o 1.º Lugar
+                ceremonyQueue = currentSorted.map((g, idx) => ({ group: g, rank: idx + 1 })).reverse();
+            }
             ceremonyCurrentIdx = -1;
             ceremonyTimerRunning = false;
 
             const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
             updateCeremonyCategoryHeader(activeModality);
 
-            const projWord = ceremonyQueue.length === 1 ? 'PROJETO' : 'PROJETOS';
-            document.getElementById('ceremonyRankTag').textContent = `PREPARAÇÃO DA REVELAÇÃO · ${ceremonyQueue.length} ${projWord}`;
+            const projWord = currentSorted.length === 1 ? 'PROJETO' : 'PROJETOS';
+            document.getElementById('ceremonyRankTag').textContent = `PREPARAÇÃO DA REVELAÇÃO · ${currentSorted.length} ${projWord}`;
             document.getElementById('ceremonyTitle').textContent = 'Vamos Começar?';
             document.getElementById('ceremonySubtitle').textContent = `Resultado Oficial | ${formatModalityFullTitle(activeModality)}.`;
             document.getElementById('ceremonyScoreBadge').classList.add('hidden');
@@ -1209,15 +1241,14 @@
             const modTitle = activeModality === 'COLETIVA' ? 'CATEGORIA COLETIVA' : 'CATEGORIA INDIVIDUAL';
 
             if (ceremonyCurrentIdx >= ceremonyQueue.length) {
-                playAudioEffect('fanfare');
                 confetti({ particleCount: 200, spread: 160, origin: { y: 0.6 } });
                 closeCeremonyModal();
                 return;
             }
 
-            const totalGroups = ceremonyQueue.length;
-            const rank = totalGroups - ceremonyCurrentIdx;
-            const group = ceremonyQueue[ceremonyCurrentIdx];
+            const stepItem = ceremonyQueue[ceremonyCurrentIdx];
+            const group = stepItem.group;
+            const rank = stepItem.rank;
 
             document.getElementById('ceremonyRankTag').textContent = `REVELANDO ${rank}º LUGAR — ${modTitle}`;
             document.getElementById('ceremonyTitle').textContent = '⏳ Preparando revelação...';
@@ -1243,9 +1274,19 @@
 
         async function revealGroupInCeremony(group, rank) {
             try {
-                const updated = await apiFetch(`/groups/${group.id}/reveal/`, { method: 'POST' });
-                const idx = groups.findIndex(g => g.id === updated.id);
-                if (idx >= 0) groups[idx] = updated;
+                if (rank === 1) {
+                    // Ao revelar o 1.º Lugar, garante que todos os grupos da categoria fiquem revelados para liberar o pódio e gráfico
+                    const modGroups = getModalityGroups(activeModality);
+                    for (const mg of modGroups) {
+                        const updated = await apiFetch(`/groups/${mg.id}/reveal/`, { method: 'POST' });
+                        const idx = groups.findIndex(g => g.id === updated.id);
+                        if (idx >= 0) groups[idx] = updated;
+                    }
+                } else {
+                    const updated = await apiFetch(`/groups/${group.id}/reveal/`, { method: 'POST' });
+                    const idx = groups.findIndex(g => g.id === updated.id);
+                    if (idx >= 0) groups[idx] = updated;
+                }
             } catch(e) {}
 
             const total = calculateGroupTotalScore(group);
@@ -1270,7 +1311,7 @@
             }
 
             if (rank === 1) {
-                playAudioEffect('fanfare');
+                playAudioEffect('victory');
                 confetti({ particleCount: 180, spread: 140, origin: { y: 0.6 } });
                 setTimeout(() => confetti({ particleCount: 100, angle: 60, spread: 55, origin: { x: 0 } }), 400);
                 setTimeout(() => confetti({ particleCount: 100, angle: 120, spread: 55, origin: { x: 1 } }), 600);
