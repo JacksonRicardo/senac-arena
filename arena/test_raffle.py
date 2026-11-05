@@ -3,6 +3,7 @@ import uuid
 import zipfile
 
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIClient
 
@@ -147,3 +148,48 @@ class RaffleTests(TestCase):
         self.assertIn('id="raffle-reset"', import_tab)
         self.assertNotIn('id="raffle-file"', raffle_tab)
         self.assertIn('Sua chance continua até a sua vitória chegar.', raffle_tab)
+
+
+class RaffleAdminTests(TestCase):
+    def setUp(self):
+        self.client.force_login(get_user_model().objects.create_superuser(
+            username='raffle-admin', email='admin@example.com', password='test-password'))
+        self.ana = RaffleParticipant.objects.create(
+            identity='ANA', name='Ana', unit='Centro', role='Instrutora')
+        self.bia = RaffleParticipant.objects.create(
+            identity='BIA', name='Bia', unit='Zona Sul', role='Analista', is_active=False)
+        self.winner = RaffleWinner.objects.create(
+            participant=self.ana, name='Ana', unit='Centro', request_id=uuid.uuid4())
+
+    def test_admin_lists_all_imported_participants_and_filters_winners(self):
+        response = self.client.get('/admin/arena/raffleparticipant/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(set(response.context['cl'].queryset), {self.ana, self.bia})
+        self.assertContains(response, 'Participantes da planilha')
+        for value, person in [('yes', self.ana), ('no', self.bia)]:
+            response = self.client.get('/admin/arena/raffleparticipant/', {'drawn': value})
+            self.assertEqual(list(response.context['cl'].queryset), [person])
+        response = self.client.get('/admin/arena/raffleparticipant/', {'q': 'Zona Sul'})
+        self.assertEqual(list(response.context['cl'].queryset), [self.bia])
+
+    def test_admin_winners_keep_original_details_after_reimport(self):
+        self.ana.unit = 'Mossoró'
+        self.ana.save()
+        response = self.client.get('/admin/arena/rafflewinner/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Sorteados')
+        self.assertContains(response, 'Centro')
+        self.assertNotContains(response, 'Mossoró')
+        self.assertEqual(list(response.context['cl'].queryset), [self.winner])
+
+    def test_admin_records_are_read_only_and_require_login(self):
+        for model, obj in [('raffleparticipant', self.ana), ('rafflewinner', self.winner)]:
+            url = f'/admin/arena/{model}/'
+            self.assertEqual(self.client.get(url + 'add/').status_code, 403)
+            self.assertEqual(self.client.get(url + f'{obj.pk}/delete/').status_code, 403)
+            response = self.client.post(url + f'{obj.pk}/change/', {'name': 'Alterado'})
+            self.assertEqual(response.status_code, 302)
+            obj.refresh_from_db()
+            self.assertEqual(obj.name, 'Ana')
+        self.client.logout()
+        self.assertEqual(self.client.get('/admin/arena/rafflewinner/').status_code, 302)

@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.db.models import Sum
+from django.db.models import Exists, OuterRef, Sum
 from django.utils.html import format_html
-from .models import Category, Group, Evaluator, Evaluation
+from .models import Category, Group, Evaluator, Evaluation, RaffleParticipant, RaffleWinner
 
 
 @admin.register(Category)
@@ -170,3 +170,83 @@ class EvaluationAdmin(admin.ModelAdmin):
     group_total_badge.short_description = 'Total do Grupo'
 
 
+
+
+class RaffleDrawnFilter(admin.SimpleListFilter):
+    title = 'Situação no sorteio'
+    parameter_name = 'drawn'
+
+    def lookups(self, request, model_admin):
+        return [('yes', 'Sorteados'), ('no', 'Ainda não sorteados')]
+
+    def queryset(self, request, queryset):
+        if self.value() in ('yes', 'no'):
+            return queryset.filter(has_won=self.value() == 'yes')
+        return queryset
+
+
+@admin.register(RaffleParticipant)
+class RaffleParticipantAdmin(admin.ModelAdmin):
+    list_display = ['participant_name', 'participant_unit', 'participant_role', 'active', 'drawn']
+    search_fields = ['name', 'unit', 'role']
+    list_filter = ['is_active', 'unit', RaffleDrawnFilter]
+    ordering = ['name']
+    readonly_fields = ['identity', 'name', 'unit', 'role', 'is_active']
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            has_won=Exists(RaffleWinner.objects.filter(participant_id=OuterRef('pk'))))
+
+    @admin.display(description='Nome', ordering='name')
+    def participant_name(self, obj):
+        return obj.name
+
+    @admin.display(description='Unidade', ordering='unit')
+    def participant_unit(self, obj):
+        return obj.unit
+
+    @admin.display(description='Cargo', ordering='role')
+    def participant_role(self, obj):
+        return obj.role
+
+    @admin.display(description='Na lista ativa', boolean=True, ordering='is_active')
+    def active(self, obj):
+        return obj.is_active
+
+    @admin.display(description='Sorteado', boolean=True, ordering='has_won')
+    def drawn(self, obj):
+        return obj.has_won
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(RaffleWinner)
+class RaffleWinnerAdmin(admin.ModelAdmin):
+    list_display = ['winner_name', 'winner_unit', 'draw_date']
+    search_fields = ['name', 'unit']
+    list_filter = ['unit', 'drawn_at']
+    ordering = ['-drawn_at', '-id']
+    date_hierarchy = 'drawn_at'
+    readonly_fields = ['participant', 'name', 'unit', 'request_id', 'drawn_at']
+
+    @admin.display(description='Nome', ordering='name')
+    def winner_name(self, obj):
+        return obj.name
+
+    @admin.display(description='Unidade no sorteio', ordering='unit')
+    def winner_unit(self, obj):
+        return obj.unit
+
+    @admin.display(description='Data do sorteio', ordering='drawn_at')
+    def draw_date(self, obj):
+        return obj.drawn_at
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

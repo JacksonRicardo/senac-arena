@@ -17,6 +17,43 @@
         el('reset').disabled = busy || !state || (!pending && !state.winners.length);
         el('draw').textContent = busy ? '✦ Sorteando…' : pending ? 'Recuperar sorteio pendente' : '✦ Sortear agora';
     }
+    let previousFocus = null;
+    function enterFullscreen() {
+        const stage = el('stage');
+        previousFocus = document.activeElement;
+        stage.classList.add('raffle-fullscreen');
+        document.body.classList.add('raffle-fullscreen-open');
+        el('exit-fullscreen').focus();
+        // O painel ocupa a janela mesmo quando o navegador recusa a API.
+        if (stage.requestFullscreen && !document.fullscreenElement) {
+            try {
+                const request = stage.requestFullscreen();
+                if (request) request.catch(() => {});
+            } catch (_) {}
+        }
+    }
+    function leaveFullscreen() {
+        el('stage').classList.remove('raffle-fullscreen');
+        document.body.classList.remove('raffle-fullscreen-open');
+        if (previousFocus) previousFocus.focus();
+    }
+    el('exit-fullscreen').addEventListener('click', () => {
+        if (document.fullscreenElement === el('stage')) document.exitFullscreen().catch(() => {});
+        leaveFullscreen();
+    });
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) leaveFullscreen();
+    });
+    document.addEventListener('keydown', event => {
+        if (!el('stage').classList.contains('raffle-fullscreen')) return;
+        if (event.key === 'Escape') leaveFullscreen();
+        if (event.key === 'Tab') {
+            const buttons = [el('exit-fullscreen'), el('draw')].filter(button => !button.disabled);
+            const index = buttons.indexOf(document.activeElement);
+            event.preventDefault();
+            buttons[(index + (event.shiftKey ? -1 : 1) + buttons.length) % buttons.length].focus();
+        }
+    });
     function showWinner(winner) {
         el('stage').classList.remove('raffle-rolling', 'raffle-revealed');
         el('eyebrow').textContent = 'A estrela da vez é…';
@@ -105,6 +142,7 @@
     });
     el('draw').addEventListener('click', async () => {
         if (busy) return;
+        enterFullscreen();
         busy = true; controls(); message('Preparando a revelação…');
         let timer;
         try {

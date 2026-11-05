@@ -117,6 +117,8 @@ class RaffleParticipant(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
+        verbose_name = 'Participante da planilha'
+        verbose_name_plural = 'Participantes da planilha'
         ordering = ['name']
 
     def __str__(self):
@@ -130,3 +132,10 @@ class RaffleWinner(models.Model):
     unit = models.CharField(max_length=200)
     request_id = models.UUIDField(unique=True)
     drawn_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Sorteado'
+        verbose_name_plural = 'Sorteados'
+
+    def __str__(self):
+        return f"{self.name} — {self.unit}"

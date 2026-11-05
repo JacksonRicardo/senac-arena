@@ -34,3 +34,12 @@
 @keyframes raffleGlow{50%{transform:scale(1.15);filter:drop-shadow(0 0 30px #ffb800)}}
 @media(max-width:900px){.raffle-layout{grid-template-columns:1fr}.raffle-stage{min-height:440px}}
 @media(prefers-reduced-motion:reduce){.raffle-stage *{animation:none!important;transition:none!important}}
+
+body.raffle-fullscreen-open{overflow:hidden}
+.raffle-stage.raffle-fullscreen,.raffle-stage:fullscreen{position:fixed;inset:0;z-index:10000;width:100%;height:100%;height:100dvh;min-height:0;border:0;border-radius:0;overflow:auto}
+.raffle-fullscreen .raffle-stage-content,.raffle-stage:fullscreen .raffle-stage-content{padding:70px clamp(16px,4vw,80px) 32px;max-width:1800px;margin:auto}
+.raffle-fullscreen .raffle-name,.raffle-stage:fullscreen .raffle-name{font-size:clamp(26px,4.5vw,80px)}
+.raffle-exit-fullscreen{display:none;position:absolute;top:16px;right:16px;z-index:2;border:1px solid #ffffff60;border-radius:12px;background:#062b64;color:white;padding:10px 16px;font-size:13px;font-weight:700}
+.raffle-fullscreen .raffle-exit-fullscreen,.raffle-stage:fullscreen .raffle-exit-fullscreen{display:block}
+.raffle-exit-fullscreen:focus-visible{outline:3px solid #ffba65;outline-offset:3px}
+@media(max-height:600px){.raffle-fullscreen .raffle-star,.raffle-stage:fullscreen .raffle-star{font-size:36px;margin:12px 0}.raffle-fullscreen .raffle-name,.raffle-stage:fullscreen .raffle-name{min-height:60px}.raffle-fullscreen .raffle-unit,.raffle-stage:fullscreen .raffle-unit{margin:10px 0 16px}}
