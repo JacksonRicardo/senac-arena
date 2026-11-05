@@ -23,7 +23,7 @@ class CategoryAdmin(admin.ModelAdmin):
     def total_points_badge(self, obj):
         total = obj.evaluations.aggregate(s=Sum('score'))['s'] or 0
         return format_html(
-            '<span style="background:#004587;color:#fff;padding:3px 10px;border-radius:10px;font-weight:bold">{} pts</span>',
+            '<span style="background:#002D72;color:#fff;padding:3px 10px;border-radius:10px;font-weight:bold">{} pts</span>',
             total
         )
     total_points_badge.short_description = 'Somatório Geral'

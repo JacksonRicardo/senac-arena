@@ -17,11 +17,11 @@
                 extend: {
                     colors: {
                         senac: {
-                            blue: '#004587',
-                            lightBlue: '#0072CE',
+                            blue: '#002D72',
+                            lightBlue: '#002D72',
                             cyan: '#00D2FF',
                             orange: '#F37021',
-                            darkNavy: '#001E3C',
+                            darkNavy: '#002D72',
                             gold: '#FFB800',
                             bgSlate: '#F8FAFC',
                             cardBg: '#FFFFFF'
@@ -67,13 +67,12 @@
     <header class="bg-senac-darkNavy text-white sticky top-0 z-30 shadow-lg border-b-2 border-senac-orange">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
-                <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                    <div class="flex items-center py-1">
-                        <img src="{% static 'arena/logo_educacao_inovadora.png' %}" alt="Educação Inovadora" class="h-12 sm:h-16 w-auto object-contain">
-                    </div>
-                    <div class="hidden sm:block w-px h-12 bg-white/20"></div>
-                    <div class="flex items-center text-white py-1">
-                        <img src="{% static 'arena/logo_senac.png' %}" alt="Senac Fecomércio Sesc" class="h-12 sm:h-14 w-auto object-contain">
+                <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 text-center sm:text-left py-1">
+                    <img src="{% static 'arena/logo_senac_topo.png' %}" alt="Senac Fecomércio Sesc" class="h-10 sm:h-12 w-auto object-contain">
+                    <div class="hidden sm:block w-px h-10 bg-white/20"></div>
+                    <div class="leading-tight">
+                        <h1 class="font-heading font-extrabold text-lg sm:text-xl text-white tracking-wide">Educação Inovadora</h1>
+                        <p class="text-xs font-semibold text-senac-orange tracking-wider uppercase mt-0.5">Edição - 2026</p>
                     </div>
                 </div>
                 <nav class="flex items-center gap-1.5 bg-white/10 p-1.5 rounded-2xl border border-white/10 w-full lg:w-auto justify-center">
@@ -98,24 +97,24 @@
             <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-tech flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-senac-orange border border-orange-200 mb-2">
-                        <i class="fa-solid fa-bolt animate-bounce"></i> Cerimônia de Premiação ao Vivo
+                        <i class="fa-solid fa-bolt animate-bounce"></i>AS MELHORES PRÁTICAS INOVADORAS ESTÃO AQUI
                     </span>
-                    <h2 class="text-2xl font-black font-heading text-senac-blue">Painel do Ranking de Inovação</h2>
+                    <h2 class="text-2xl font-black font-heading text-senac-blue">RANKING DOS INOVADORES</h2>
                 </div>
                 <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                    <button onclick="startLiveCeremony()" class="bg-gradient-to-r from-senac-orange to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold px-8 py-3.5 rounded-2xl text-sm shadow-gold transition-all flex items-center gap-2.5 hover:scale-105">
+                    <button onclick="startLiveCeremony()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-2xl text-sm shadow-md transition-all flex items-center gap-2.5 hover:scale-105">
                         <i class="fa-solid fa-play text-base"></i><span>INICIAR CERIMÔNIA</span>
                     </button>
                 </div>
             </div>
             <div id="winnerSpotlightContainer" class="w-full"></div>
-            <div class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
+            <div id="leaderboardSection" class="bg-white rounded-3xl border border-slate-200 shadow-tech p-6 sm:p-8">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-2xl bg-senac-blue text-white flex items-center justify-center font-bold text-base shadow-md">
                             <i class="fa-solid fa-ranking-star text-senac-cyan"></i>
                         </div>
-                        <h3 class="text-lg font-bold font-heading text-senac-blue">Classificação Oficial dos Trabalhos</h3>
+                        <h3 class="text-lg font-bold font-heading text-senac-blue">CLASSIFICAÇÃO</h3>
                     </div>
                     <div class="relative w-full sm:w-64">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -131,7 +130,7 @@
             <div class="bg-white rounded-3xl border border-slate-200 shadow-battle p-6 sm:p-8">
                 <div class="max-w-3xl mb-8">
                     <span class="bg-blue-50 text-senac-blue border border-blue-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Formulário do Jurado</span>
-                    <h2 class="text-2xl font-black font-heading text-senac-blue mt-2">Atribuição de Notas da Bateria</h2>
+                    <h2 class="text-2xl font-black font-heading text-senac-blue mt-2">ATRIBUIÇÃO DE NOTAS</h2>
                     <p class="text-xs text-slate-600 mt-1">Selecione o projeto e escolha entre 0, 1 ou 2 para cada critério.</p>
                 </div>
                 <form id="evaluationForm" onsubmit="handleEvaluationSubmit(event)" class="space-y-8">
@@ -151,7 +150,7 @@
                     </div>
                     <div class="space-y-6">
                         <h3 class="text-sm font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center justify-between">
-                            <span>3. Avaliação por Categoria Cadastrada:</span>
+                            <span>3. AVALIAÇÃO POR CATEGORIA CADASTRADA:</span>
                             <span class="text-xs text-senac-orange font-normal" id="categoriesCountTag">0 Categorias</span>
                         </h3>
                         <div id="dynamicCriteriaRadioGrid" class="grid grid-cols-1 gap-6"></div>
@@ -162,7 +161,7 @@
                     </div>
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                         <button type="submit" class="bg-senac-orange hover:bg-orange-600 text-white font-bold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i><span>Salvar Avaliação &amp; Atualizar Arena</span>
+                            <i class="fa-solid fa-floppy-disk"></i><span>SALVAR</span>
                         </button>
                     </div>
                 </form>
@@ -248,21 +247,21 @@
     <div id="ceremonyModalOverlay" class="fixed inset-0 bg-senac-darkNavy/90 backdrop-blur-md z-40 hidden flex flex-col items-center justify-center p-4">
         <div class="max-w-2xl w-full text-center space-y-6">
             <div class="inline-flex items-center gap-2 border border-senac-orange/40 bg-senac-orange/10 px-4 py-1 rounded-full text-xs font-tech text-senac-orange uppercase tracking-widest">
-                <span>CERIMÔNIA AO VIVO DE MELHORES PRÁTICAS</span>
+                <span>CERIMÔNIA DE MELHORES PRÁTICAS</span>
             </div>
             <div id="ceremonyStepBox" class="bg-white rounded-3xl p-8 border-2 border-senac-orange shadow-gold transition-all duration-500">
                 <span id="ceremonyRankTag" class="text-xs font-black font-tech uppercase tracking-wider text-senac-orange block mb-2">ETAPA DA REVELAÇÃO</span>
-                <h3 id="ceremonyTitle" class="text-2xl sm:text-3xl font-black font-heading text-senac-blue mb-2">Pronto para Iniciar</h3>
-                <p id="ceremonySubtitle" class="text-xs sm:text-sm text-slate-500 mb-6">Clique em 'Revelar Próxima Posição' para acionar o timer de 3 segundos!</p>
+                <h3 id="ceremonyTitle" class="text-2xl sm:text-3xl font-black font-heading text-senac-blue mb-2">Vamos Começar?</h3>
+                <p id="ceremonySubtitle" class="text-xs sm:text-sm text-slate-500 mb-6">Apresentaremos a seguir a classificação de cada grupo.</p>
                 <div id="ceremonyScoreBadge" class="hidden inline-block bg-slate-100 border border-slate-200 px-6 py-2 rounded-2xl mb-6">
                     <span class="text-xs text-slate-400 font-bold block uppercase">Pontuação Conquistada</span>
                     <span id="ceremonyScoreValue" class="text-3xl font-black font-heading text-senac-orange">0 / 0 pts</span>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-center gap-3">
                     <button id="nextCeremonyBtn" onclick="revealNextCeremonyStep()" class="bg-senac-orange hover:bg-orange-600 text-white font-extrabold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-hourglass-start"></i><span>Revelar Próxima Posição (Timer 3s)</span>
+                        <i class="fa-solid fa-hourglass-start"></i><span>REVELAR CLASSIFICAÇÃO</span>
                     </button>
-                    <button onclick="closeCeremonyModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3.5 rounded-xl text-xs transition-all">Encerrar Cerimônia</button>
+                    <button onclick="closeCeremonyModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3.5 rounded-xl text-xs transition-all">ENCERRAR CERIMÔNIA</button>
                 </div>
             </div>
         </div>
@@ -310,9 +309,8 @@
     </div>
 
     <footer class="bg-senac-darkNavy text-white py-6 mt-12 border-t-2 border-senac-orange">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-300 flex flex-col sm:flex-row justify-between items-center gap-2">
-            <p>© 2026 Senac Brasil — Sistema Oficial de Avaliação e Arena da Educação Inovadora</p>
-            <p class="font-tech text-senac-cyan text-[11px]">[ education + technology ] /// Melhores Práticas 2026</p>
+        <div class="max-w-7xl mx-auto px-4 flex justify-center items-center">
+            <img src="{% static 'arena/logo_header.png' %}" alt="Senac · Educação Inovadora · Senac Labs" class="h-10 sm:h-12 w-auto object-contain">
         </div>
     </footer>
 
@@ -439,38 +437,144 @@
         }
 
         // ============================================================
-        // RENDERIZAÇÃO: WINNER SPOTLIGHT
+        // RENDERIZAÇÃO: PÓDIO DOS CAMPEÕES (TOP 3 AUTOMÁTICO)
         // ============================================================
         function renderWinnerSpotlight() {
             const container = document.getElementById('winnerSpotlightContainer');
-            const revealedGroups = getSortedGroups().filter(g => g.is_revealed);
-            if (revealedGroups.length === 0) {
-                container.innerHTML = '';
+            const sorted = getSortedGroups();
+            if (sorted.length === 0) {
+                container.innerHTML = `<div class="bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400 shadow-tech">
+                    <i class="fa-solid fa-trophy text-4xl mb-3 block text-slate-300"></i>
+                    <p class="text-sm font-medium">Nenhum grupo cadastrado na arena ainda.</p>
+                </div>`;
                 return;
             }
-            const winner = revealedGroups[0];
-            const total = calculateGroupTotalScore(winner);
-            const max = getMaxPossibleScore(winner);
+
+            const first = sorted[0] || null;
+            const second = sorted[1] || null;
+            const third = sorted[2] || null;
+
+            function renderSecondCard(g) {
+                if (!g) {
+                    return `<div class="bg-white/60 rounded-3xl border-2 border-dashed border-slate-200 p-6 flex flex-col justify-center items-center text-slate-400 min-h-[210px]">
+                        <span class="text-xs font-bold uppercase tracking-wider">2.º Lugar</span>
+                        <span class="text-xs mt-1">Aguardando grupo...</span>
+                    </div>`;
+                }
+                const total = calculateGroupTotalScore(g);
+                return `
+                <div onclick="showDetailModal(${g.id})" class="relative overflow-hidden bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all p-6 flex flex-col justify-between cursor-pointer min-h-[210px]">
+                    <i class="fa-solid fa-medal absolute -bottom-3 -right-2 text-8xl text-slate-200/50 pointer-events-none select-none"></i>
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-5">
+                            <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-extrabold px-3.5 py-1.5 rounded-full">
+                                <i class="fa-solid fa-medal text-slate-500"></i> 2.º LUGAR
+                            </span>
+                            <span class="text-2xl sm:text-3xl font-black font-heading text-senac-blue">${total} pts</span>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-extrabold font-heading text-senac-blue leading-snug mb-1">${g.title}</h3>
+                        <p class="text-xs text-slate-500 font-medium">${g.authors}</p>
+                    </div>
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-4 mt-6 border-t border-slate-100">
+                        <span class="text-xs font-medium text-slate-500">Medalha de Prata</span>
+                        <span class="text-xs font-bold text-senac-blue">${g.unit || 'Finalista'}</span>
+                    </div>
+                </div>`;
+            }
+
+            function renderFirstCard(g) {
+                const total = calculateGroupTotalScore(g);
+                return `
+                <div onclick="showDetailModal(${g.id})" class="relative overflow-hidden bg-white rounded-3xl border-2 border-senac-orange shadow-lg hover:shadow-xl transition-all p-6 sm:p-7 flex flex-col justify-between cursor-pointer min-h-[230px] lg:-mt-3">
+                    <i class="fa-solid fa-trophy absolute -bottom-3 right-3 text-8xl text-senac-orange/15 pointer-events-none select-none"></i>
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-5">
+                            <span class="inline-flex items-center gap-1.5 bg-senac-orange text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md">
+                                <i class="fa-solid fa-crown text-amber-300"></i>
+                                <i class="fa-solid fa-trophy text-amber-300"></i>
+                                1.º LUGAR (CAMPEÃO)
+                            </span>
+                            <span class="text-3xl sm:text-4xl font-black font-heading text-senac-orange">${total} pts</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-black font-heading text-senac-darkNavy leading-snug mb-1">${g.title}</h3>
+                        <p class="text-xs text-slate-600 font-medium">${g.authors}</p>
+                    </div>
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-4 mt-6 border-t border-senac-orange/25">
+                        <span class="text-xs font-bold text-senac-orange">Medalha de Ouro</span>
+                        <span class="bg-senac-orange text-white text-[11px] font-bold px-3 py-1 rounded-xl shadow-md">${g.unit || 'Campeão'}</span>
+                    </div>
+                </div>`;
+            }
+
+            function renderThirdCard(g) {
+                if (!g) {
+                    return `<div class="bg-white/60 rounded-3xl border-2 border-dashed border-slate-200 p-6 flex flex-col justify-center items-center text-slate-400 min-h-[210px]">
+                        <span class="text-xs font-bold uppercase tracking-wider">3.º Lugar</span>
+                        <span class="text-xs mt-1">Aguardando grupo...</span>
+                    </div>`;
+                }
+                const total = calculateGroupTotalScore(g);
+                return `
+                <div onclick="showDetailModal(${g.id})" class="relative overflow-hidden bg-white rounded-3xl border border-orange-200/80 shadow-sm hover:shadow-md transition-all p-6 flex flex-col justify-between cursor-pointer min-h-[210px]">
+                    <i class="fa-solid fa-award absolute -bottom-3 -right-2 text-8xl text-amber-700/15 pointer-events-none select-none"></i>
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-5">
+                            <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200/70 text-xs font-extrabold px-3.5 py-1.5 rounded-full">
+                                <i class="fa-solid fa-award text-amber-700"></i> 3.º LUGAR
+                            </span>
+                            <span class="text-2xl sm:text-3xl font-black font-heading text-slate-800">${total} pts</span>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-extrabold font-heading text-senac-blue leading-snug mb-1">${g.title}</h3>
+                        <p class="text-xs text-slate-500 font-medium">${g.authors}</p>
+                    </div>
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-4 mt-6 border-t border-slate-100">
+                        <span class="text-xs font-medium text-slate-500">Medalha de Bronze</span>
+                        <span class="text-xs font-bold text-slate-800">${g.unit || 'Finalista'}</span>
+                    </div>
+                </div>`;
+            }
+
             container.innerHTML = `
-                <div class="winner-spotlight-active bg-gradient-to-br from-senac-darkNavy via-senac-blue to-slate-800 rounded-3xl p-8 text-white text-center border-2 border-senac-orange">
-                    <div class="text-senac-gold font-tech text-xs uppercase tracking-widest mb-2">🏆 Destaque da Arena</div>
-                    <h2 class="text-3xl font-black font-heading mb-1">${winner.title}</h2>
-                    <p class="text-sm text-slate-300 mb-4">${winner.authors}</p>
-                    <div class="inline-block bg-senac-orange/20 border border-senac-orange px-6 py-3 rounded-2xl">
-                        <span class="text-4xl font-black font-tech text-senac-gold">${total}</span>
-                        <span class="text-senac-cyan font-tech text-sm"> / ${max} pts</span>
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-senac-orange text-white flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-award text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-black font-heading text-senac-blue leading-tight">PÓDIO DOS CAMPEÕES</h3>
+                                <p class="text-xs text-slate-500">O topo pertence a quem transforma metas em conquistas.</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-orange-50 text-senac-orange border border-orange-200 self-start sm:self-auto">
+                            <i class="fa-solid fa-bolt text-senac-orange"></i> Atualização em Tempo Real
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch pt-2">
+                        <div class="order-2 lg:order-1">${renderSecondCard(second)}</div>
+                        <div class="order-1 lg:order-2">${renderFirstCard(first)}</div>
+                        <div class="order-3 lg:order-3">${renderThirdCard(third)}</div>
                     </div>
                 </div>`;
         }
 
         // ============================================================
-        // RENDERIZAÇÃO: LEADERBOARD
+        // RENDERIZAÇÃO: LEADERBOARD (4º LUGAR EM DIANTE)
         // ============================================================
         function renderLeaderboard() {
+            const section = document.getElementById('leaderboardSection');
             const container = document.getElementById('leaderboardContainer');
             const search = (document.getElementById('searchRankingInput').value || '').toLowerCase();
             const sorted = getSortedGroups();
-            const filtered = sorted.filter(g =>
+            const remainingGroups = sorted.slice(3);
+
+            if (remainingGroups.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+            section.classList.remove('hidden');
+
+            const filtered = remainingGroups.filter(g =>
                 g.title.toLowerCase().includes(search) ||
                 g.authors.toLowerCase().includes(search)
             );
@@ -483,30 +587,18 @@
                 return;
             }
 
-            const medalColors = ['text-yellow-500', 'text-slate-400', 'text-amber-700'];
-            const medalIcons = ['fa-trophy', 'fa-medal', 'fa-award'];
-            const bgColors = [
-                'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200',
-                'bg-gradient-to-r from-slate-50 to-gray-50 border-slate-200',
-                'bg-gradient-to-r from-orange-50 to-amber-50 border-amber-200'
-            ];
-
-            container.innerHTML = filtered.map((g, idx) => {
+            container.innerHTML = filtered.map((g) => {
                 const rank = sorted.indexOf(g) + 1;
                 const total = calculateGroupTotalScore(g);
                 const max = getMaxPossibleScore(g);
                 const evalsCount = g.evaluations_count || 0;
                 const pct = max > 0 ? Math.min(100, Math.round(total / max * 100)) : 0;
-                const isTop3 = rank <= 3;
-                const barColor = rank === 1 ? 'bg-yellow-500' : rank === 2 ? 'bg-slate-400' : rank === 3 ? 'bg-amber-600' : 'bg-senac-blue';
-                const cardBg = isTop3 ? bgColors[rank - 1] : 'bg-white border-slate-200';
-                const medalEl = isTop3
-                    ? `<i class="fa-solid ${medalIcons[rank-1]} ${medalColors[rank-1]} text-xl"></i>`
-                    : `<span class="text-slate-400 font-black text-sm">#${rank}</span>`;
 
                 return `
-                <div class="flex items-center gap-4 p-4 rounded-2xl border ${cardBg} transition-all hover:shadow-md cursor-pointer" onclick="showDetailModal(${g.id})">
-                    <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">${medalEl}</div>
+                <div class="flex items-center gap-4 p-4 rounded-2xl border bg-white border-slate-200 transition-all hover:shadow-md cursor-pointer" onclick="showDetailModal(${g.id})">
+                    <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                        <span class="text-slate-400 font-black text-sm">#${rank}</span>
+                    </div>
                     <div class="flex-grow min-w-0">
                         <div class="flex items-center justify-between gap-2 mb-1">
                             <h4 class="font-bold text-slate-800 text-sm truncate">${g.title}</h4>
@@ -514,7 +606,7 @@
                         </div>
                         <p class="text-xs text-slate-500 truncate mb-2">${g.authors}${g.unit ? ' · ' + g.unit : ''}</p>
                         <div class="w-full bg-slate-100 rounded-full h-1.5">
-                            <div class="${barColor} h-1.5 rounded-full transition-all duration-700" style="width:${pct}%"></div>
+                            <div class="bg-senac-blue h-1.5 rounded-full transition-all duration-700" style="width:${pct}%"></div>
                         </div>
                     </div>
                     ${g.is_revealed ? '<span class="text-senac-gold text-xs flex-shrink-0"><i class="fa-solid fa-star"></i></span>' : ''}
@@ -949,8 +1041,8 @@
             ceremonyCurrentIdx = -1;
             ceremonyTimerRunning = false;
 
-            document.getElementById('ceremonyTitle').textContent = 'Cerimônia Pronta!';
-            document.getElementById('ceremonySubtitle').textContent = `${ceremonyQueue.length} grupo(s) serão revelados do último ao 1º lugar.`;
+            document.getElementById('ceremonyTitle').textContent = 'Vamos Começar?';
+            document.getElementById('ceremonySubtitle').textContent = 'Apresentaremos a seguir a classificação de cada grupo.';
             document.getElementById('ceremonyRankTag').textContent = 'INÍCIO DA CERIMÔNIA';
             document.getElementById('ceremonyScoreBadge').classList.add('hidden');
             document.getElementById('nextCeremonyBtn').disabled = false;
